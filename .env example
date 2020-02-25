@@ -1,0 +1,5 @@
+NODE_ENV=development
+DB_CONNECTION=mongodb://localhost/awesome-project
+DB_CONNECTION_TEST=mongodb://localhost/awesome-project_test
+
+PORT=3000
