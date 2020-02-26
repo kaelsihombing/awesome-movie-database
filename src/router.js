@@ -22,11 +22,12 @@ router.post('/admins', validateForm, user.createAdmin)
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
 
-// Password reset endpoint
+// Verify email endpoint
+router.get('/verified/:token', user.verifyEmail)
+
+// Recovery password endpoint
 router.post('/recover', [check('email').isEmail().withMessage('Enter a valid email address'),], user.recover);
-
 router.get('/reset/:token', user.reset);
-
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
 

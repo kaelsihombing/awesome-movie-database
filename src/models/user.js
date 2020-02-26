@@ -27,8 +27,8 @@ const randomImage = [
     "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
 ]
 
-function defaultImage(){
-        return randomImage[Math.floor(Math.random() * randomImage.length)]
+function defaultImage() {
+    return randomImage[Math.floor(Math.random() * randomImage.length)]
 }
 
 const userSchema = new Schema({
@@ -75,12 +75,12 @@ const userSchema = new Schema({
         default: 'en'
     },
 
-    resetPasswordToken: {
+    sessionToken: {
         type: String,
         required: false
     },
 
-    resetPasswordExpires: {
+    sessionTokenExpires: {
         type: Date,
         required: false
     }
@@ -91,13 +91,13 @@ const userSchema = new Schema({
 )
 
 class User extends mongoose.model('User', userSchema) {
-    static generatePasswordReset(id) {
-        var resetPasswordToken = crypto.randomBytes(20).toString('hex');
-        var resetPasswordExpires = Date.now() + 360000; // 6 minutes expired
+    static generateSessionToken(id) {
+        var sessionToken = crypto.randomBytes(20).toString('hex');
+        var sessionTokenExpires = Date.now() + 360000; // 6 minutes expired
 
         let properties = {
-            resetPasswordToken: resetPasswordToken,
-            resetPasswordExpires: resetPasswordExpires
+            sessionToken: sessionToken,
+            sessionTokenExpires: sessionTokenExpires
         }
 
         return new Promise((resolve, reject) => {
@@ -111,28 +111,62 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static register({ fullname, email, password, password_confirmation }) {
+    static register(data, req) {
         return new Promise((resolve, reject) => {
 
-            if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
+            if (data.password !== data.password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
-            let encrypted_password = bcrypt.hashSync(password, 10)
+            let encrypted_password = bcrypt.hashSync(data.password, 10)
+
 
             this.create({
-                fullname, email, encrypted_password
+                fullname: data.fullname,
+                email: data.email,
+                encrypted_password: encrypted_password
             })
-                .then(data => {
+                .then(async data => {
                     let token = jwt.sign({ _id: data._id, role: data.role, verified: data.verified }, process.env.JWT_SIGNATURE_KEY)
 
-                    resolve({
-                        id: data._id,
-                        fullname: data.fullname,
-                        email: data.email,
-                        language: data.language,
-                        verified: data.verified,
-                        image: data.image,
-                        token: token
-                    })
+                    await this.generateSessionToken(data._id)
+
+                        .then(user => {
+                            
+                            let link = "http://" + req.headers.host + "/api/v1/verified/" + user.sessionToken;
+                            
+                            const mailOptions = {
+                                to: data.email,
+                                from: process.env.FROM_EMAIL,
+                                subject: "Verify your account",
+                                text: `Hi ${data.fullname} \n 
+                                    Please click on the following link below to verify your account. \n\n 
+                                    If you did not request this, you can't change any information in your profile and give a review or even rating.\n
+                                    ${link}`,
+                            };
+
+                            mailer.send(mailOptions, (error) => {
+                                if (error) return reject({ message: error.message });
+
+                                // resolve({ message: 'A reset email has been sent to ' + data.email + ', please check your email.' });
+                            });
+
+                            resolve([
+                                {
+                                    message: 'A reset email has been sent to ' + data.email + ', please check your email.'
+                                },
+                                {
+                                    id: data._id,
+                                    fullname: data.fullname,
+                                    email: data.email,
+                                    language: data.language,
+                                    verified: data.verified,
+                                    image: data.image,
+                                    token: token
+                                }
+                            ])
+                        })
+
+
+
                 })
                 .catch(err => {
                     reject({
@@ -301,11 +335,11 @@ class User extends mongoose.model('User', userSchema) {
                 .then(async user => {
                     if (!user) return reject({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.' });
                     //Generate and set password reset token
-                    await this.generatePasswordReset(user._id)
+                    await this.generateSessionToken(user._id)
 
                         .then(user => {
                             // send email
-                            let link = "http://" + req.headers.host + "/api/v1/reset/" + user.resetPasswordToken;
+                            let link = "http://" + req.headers.host + "/api/v1/reset/" + user.sessionToken;
                             const mailOptions = {
                                 to: user.email,
                                 from: process.env.FROM_EMAIL,
@@ -313,7 +347,7 @@ class User extends mongoose.model('User', userSchema) {
                                 text: `Hi ${user.fullname} \n 
                                     Please click on the following link ${link} to reset your password. \n\n 
                                     If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-                                            };
+                            };
 
                             mailer.send(mailOptions, (error) => {
                                 if (error) return reject({ message: error.message });
@@ -326,7 +360,6 @@ class User extends mongoose.model('User', userSchema) {
                 .catch(err => reject(err));
         })
     }
-
 
 }
 

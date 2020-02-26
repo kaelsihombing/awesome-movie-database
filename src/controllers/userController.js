@@ -41,7 +41,7 @@ exports.update = async (req, res) => {
         let result = await User.dataUpdate(req.user, req)
         success(res, result, 201)
     }
-    catch(err) {
+    catch (err) {
         error(res, err, 422)
     }
 }
@@ -51,14 +51,14 @@ exports.recover = async (req, res) => {
         let result = await User.recover(req)
         success(res, result, 201)
     }
-    catch(err) {
+    catch (err) {
         error(res, err, 422)
     }
 }
 
-exports.reset = (req, res) => {
+exports.reset = async (req, res) => {
 
-    User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+    User.findOne({ sessionToken: req.params.token, sessionTokenExpires: { $gt: Date.now() } })
         .then(user => {
             if (!user) return res.render('expiredToken');
 
@@ -68,16 +68,16 @@ exports.reset = (req, res) => {
         .catch(err => res.status(500).json({ message: err.message }));
 };
 
-exports.resetPassword = (req, res) => {
+exports.resetPassword = async (req, res) => {
 
-    User.findOne({ resetPasswordToken: req.params.token })
+    User.findOne({ sessionToken: req.params.token })
         .then(async user => {
             if (!user) return res.status(401).json({ message: 'Password reset token is invalid or has expired.' });
 
             //Set the new password
             user.encrypted_password = await bcrypt.hashSync(req.body.password, 10);
-            user.resetPasswordToken = undefined;
-            user.resetPasswordExpires = undefined;
+            user.sessionToken = undefined;
+            user.sessionTokenExpires = undefined;
 
             // Save
             user.save((err) => {
@@ -100,4 +100,22 @@ exports.resetPassword = (req, res) => {
                 });
             });
         });
+};
+
+exports.verifyEmail = async (req, res) => {
+
+    User.findOne({ sessionToken: req.params.token, sessionTokenExpires: { $gt: Date.now() } })
+        .then(user => {
+            if (!user) return res.render('expiredToken');
+
+            user.verified = true;
+            user.sessionToken = undefined;
+            user.sessionTokenExpires = undefined;
+
+            user.save(err => {
+                if (err !== null) return res.status(500).json({ message: 'Error brooo' });
+                res.status(500).json('Your account has been verified!' )
+            })
+        })
+        .catch(err => res.status(500).json({ message: err.message }));
 };
