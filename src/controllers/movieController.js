@@ -8,7 +8,7 @@ const {
 
 exports.add = async (req, res) => {
     try {
-        let result = await Movie.register(req.body)
+        let result = await Movie.register(req.user._id, req.user.role, req.body.title, req.body.year)
         success(res, result, 201)
     }
     catch (err) {

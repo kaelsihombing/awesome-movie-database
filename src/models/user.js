@@ -128,6 +128,36 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
+    static registerAdmin({ fullname, email, password, password_confirmation }) {
+        return new Promise((resolve, reject) => {
+
+            if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
+
+            let encrypted_password = bcrypt.hashSync(password, 10)
+            let role = 'ADMIN'
+
+            this.create({
+                fullname, email, encrypted_password, role
+            })
+                .then(data => {                  
+                    let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
+                    resolve({
+                        id: data._id,
+                        fullname: data.fullname,
+                        email: data.email,
+                        role: data.role,
+                        language: data.language,
+                        image: data.image,
+                        token: token
+                    })
+                })
+                .catch(err => {
+                    reject({
+                        message: err.message
+                    })
+                })
+        })
+    }
 
     static auth(req) {
         return new Promise((resolve, reject) => {
@@ -135,14 +165,14 @@ class User extends mongoose.model('User', userSchema) {
                 .then(async data => {
                     if (isEmpty(data)) return reject('Email does not exist, please input a valid email')
                     if (bcrypt.compareSync(req.body.password, data.encrypted_password)) {
-                        let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
-
+                        let token = jwt.sign({ _id: data._id, language: data.language, role: data.role }, process.env.JWT_SIGNATURE_KEY)
                         Auth.emit('authorized', data._id)
 
                         return resolve({
                             id: data._id,
                             fullname: data.fullname,
                             email: data.email,
+                            role: data.role,
                             image: data.image,
                             verified: data.verified,
                             token: token

@@ -9,6 +9,7 @@ module.exports = async (req, res, next) => {
     try {
         let decoded = await jwt.verify(token, process.env.JWT_SIGNATURE_KEY)
         req.user = decoded
+        
         next()
     }
     catch (err) {
