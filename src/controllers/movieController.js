@@ -8,7 +8,17 @@ const {
 
 exports.add = async (req, res) => {
     try {
-        let result = await Movie.register(req.user._id, req.user.role, req.body.title, req.body.year)
+        let result = await Movie.register(req.user._id, req.user.role, req.body)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.edit = async (req,res) => {
+    try{
+        let result = await Movie.update(req.query.id, req.user._id, req.user.role, req.body)
         success(res, result, 201)
     }
     catch (err) {
