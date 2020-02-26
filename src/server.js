@@ -1,19 +1,21 @@
 const express = require('express')
-const app = express()
+
 const morgan = require('morgan')
 const dotenv = require('dotenv')
 const swaggerUi = require('swagger-ui-express')
 const documentation = require('../swagger.json')
 const cors = require('cors')
+const app = express();
 dotenv.config()
+
+process.log = {}
 
 require('./database.js')
 
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.use(cors())
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: false}))
-
 
 app.use(morgan('tiny'))
 const router = require('./router')

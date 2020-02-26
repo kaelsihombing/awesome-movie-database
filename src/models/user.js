@@ -1,3 +1,4 @@
+const randomImage = require('../fixtures/profileImage').profileImage;
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
@@ -16,7 +17,7 @@ const Auth = require('../events/auth')
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
-const defaultImage = require('../fixtures/profileImage').profileImage;
+const defaultImage = randomImage;
 
 const userSchema = new Schema({
     fullname: {
@@ -191,10 +192,12 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static async updateData(id, req) {
+    static async dataUpdate(id, req) {
+        // console.log('ID: ', id);
+        // console.log('REG BODY',req.body.fullname);
+        // console.log('REQ FILE',req.file);
         let params = {
             fullname: req.body.fullname,
-            email: req.body.email,
             language: req.body.language
         }
 
