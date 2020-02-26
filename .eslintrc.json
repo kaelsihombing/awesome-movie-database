@@ -22,5 +22,5 @@
             }
         ]
     },
-    "ignorePatterns":[]
+    "ignorePatterns":["userSpec.js"]
 }

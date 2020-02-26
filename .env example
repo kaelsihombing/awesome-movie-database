@@ -2,7 +2,7 @@ NODE_ENV=development
 DB_CONNECTION=mongodb://localhost/awesome-movie-databse
 DB_CONNECTION_TEST=mongodb://localhost/awesome-movie-databse_test
 
-PORT=3000
+PORT=8000
 
 publicKey=public_5Hn55wwzH48M+rVl/7am9e6xqy0=
 privateKey=private_i2qRf3R8NLPJkAUPb1gxGRT52Ak=
