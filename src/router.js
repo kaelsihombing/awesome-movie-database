@@ -11,6 +11,7 @@ const validateForm = require('./middlewares/validateForm')
 
 // User endpoint
 router.post('/users', validateForm, user.create)
+router.post('/auth', validateForm, user.auth)
 
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
