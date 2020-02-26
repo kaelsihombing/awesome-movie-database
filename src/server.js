@@ -5,13 +5,22 @@ const dotenv = require('dotenv')
 const swaggerUi = require('swagger-ui-express')
 const documentation = require('../swagger.json')
 const cors = require('cors')
+var cons = require('consolidate');
+var swig = require('swig');
 const app = express();
 dotenv.config()
-
+var path = require("path");
 process.log = {}
 
+// database
 require('./database.js')
 
+// view engine setup
+app.engine('html', cons.swig)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+
+// express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
