@@ -164,7 +164,6 @@ class User extends mongoose.model('User', userSchema) {
     static async updateData(id, req) {
         let params = {
             fullname: req.body.fullname,
-            email: req.body.email,
             language: req.body.language
         }
 
