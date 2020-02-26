@@ -1,12 +1,10 @@
 const express = require('express')
-
 const morgan = require('morgan')
 const dotenv = require('dotenv')
 const swaggerUi = require('swagger-ui-express')
 const documentation = require('../swagger.json')
 const cors = require('cors')
 var cons = require('consolidate');
-var swig = require('swig');
 const app = express();
 dotenv.config()
 var path = require("path");
