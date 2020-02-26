@@ -11,7 +11,7 @@ const validateForm = require('./middlewares/validateForm')
 
 // User endpoint
 router.post('/users', validateForm, user.create)
-router.post('/auth/login', user.login)
+router.post('/auth', validateForm, user.auth)
 
 // Admin endpoint
 router.post('/admins', validateForm, user.createAdmin)

@@ -24,7 +24,7 @@ describe('MOVIE API TESTING', () => {
         it('Should add new movie', () => {
             let movieSample = movieFixtures.create()
             chai.request(server)
-                .post('/api/v1/auth/login')
+                .post('/api/v1/auth')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(staticUser))
                 .end((err, res) => {
