@@ -4,12 +4,7 @@ const {
     expect
 } = chai
 chai.use(chaiHttp)
-<<<<<<< HEAD
-const server = require('../server')
-=======
 const server = require('../server.js')
->>>>>>> 6fcba6e765b6096844a8f95ba94df0ad216f3915
-
 const User = require('../models/user')
 const userFixtures = require('../fixtures/userFixture.js')
 const firstSample = userFixtures.create()
