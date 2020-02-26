@@ -54,8 +54,10 @@ const movieSchema = new Schema({
 )
 
 class Movie extends mongoose.model('Movie', movieSchema) {
-    static register(creator, title, year, ) {
+    static register(creator, role, title, year) {
         return new Promise((resolve, reject) => {
+            if (role != 'ADMIN') return reject("You're not allowed to add movie entry")
+
             let params = {
                 title: title,
                 year: year,
@@ -65,7 +67,15 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
             this.create(params)
                 .then(data => {
-                    resolve(data)
+                    resolve({
+                        _id: data._id,
+                        title: data.title,
+                        year: data.year,
+                        genre: data.genre,
+                        casts: data.casts,
+                        directors: data.directors,
+                        writers: data.writers,
+                    })
                 })
                 .catch(err => {
                     reject(err)
