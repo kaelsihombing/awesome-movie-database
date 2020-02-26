@@ -8,7 +8,7 @@ const {
 
 exports.create = async (req, res) => {
     try {
-        let result = await User.register(req.body)
+        let result = await User.register(req.body, req)
         success(res, result, 201)
     }
     catch (err) {

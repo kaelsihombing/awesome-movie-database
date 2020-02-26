@@ -1,4 +1,4 @@
-const randomImage = require('../fixtures/profileImage').profileImage;
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
@@ -18,7 +18,18 @@ const Auth = require('../events/auth')
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
-const defaultImage = randomImage;
+const randomImage = [
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__5___gVErlfkr.jpeg",
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__4__bcJrAnNDS.jpeg",
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__3__G3mwd4sOJt.jpeg",
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__2__rzdmaMNz8e.jpeg",
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__1__IrwwDBdiP.jpeg",
+    "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
+]
+
+function defaultImage(){
+        return randomImage[Math.floor(Math.random() * randomImage.length)]
+}
 
 const userSchema = new Schema({
     fullname: {
@@ -35,7 +46,7 @@ const userSchema = new Schema({
 
     image: {
         type: String,
-        default: defaultImage
+        default: defaultImage()
     },
 
     encrypted_password: {
@@ -208,7 +219,7 @@ class User extends mongoose.model('User', userSchema) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
         } else {
-            params.image = defaultImage
+            params.image = defaultImage();
         }
 
         return new Promise((resolve, reject) => {
