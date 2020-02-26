@@ -1,10 +1,10 @@
-const User = require('../models/user')
+const User = require('../models/user.js')
 const {
     success,
     error,
-} = require('../helpers/response')
+} = require('../helpers/response.js')
 
-const translator = require('../helpers/translate').translator
+const translator = require('../helpers/translate.js').translator
 
 exports.create = async (req, res) => {
     try {

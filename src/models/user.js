@@ -105,7 +105,7 @@ class User extends mongoose.model('User', userSchema) {
                 fullname, email, encrypted_password
             })
                 .then(data => {
-                    let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
+                    let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
                         id: data._id,
                         fullname: data.fullname,
@@ -242,10 +242,6 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
-
-
-
-
 }
 
 module.exports = User;
