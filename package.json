@@ -2,9 +2,9 @@
   "name": "awesome-movie-database",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/bin/www",
+    "start": "node bin/www",
     "dev": "nodemon --exec 'npm run lint && node' bin/www",
     "test": "NODE_ENV=test mocha src/tests/tests.js --exit",
     "test:coverage": "nyc --reporter=html --report-dir='./public/coverage' npm test",

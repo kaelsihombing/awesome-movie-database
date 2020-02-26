@@ -4,7 +4,7 @@ const {
     expect
 } = chai
 chai.use(chaiHttp)
-const server = require('../index.js')
+const server = require('../server.js/index.js')
 
 const User = require('../models/user')
 const userFixtures = require('../fixtures/userFixture.js')
