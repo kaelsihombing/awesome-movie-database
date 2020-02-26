@@ -22,5 +22,5 @@
             }
         ]
     },
-    "ignorePatterns":["userSpec.js"]
+    "ignorePatterns":["exceptionHandler.js","userSpec.js","taskSpec.js"]
 }

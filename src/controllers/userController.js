@@ -4,12 +4,12 @@ const {
     error,
 } = require('../helpers/response')
 
-const translator = require('../helpers/translate').translator
+// const translator = require('../helpers/translate').translator
 
 exports.create = async (req, res) => {
     try {
         let result = await User.register(req.body)
-        success(res, result, 201, await translator('userCreated', req))
+        success(res, result, 201)
     }
     catch (err) {
         error(res, err, 422)

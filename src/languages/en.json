@@ -1,0 +1,12 @@
+{
+    "loggedIn":"Welcome to duDO",
+    "emailDuplicate":"Email has already used",
+    "userCreated": "User has been created",
+    "emailNotExist": "Email doesn't exist",
+    "userUpdated":"Your data has been edited",
+    "pwNotMatch":"Password and Password Confirmation doesn't match",
+    "emailOrPassword":"Email or Password is wrong, please check again",
+    "taskCreated":"Task has been created",
+    "wrongEndPoint":"You Lost! please make sure your end point is valid",
+    "taskEdited":"Task has been changed"
+}

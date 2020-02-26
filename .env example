@@ -1,6 +1,7 @@
+JWT_SIGNATURE_KEY=SECRET
 NODE_ENV=development
-DB_CONNECTION=mongodb://localhost/awesome-movie-databse
-DB_CONNECTION_TEST=mongodb://localhost/awesome-movie-databse_test
+DB_CONNECTION=mongodb://localhost/awesome-movie-database
+DB_CONNECTION_TEST=mongodb://localhost/awesome-movie-database_test
 
 PORT=8000
 
