@@ -4,7 +4,7 @@ const {
     error,
 } = require('../helpers/response.js')
 
-const translator = require('../helpers/translate.js').translator
+// const translator = require('../helpers/translate.js').translator
 
 exports.create = async (req, res) => {
     try {
