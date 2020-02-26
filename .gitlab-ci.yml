@@ -1,0 +1,27 @@
+stages:
+    - test
+    - deploy
+
+test:
+    image: node:12.13
+    stage: test
+    variables:
+        DB_CONNECTION_TEST: "mongodb://localhost:27018"
+    services: 
+        - mongo:latest
+    script: 
+        - npm install
+        - npm test
+    only:
+        - master
+
+deploy:
+    image: ruby:2.5.6
+    stage: deploy
+    script:
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
+        - gem install dpl
+        - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
+    only:
+        - master

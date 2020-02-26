@@ -1,0 +1,12 @@
+{
+    "loggedIn":"Selamat datang di duDO",
+    "emailDuplicate":"Email sudah pernah digunakan",
+    "userCreated": "User berhasil di buat",
+    "emailNotExist": "Email tidak ditemukan",
+    "userUpdated":"Data anda berhasil di ubah",
+    "pwNotMatch":"Password dan Password Confirmation tidak sama",
+    "emailOrPassword":"Email atau Password salah, silahkan cek kembali",
+    "taskCreated":"Tugas berhasil dibuat",
+    "wrongEndPoint":"Kamu tersesat!, pastikan end point mu benar",
+    "taskEdited":"Tugas berhasil diubah"
+}
