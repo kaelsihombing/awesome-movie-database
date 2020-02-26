@@ -11,6 +11,7 @@ const imagekit = new Imagekit({
     privateKey: process.env.privateKey,
     urlEndpoint: process.env.urlEndpoint
 })
+const mailer = require('../helpers/nodeMailer');
 const isEmpty = require('../helpers/isEmpty')
 const Auth = require('../events/auth')
 
@@ -110,7 +111,8 @@ class User extends mongoose.model('User', userSchema) {
                 fullname, email, encrypted_password
             })
                 .then(data => {
-                    let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
+                    let token = jwt.sign({ _id: data._id, role: data.role, verified: data.verified }, process.env.JWT_SIGNATURE_KEY)
+
                     resolve({
                         id: data._id,
                         fullname: data.fullname,
@@ -140,7 +142,8 @@ class User extends mongoose.model('User', userSchema) {
             this.create({
                 fullname, email, encrypted_password, role
             })
-                .then(data => {                  
+                .then(data => {
+
                     let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
                         id: data._id,
@@ -192,16 +195,15 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static async dataUpdate(id, req) {
-        // console.log('ID: ', id);
-        // console.log('REG BODY',req.body.fullname);
-        // console.log('REQ FILE',req.file);
+    static async dataUpdate(user, req) {
+
         let params = {
             fullname: req.body.fullname,
             language: req.body.language
         }
 
         for (let prop in params) if (!params[prop]) delete params[prop];
+
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
@@ -210,7 +212,9 @@ class User extends mongoose.model('User', userSchema) {
         }
 
         return new Promise((resolve, reject) => {
-            this.findByIdAndUpdate(id, params, { new: true })
+            if (user.verified === false) return reject('Please verified your account first before change your profile')
+
+            this.findByIdAndUpdate(user._id, params, { new: true })
                 .then(data => {
                     resolve(data)
                 })
@@ -251,7 +255,7 @@ class User extends mongoose.model('User', userSchema) {
                         })
                             .then(user => {
                                 let newUser = user.ops[0]
-                                
+
                                 let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
 
                                 return resolve({
@@ -279,6 +283,40 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+
+    static recover(req) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ email: req.body.email })
+                .then(async user => {
+                    if (!user) return reject({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.' });
+                    //Generate and set password reset token
+                    await this.generatePasswordReset(user._id)
+
+                        .then(user => {
+                            // send email
+                            let link = "http://" + req.headers.host + "/api/v1/reset/" + user.resetPasswordToken;
+                            const mailOptions = {
+                                to: user.email,
+                                from: process.env.FROM_EMAIL,
+                                subject: "Password change request",
+                                text: `Hi ${user.fullname} \n 
+                                    Please click on the following link ${link} to reset your password. \n\n 
+                                    If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+                                            };
+
+                            mailer.send(mailOptions, (error) => {
+                                if (error) return reject({ message: error.message });
+
+                                resolve({ message: 'A reset email has been sent to ' + user.email + ', please check your email.' });
+                            });
+                        })
+                        .catch(err => reject(err));
+                })
+                .catch(err => reject(err));
+        })
+    }
+
+
 }
 
 module.exports = User;
