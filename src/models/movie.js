@@ -54,7 +54,25 @@ const movieSchema = new Schema({
 )
 
 class Movie extends mongoose.model('Movie', movieSchema) {
+    static register(creator, title, year, ) {
+        return new Promise((resolve, reject) => {
+            let params = {
+                title: title,
+                year: year,
+                addedBy: creator,
+                lastUpdatedBy: creator,
+            }
 
+            this.create(params)
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+
+    }
 }
 
 module.exports = Movie
