@@ -24,16 +24,6 @@ exports.createAdmin = async (req, res) => {
     }
 }
 
-exports.login = async (req, res) => {
-    try {
-        let result = await User.login(req)
-        success(res, result, 200)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
-}
-
 exports.auth = async (req, res) => {
     try {
         let result = await User.auth(req)
@@ -46,7 +36,8 @@ exports.auth = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        let result = await User.updateData(req.user, req.body)
+        console.log(req.body)
+        let result = await User.dataUpdate(req.user._id, req)
         success(res, result, 201)
     }
     catch(err) {
