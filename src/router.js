@@ -19,8 +19,7 @@ router.post('/admins', validateForm, user.createAdmin)
 
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
-
-
+router.put('/movies', authenticate, movie.edit)
 
 //=============Password RESET
 router.post('/recover', [
@@ -33,6 +32,5 @@ router.post('/reset/:token', [
     check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),
     check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),
 ], user.resetPassword);
-
 
 module.exports = router;
