@@ -1,1 +1,535 @@
-{}
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an API Documentation awesome-movie-data.",
+    "version": "1.0.0",
+    "title": "Awesome Movie Data",
+    "contact": {
+      "email": "andrio.kevin12@gmail.com"
+    }
+  },
+  "host": "a",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "user collection",
+      "description": "Info for User API"
+    },
+    {
+      "name": "movie collection",
+      "description": "Info for Movie API"
+    },
+    {
+      "name": "review collection",
+      "description": "Info for Review API"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "Register new user",
+        "description": "ask user for email, password, and password confirmation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersRegisterRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Your credentials is not valid",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Password and Password Confirmation doesn't match"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "Update user data",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "fullname",
+            "type": "string",
+            "description": "fullname to be changed"
+          },
+          {
+            "in": "formData",
+            "name": "image",
+            "type": "file",
+            "description": "the image to upload"
+          },
+          {
+            "in": "formData",
+            "name": "email",
+            "type": "string",
+            "description": "the email to be changed"
+          },
+          {
+            "in": "formData",
+            "name": "language",
+            "type": "string",
+            "description": "the language to be changed (id / en )"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Your data has been edited",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "fullname": {
+                          "example": "santo michael gonzales"
+                        },
+                        "image": {
+                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
+                        },
+                        "email": {
+                          "example": "gonzales@gmail.com"
+                        },
+                        "language": {
+                          "example": "id"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "not successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "example": "error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "generate token for user",
+        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersLoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Not successfully login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Password is wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/google": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "generate token for user",
+        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+        "responses": {
+          "200": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Not successfully login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recover": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "recover user password",
+        "description": "Ask user for email ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "a reset email has been sent to sntmcl1@gmail.com, please check your email"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies": {
+      "post": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Add new movie entry",
+        "description": "ask authorized user for task title and dueDate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MovieEntryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly created new task",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e5645cd97119b556fe00d66"
+                    },
+                    "title": {
+                      "example": "8 Mile"
+                    },
+                    "year": {
+                      "example": "2002"
+                    },
+                    "genre": {
+                      "example": []
+                    },
+                    "casts": {
+                      "example": []
+                    },
+                    "directors": {
+                      "example": []
+                    },
+                    "writers": {
+                      "example": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error due to missing parameter(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "UsersRegisterRequest": {
+      "type": "object",
+      "required": [
+        "fullname",
+        "email",
+        "password",
+        "password_confirmation"
+      ],
+      "properties": {
+        "fullname": {
+          "type": "string",
+          "example": "santo michael sihombing"
+        },
+        "email": {
+          "type": "string",
+          "example": "sntmcl@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "sntmcl1"
+        },
+        "password_confirmation": {
+          "type": "string",
+          "example": "sntmcl1"
+        }
+      }
+    },
+    "UsersLoginRequest": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "sntmcl@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "sntmcl1"
+        }
+      }
+    },
+    "ForgotPassword": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "sntmcl1@gmail.com"
+        }
+      }
+    },
+    "MovieEntryRequest": {
+      "type": "object",
+      "required": [
+        "title",
+        "year"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "8 Mile"
+        },
+        "year": {
+          "type": "number",
+          "example": 2002
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Back-End Repository",
+    "url": "https://gitlab.com/ellvisca/awesome-movie-database"
+  }
+}

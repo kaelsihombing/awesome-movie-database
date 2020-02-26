@@ -14,6 +14,9 @@ router.post('/users', validateForm, user.create)
 router.put('/users', authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
 
+// Admin endpoint
+router.post('/admins', validateForm, user.createAdmin)
+
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
 

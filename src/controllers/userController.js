@@ -14,12 +14,32 @@ exports.create = async (req, res) => {
     }
 }
 
+exports.createAdmin = async (req, res) => {
+    try {
+        let result = await User.registerAdmin(req.body)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.login = async (req, res) => {
+    try {
+        let result = await User.login(req)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
 exports.auth = async (req, res) => {
     try {
         let result = await User.auth(req)
         success(res, result, 201)
     }
-    catch(err) {
+    catch (err) {
         error(res, err, 422)
     }
 }
