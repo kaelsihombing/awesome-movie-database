@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-// const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 // const crypto = require('crypto')
 // const axios = require('axios')
 // const Imagekit = require('imagekit')
@@ -40,6 +40,16 @@ const userSchema = new Schema({
         type: String
     },
 
+    role: {
+        type: String,
+        enum: ['ADMIN', 'USER'],
+    },
+
+    watchList: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Movie',
+    }],
+
     language: {
         type: String,
         required: true,
@@ -62,7 +72,34 @@ const userSchema = new Schema({
 )
 
 class User extends mongoose.model('User', userSchema) {
+    static register({ fullname, email, password, password_confirmation }) {
+        return new Promise((resolve, reject) => {
 
+            if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
+
+            let encrypted_password = bcrypt.hashSync(password, 10)
+
+            this.create({
+                fullname, email, encrypted_password
+            })
+                .then(data => {
+                    let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
+                    resolve({
+                        id: data._id,
+                        fullname: data.fullname,
+                        email: data.email,
+                        language: data.language,
+                        image: data.image,
+                        token: token
+                    })
+                })
+                .catch(err => {
+                    reject({
+                        message: err.message
+                    })
+                })
+        })
+    }
 }
 
 module.exports = User;
