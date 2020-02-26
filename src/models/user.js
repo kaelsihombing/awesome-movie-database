@@ -16,7 +16,7 @@ const Auth = require('../events/auth')
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
-const defaultImage = 'https://ik.imagekit.io/m1ke1magek1t/default_image/seal-face-in-flat-design-vector-17125367_P7kNTkQZV.jpg';
+const defaultImage = require('../fixtures/profileImage').profileImage;
 
 const userSchema = new Schema({
     fullname: {
@@ -38,6 +38,11 @@ const userSchema = new Schema({
 
     encrypted_password: {
         type: String
+    },
+
+    verified: {
+        type: Boolean,
+        default: false
     },
 
     role: {
@@ -91,7 +96,6 @@ class User extends mongoose.model('User', userSchema) {
                     reject(err)
                 })
         })
-
     }
 
     static register({ fullname, email, password, password_confirmation }) {
@@ -111,6 +115,7 @@ class User extends mongoose.model('User', userSchema) {
                         fullname: data.fullname,
                         email: data.email,
                         language: data.language,
+                        verified: data.verified,
                         image: data.image,
                         token: token
                     })
@@ -124,16 +129,14 @@ class User extends mongoose.model('User', userSchema) {
     }
 
 
-    static login(req) {
+    static auth(req) {
         return new Promise((resolve, reject) => {
             this.findOne({ email: req.body.email })
                 .then(async data => {
-
-                    const translate = require('../helpers/translate').translator
-                    if (isEmpty(data)) return reject(await translate("emailNotExist"))
-
+                    if (isEmpty(data)) return reject('Email does not exist, please input a valid email')
                     if (bcrypt.compareSync(req.body.password, data.encrypted_password)) {
                         let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
+
                         Auth.emit('authorized', data._id)
 
                         return resolve({
@@ -141,6 +144,7 @@ class User extends mongoose.model('User', userSchema) {
                             fullname: data.fullname,
                             email: data.email,
                             image: data.image,
+                            verified: data.verified,
                             token: token
                         })
                     } else {
