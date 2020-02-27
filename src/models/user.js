@@ -269,23 +269,23 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static OAuthGoogle(token) {
+    // static OAuthGoogle(token) {
 
-        return new Promise((resolve, reject) => {
-            axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
-                headers: {
-                    'Authorization': token
-                }
-            })
-                .then(data => {
-                    // console.log(data)
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    //     return new Promise((resolve, reject) => {
+    //         axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+    //             headers: {
+    //                 'Authorization': token
+    //             }
+    //         })
+    //             .then(data => {
+    //                 // console.log(data)
+    //                 resolve(data)
+    //             })
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
     static findOrRegister(result) {
         return new Promise((resolve, reject) => {
