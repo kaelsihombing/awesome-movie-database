@@ -130,6 +130,7 @@ class User extends mongoose.model('User', userSchema) {
                     await this.generateSessionToken(data._id)
 
                         .then(user => {
+                         
                             
                             let link = "http://" + req.headers.host + "/api/v1/verified/" + user.sessionToken;
                             
@@ -163,6 +164,9 @@ class User extends mongoose.model('User', userSchema) {
                                     token: token
                                 }
                             ])
+                        })
+                        .catch(err => {
+                            reject(err)
                         })
 
 
