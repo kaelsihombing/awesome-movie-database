@@ -3,6 +3,7 @@ const router = express.Router()
 
 const user = require('./controllers/userController.js')
 const movie = require('./controllers/movieController.js')
+const review = require('./controllers/reviewController.js')
 
 // middleware
 const authenticate = require('./middlewares/authenticate')
@@ -21,6 +22,13 @@ router.post('/admins', validateForm, user.createAdmin)
 
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
+router.get('/movies', movie.view)
+router.put('/movies', authenticate, movie.edit)
+router.put('/movies/people', authenticate, movie.people)
+
+// Review endpoint
+router.post('/reviews', authenticate, review.add)
+router.get('/reviews', review.reviews)
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
