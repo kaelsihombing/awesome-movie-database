@@ -1,22 +1,22 @@
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const axios = require('axios')
-const Imagekit = require('imagekit')
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+// const axios = require('axios');
+const Imagekit = require('imagekit');
 const imagekit = new Imagekit({
     publicKey: process.env.publicKey,
     privateKey: process.env.privateKey,
     urlEndpoint: process.env.urlEndpoint
-})
+});
 const mailer = require('../helpers/nodeMailer');
-const isEmpty = require('../helpers/isEmpty')
-const Auth = require('../events/auth')
+const isEmpty = require('../helpers/isEmpty');
+const Auth = require('../events/auth');
 
-require('mongoose-type-email')
-mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
+require('mongoose-type-email');
+mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid';
 
 const randomImage = [
     "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__5___gVErlfkr.jpeg",
