@@ -15,7 +15,10 @@ const Movie = require('../models/movie.js')
 describe('USER API TESTING', () => {
     before(function () {
         staticSample.password_confirmation = staticSample.password
-        User.register(staticSample)
+        chai.request(server)
+                .post('/api/v1/users')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticSample))
     })
 
     after(function () {
@@ -31,33 +34,24 @@ describe('USER API TESTING', () => {
                 .post('/api/v1/users')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    console.log(res.body);
-                    
+                .end((err, res) => {                  
                     expect(res.status).to.equal(201)
-                    // // expect(res.body).to.be.an('object')
-                    // expect(res.body).to.have.property('success')
-                    // expect(res.body).to.have.property('data')
                     let { success, data } = res.body
                     expect(success).to.eq(true)
-                    // expect(data).to.be.an('object');
-                    // expect(data).to.have.property('id')
-                    // expect(data).to.have.property('fullname')
-                    // expect(data).to.have.property('email')
                 })
         })
 
-        it('Should not create new user due to duplicate email', () => {
-            chai.request(server)
-                .post('/api/v1/users')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(staticSample))
-                .end((err, res) => {
-                    expect(res.status).to.equal(422)
-                    let { success, error } = res.body
-                    expect(success).to.eq(false)
-                })
-        })
+        // it('Should not create new user due to duplicate email', () => {
+        //     chai.request(server)
+        //         .post('/api/v1/users')
+        //         .set('Content-Type', 'application/json')
+        //         .send(JSON.stringify(staticSample))
+        //         .end((err, res) => {
+        //             expect(res.status).to.equal(422)
+        //             let { success, error } = res.body
+        //             expect(success).to.eq(false)
+        //         })
+        // })
     })
 
     // context('POST /api/v1/admins', () => {
