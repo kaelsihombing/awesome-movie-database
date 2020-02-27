@@ -3,6 +3,8 @@ const Schema = mongoose.Schema
 
 const mongoosePaginate = require('mongoose-paginate-v2');
 
+let Incumbent = require('./incumbent.js')
+
 const movieSchema = new Schema({
     title: {
         type: String,
@@ -20,13 +22,16 @@ const movieSchema = new Schema({
         type: String,
     }],
     directors: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Incumbent',
     }],
     writers: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Incumbent',
     }],
     casts: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Incumbent',
     }],
     synopsis: {
         type: String,
@@ -37,10 +42,10 @@ const movieSchema = new Schema({
     trailer: {
         type: String,
     },
-    review: {
+    review: [{
         type: Schema.Types.ObjectId,
         ref: 'Review',
-    },
+    }],
     addedBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -124,8 +129,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             }
             for (let prop in params) if (!params[prop]) delete params[prop]
 
-            
-
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
                     resolve(data)
@@ -136,27 +139,45 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static editPeople(id, editor, role, bodyParams) {
+    static addIncumbent(movieId, editor, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
 
-            let params = {
-                genre: bodyParams.genre,
-                casts: bodyParams.casts,
-                directors: bodyParams.directors,
-                writers: bodyParams.writers,
-            }
-            for (let prop in params) if (!params[prop]) delete params[prop]
+            let pushData
 
-            this.findById(id)
-                .then(data => {
-                    for (let prop in params){
-                        data[prop].push(params[prop])
-                    }
-                    data.save()
-                    data.lastUpdatedBy = editor
-                    
-                    resolve(data)
+            switch (bodyParams.occupation) {
+                case "casts":
+                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Cast' })
+                        .then(incumbent => {
+                            if (!incumbent._id) return reject `There is no cast with name ${bodyParams.name} in the database`
+                            pushData = incumbent._id
+                        })
+                    break;
+
+                case "writers":
+                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Writer' })
+                        .then(incumbent => {
+                            if (!incumbent._id) return reject `There is no writer with name ${bodyParams.name} in the database`
+                            pushData = incumbent._id
+                        })
+                    break;
+
+                case "directors":
+                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Director' })
+                        .then(incumbent => {
+                            if (!incumbent._id) return reject `There is no director with name ${bodyParams.name} in the database`
+                            pushData = incumbent._id
+                        })
+                    break;
+            }
+
+            this.findById(movieId)
+                .then(movie => {
+                    if (!movie._id) return reject `There is no movie with give _id`
+                    movie[`${bodyParams.occupation}`].push(pushData)
+                    movie.save()
+                    movie.lastUpdatedBy = editor
+                    resolve(movie)
                 })
                 .catch(err => {
                     reject(err)
