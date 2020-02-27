@@ -126,7 +126,7 @@ class User extends mongoose.model('User', userSchema) {
             })
                 .then(async data => {
                     let token = jwt.sign({ _id: data._id, role: data.role, verified: data.verified }, process.env.JWT_SIGNATURE_KEY)
-
+                    
                     await this.generateSessionToken(data._id)
 
                         .then(user => {
