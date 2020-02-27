@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const movieSchema = new Schema({
     title: {
         type: String,
@@ -54,6 +56,8 @@ const movieSchema = new Schema({
     }
 )
 
+movieSchema.plugin(mongoosePaginate)
+
 class Movie extends mongoose.model('Movie', movieSchema) {
     static register(creator, role, bodyParams) {
         return new Promise((resolve, reject) => {
@@ -84,6 +88,30 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
+    static show(pagination, page) {
+        return new Promise((resolve) => {
+            let options = {
+                page: page,
+                limit: 10,
+                pagination: JSON.parse(pagination),
+                sort: '-updatedAt',
+                collation: { locale: 'en' }
+            }
+
+            this.find({})
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (lastPage == 0) lastPage = 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+
+                    this.paginate({}, options)
+                        .then(data => {
+                            resolve(data)
+                        })
+                })
+        })
+    }
+
     static update(id, editor, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
@@ -91,6 +119,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             let params = {
                 title: bodyParams.title,
                 year: bodyParams.year,
+                synopsis: bodyParams.synopsis,
                 lastUpdatedBy: editor,
             }
             for (let prop in params) if (!params[prop]) delete params[prop]
@@ -107,25 +136,26 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static addPeople(id, editor, role, bodyParams) {
+    static editPeople(id, editor, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
 
-            let pushParams = {
+            let params = {
                 genre: bodyParams.genre,
                 casts: bodyParams.casts,
                 directors: bodyParams.directors,
                 writers: bodyParams.writers,
             }
-            for (let prop in pushParams) if (!pushParams[prop]) delete pushParams[prop]
+            for (let prop in params) if (!params[prop]) delete params[prop]
 
             this.findById(id)
                 .then(data => {
-                    for (let prop in pushParams){
-                        data[prop].push(pushParams[prop])
+                    for (let prop in params){
+                        data[prop].push(params[prop])
                     }
                     data.save()
                     data.lastUpdatedBy = editor
+                    
                     resolve(data)
                 })
                 .catch(err => {
