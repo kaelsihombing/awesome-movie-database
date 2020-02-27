@@ -36,6 +36,7 @@ router.get('/reviews', review.reviews)
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
+router.post('/resend-email', authenticate, user.resentEmailVerification)
 
 // Recovery password endpoint
 router.post('/recover', [check('email').isEmail().withMessage('Enter a valid email address'),], user.recover);

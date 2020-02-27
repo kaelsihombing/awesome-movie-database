@@ -54,39 +54,39 @@ describe('USER API TESTING', () => {
         // })
     })
 
-    // context('POST /api/v1/admins', () => {
-    //     it('Should create new admin', () => {
-    //         let userSample = userFixtures.create()
-    //         userSample.password_confirmation = userSample.password
-    //         chai.request(server)
-    //             .post('/api/v1/admins')
-    //             .set('Content-Type', 'application/json')
-    //             .send(JSON.stringify(userSample))
-    //             .end((err, res) => {
-    //                 expect(res.status).to.equal(201)
-    //                 expect(res.body).to.be.an('object')
-    //                 expect(res.body).to.have.property('success')
-    //                 expect(res.body).to.have.property('data')
-    //                 let { success, data } = res.body
-    //                 expect(success).to.eq(true)
-    //                 expect(data).to.be.an('object');
-    //                 expect(data).to.have.property('id')
-    //                 expect(data).to.have.property('fullname')
-    //                 expect(data).to.have.property('email')
-    //                 expect(data.role).to.eq('ADMIN')
-    //             })
-    //     })
+    context('POST /api/v1/admins', () => {
+        it('Should create new admin', () => {
+            let userSample = userFixtures.create()
+            userSample.password_confirmation = userSample.password
+            chai.request(server)
+                .post('/api/v1/admins')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    expect(res.status).to.equal(201)
+                    expect(res.body).to.be.an('object')
+                    expect(res.body).to.have.property('success')
+                    expect(res.body).to.have.property('data')
+                    let { success, data } = res.body
+                    expect(success).to.eq(true)
+                    expect(data).to.be.an('object');
+                    expect(data).to.have.property('id')
+                    expect(data).to.have.property('fullname')
+                    expect(data).to.have.property('email')
+                    expect(data.role).to.eq('ADMIN')
+                })
+        })
 
-    //     it('Should not create new admin due to duplicate email', () => {
-    //         chai.request(server)
-    //             .post('/api/v1/admins')
-    //             .set('Content-Type', 'application/json')
-    //             .send(JSON.stringify(staticSample))
-    //             .end((err, res) => {
-    //                 expect(res.status).to.equal(422)
-    //                 let { success, error } = res.body
-    //                 expect(success).to.eq(false)
-    //             })
-    //     })
-    // })
+        it('Should not create new admin due to duplicate email', () => {
+            chai.request(server)
+                .post('/api/v1/admins')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticSample))
+                .end((err, res) => {
+                    expect(res.status).to.equal(422)
+                    let { success, error } = res.body
+                    expect(success).to.eq(false)
+                })
+        })
+    })
 })

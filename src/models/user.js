@@ -1,22 +1,22 @@
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const axios = require('axios')
-const Imagekit = require('imagekit')
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+// const axios = require('axios');
+const Imagekit = require('imagekit');
 const imagekit = new Imagekit({
     publicKey: process.env.publicKey,
     privateKey: process.env.privateKey,
     urlEndpoint: process.env.urlEndpoint
-})
+});
 const mailer = require('../helpers/nodeMailer');
-const isEmpty = require('../helpers/isEmpty')
-const Auth = require('../events/auth')
+const isEmpty = require('../helpers/isEmpty');
+const Auth = require('../events/auth');
 
-require('mongoose-type-email')
-mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
+require('mongoose-type-email');
+mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid';
 
 const randomImage = [
     "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM__5___gVErlfkr.jpeg",
@@ -91,9 +91,10 @@ const userSchema = new Schema({
 )
 
 class User extends mongoose.model('User', userSchema) {
+
     static generateSessionToken(id) {
         var sessionToken = crypto.randomBytes(20).toString('hex');
-        var sessionTokenExpires = Date.now() + 360000; // 6 minutes expired
+        var sessionTokenExpires = Date.now() + 86400000; // 1 dayexpired
 
         let properties = {
             sessionToken: sessionToken,
@@ -126,22 +127,24 @@ class User extends mongoose.model('User', userSchema) {
             })
                 .then(async data => {
                     let token = jwt.sign({ _id: data._id, role: data.role, verified: data.verified }, process.env.JWT_SIGNATURE_KEY)
-                    
+
                     await this.generateSessionToken(data._id)
 
                         .then(user => {
-                         
-                            
+
                             let link = "http://" + req.headers.host + "/api/v1/verified/" + user.sessionToken;
-                            
+
                             const mailOptions = {
                                 to: data.email,
                                 from: process.env.FROM_EMAIL,
                                 subject: "Verify your account",
                                 text: `Hi ${data.fullname} \n 
-                                    Please click on the following link below to verify your account. \n\n 
-                                    If you did not request this, you can't change any information in your profile and give a review or even rating.\n
-                                    ${link}`,
+                                    Please click on the following link below to verify your account.
+                                    if you did not request this, you can't change any information in your profile and give a review or even rating.
+                                    the link will be valid for 1 day</p>
+                                    Regards How Movie Team
+                                    ${link}
+                                    `
                             };
 
                             mailer.send(mailOptions, (error) => {
@@ -273,65 +276,65 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static OAuthGoogle(token) {
+    // static OAuthGoogle(token) {
 
-        return new Promise((resolve, reject) => {
-            axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
-                headers: {
-                    'Authorization': token
-                }
-            })
-                .then(data => {
-                    // console.log(data)
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    //     return new Promise((resolve, reject) => {
+    //         axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+    //             headers: {
+    //                 'Authorization': token
+    //             }
+    //         })
+    //             .then(data => {
+    //                 // console.log(data)
+    //                 resolve(data)
+    //             })
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
-    static findOrRegister(result) {
-        return new Promise((resolve, reject) => {
-            this.findOne({ email: result.data.email })
-                .then(data => {
-                    if (!data) {
-                        this.collection.insert({
-                            fullname: result.data.name,
-                            email: result.data.email,
-                            image: result.data.picture,
-                            language: process.env.language
-                        })
-                            .then(user => {
-                                let newUser = user.ops[0]
+    // static findOrRegister(result) {
+    //     return new Promise((resolve, reject) => {
+    //         this.findOne({ email: result.data.email })
+    //             .then(data => {
+    //                 if (!data) {
+    //                     this.collection.insert({
+    //                         fullname: result.data.name,
+    //                         email: result.data.email,
+    //                         image: result.data.picture,
+    //                         language: process.env.language
+    //                     })
+    //                         .then(user => {
+    //                             let newUser = user.ops[0]
 
-                                let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
+    //                             let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
 
-                                return resolve({
-                                    _id: newUser._id,
-                                    fullname: newUser.fullname,
-                                    image: newUser.image,
-                                    email: newUser.email,
-                                    token: token
-                                })
-                            })
-                    } else {
-                        let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
+    //                             return resolve({
+    //                                 _id: newUser._id,
+    //                                 fullname: newUser.fullname,
+    //                                 image: newUser.image,
+    //                                 email: newUser.email,
+    //                                 token: token
+    //                             })
+    //                         })
+    //                 } else {
+    //                     let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
 
-                        return resolve({
-                            _id: data._id,
-                            fullname: data.fullname,
-                            image: data.image,
-                            email: data.email,
-                            token: token
-                        })
-                    }
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    //                     return resolve({
+    //                         _id: data._id,
+    //                         fullname: data.fullname,
+    //                         image: data.image,
+    //                         email: data.email,
+    //                         token: token
+    //                     })
+    //                 }
+    //             })
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
     static recover(req) {
         return new Promise((resolve, reject) => {
@@ -340,7 +343,6 @@ class User extends mongoose.model('User', userSchema) {
                     if (!user) return reject({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.' });
                     //Generate and set password reset token
                     await this.generateSessionToken(user._id)
-
                         .then(user => {
                             // send email
                             let link = "http://" + req.headers.host + "/api/v1/reset/" + user.sessionToken;
@@ -349,8 +351,11 @@ class User extends mongoose.model('User', userSchema) {
                                 from: process.env.FROM_EMAIL,
                                 subject: "Password change request",
                                 text: `Hi ${user.fullname} \n 
-                                    Please click on the following link ${link} to reset your password. \n\n 
-                                    If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+                                    Please click on the following link below to reset your account password.
+                                    the link will be valid for 1 day
+                                    Regards How Movie Team
+                                    ${link}
+                                    `
                             };
 
                             mailer.send(mailOptions, (error) => {
@@ -362,6 +367,113 @@ class User extends mongoose.model('User', userSchema) {
                         .catch(err => reject(err));
                 })
                 .catch(err => reject(err));
+        })
+    }
+
+    static reset(req) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ sessionToken: req.params.token, sessionTokenExpires: { $gt: Date.now() } })
+                .then(user => {
+                    if (!user) return reject('expiredToken');
+                    //Redirect user to form with the email address
+                    return resolve(user)
+                })
+                .catch(err => reject({ message: err.message }));
+        })
+    }
+
+    static resetPassword(req) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ sessionToken: req.params.token })
+                .then(async user => {
+                    if (!user) return reject('Password reset token is invalid or has expired.');
+
+                    //Set the new password
+                    user.encrypted_password = await bcrypt.hashSync(req.body.password, 10);
+                    user.sessionToken = undefined;
+                    user.sessionTokenExpires = undefined;
+
+                    // Save
+                    user.save((err) => {
+
+                        if (err !== null) return reject('Error brooo');
+
+                        // send email
+                        const mailOptions = {
+                            to: user.email,
+                            from: process.env.FROM_EMAIL,
+                            subject: "Your password has been changed",
+                            text: `Hi ${user.fullname} \n 
+                            This is a confirmation that the password for your account ${user.email} has just been changed.\n`
+                        };
+
+                        mailer.send(mailOptions, (error) => {
+                            if (error) return reject({ message: error.message });
+
+                            return resolve(user)
+                        });
+                    });
+                });
+        })
+    }
+
+    static verifyEmail(req) {
+        return new Promise((resolve, reject) => {
+            console.log(req.params.token);
+            User.findOne({ sessionToken: req.params.token, sessionTokenExpires: { $gt: Date.now() } })
+                .then(user => {
+                    console.log('USER: ',user);
+                    if (!user) return reject('expiredToken');
+
+                    user.verified = true;
+                    user.sessionToken = undefined;
+                    user.sessionTokenExpires = undefined;
+
+                    user.save(err => {
+                        if (err !== null) return reject(err);
+                        return resolve('Your account has been verified!')
+                    })
+                })
+                .catch(err => reject({ message: err.message }));
+        })
+    }
+
+    static resendEmail(req) {
+        return new Promise((resolve, reject) => {
+
+            this.findById(req.user._id)
+
+                .then(async data => {
+                    if(!data) return reject('your email doesn\'t exist in our database')
+
+                    this.generateSessionToken(req.user._id)
+
+                        .then(user => {
+                            let link = "http://" + req.headers.host + "/api/v1/verified/" + user.sessionToken;
+
+                            const mailOptions = {
+                                to: data.email,
+                                from: process.env.FROM_EMAIL,
+                                subject: "Verify your account",
+                                text: `Hi ${data.fullname} \n 
+                                    Please click on the following link below to verify your account.
+                                    If you did not request this, you can't change any information in your profile and give a review or even rating.\n
+                                    the link will be valid for 1 day
+                                    Regards How Movie Team
+                                    ${link}
+                                    `
+                            };
+
+                            mailer.send(mailOptions, (error) => {
+                                if (error) return reject({ message: error.message });
+
+                            });
+
+                            resolve({
+                                message: 'A reset email has been sent to ' + data.email + ', please check your email.'
+                            })
+                        })
+                })
         })
     }
 
