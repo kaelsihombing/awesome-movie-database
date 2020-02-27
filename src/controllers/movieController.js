@@ -36,9 +36,9 @@ exports.edit = async (req, res) => {
     }
 }
 
-exports.people = async (req, res) => {
+exports.incumbent = async (req, res) => {
     try {
-        let result = await Movie.editPeople(req.query.id, req.user._id, req.user.role, req.body)
+        let result = await Movie.addIncumbent(req.query.movieId, req.user._id, req.user.role, req.body)
         success(res, result, 201)
     }
     catch (err) {
