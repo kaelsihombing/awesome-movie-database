@@ -119,7 +119,6 @@ class User extends mongoose.model('User', userSchema) {
 
             let encrypted_password = bcrypt.hashSync(data.password, 10)
 
-
             this.create({
                 fullname: data.fullname,
                 email: data.email,
@@ -268,7 +267,7 @@ class User extends mongoose.model('User', userSchema) {
 
             this.findByIdAndUpdate(user._id, params, { new: true })
                 .then(data => {
-                    resolve(data)
+                    resolve(data).select('-encrypted_password')
                 })
                 .catch(err => {
                     reject(err)
@@ -470,7 +469,7 @@ class User extends mongoose.model('User', userSchema) {
                             });
 
                             resolve({
-                                message: 'A reset email has been sent to ' + data.email + ', please check your email.'
+                                message: 'verification email has been sent to ' + data.email + ', please check your email.'
                             })
                         })
                 })

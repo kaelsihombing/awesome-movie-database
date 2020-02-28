@@ -2,13 +2,13 @@
   "swagger": "2.0",
   "info": {
     "description": "This is an API Documentation awesome-movie-data.",
-    "version": "1.0.0",
-    "title": "Awesome Movie Data",
+    "version": "1.2.1",
+    "title": "How Movie",
     "contact": {
       "email": "andrio.kevin12@gmail.com"
     }
   },
-  "host": "a",
+  "host": "awesome-movie-data.herokuapp.com",
   "basePath": "/api/v1",
   "tags": [
     {
@@ -30,8 +30,8 @@
         "tags": [
           "user collection"
         ],
-        "summary": "Register new user",
-        "description": "ask user for email, password, and password confirmation",
+        "summary": "register a new user",
+        "description": "ask user for fullname, email, password, and password confirmation",
         "consumes": [
           "application/json"
         ],
@@ -50,7 +50,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Successfuly logged in",
+            "description": "Successfuly created and the user should to click a link in the email that has been sent to confirmed email.",
             "schema": {
               "type": "object",
               "properties": {
@@ -59,19 +59,35 @@
                   "example": true
                 },
                 "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "5e467d3a15425d00171a4cac"
-                    },
-                    "fullname": {
-                      "example": "santo michael sihombing"
-                    },
-                    "email": {
-                      "example": "sntmcl@gmail.com"
-                    },
-                    "token": {
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "object",
+                        "example": "A reset email has been sent to sntmcl1@gmail.com, please check your email."
+                      },
+                      "id": {
+                        "example": "5e587c0ab9820915192b33d9"
+                      },
+                      "fullname": {
+                        "example": "santo michael sihombing"
+                      },
+                      "email": {
+                        "example": "sntmcl@gmail.com"
+                      },
+                      "language": {
+                        "example": "en"
+                      },
+                      "verified": {
+                        "example": false
+                      },
+                      "image": {
+                        "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
+                      },
+                      "token": {
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                      }
                     }
                   }
                 }
@@ -99,7 +115,8 @@
         "tags": [
           "user collection"
         ],
-        "summary": "Update user data",
+        "summary": "updating user's data",
+        "description": "need to verify the email before updating user's data",
         "consumes": [
           "multipart/form-data"
         ],
@@ -121,12 +138,6 @@
           },
           {
             "in": "formData",
-            "name": "email",
-            "type": "string",
-            "description": "the email to be changed"
-          },
-          {
-            "in": "formData",
             "name": "language",
             "type": "string",
             "description": "the language to be changed (id / en )"
@@ -134,7 +145,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Your data has been edited",
+            "description": "User data has been edited",
             "schema": {
               "type": "object",
               "properties": {
@@ -148,17 +159,35 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "fullname": {
-                          "example": "santo michael gonzales"
-                        },
                         "image": {
-                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
+                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1582858227574_s2IEaP8G8"
+                        },
+                        "verified": {
+                          "example": true
+                        },
+                        "role": {
+                          "example": "USER"
+                        },
+                        "watchlist": {
+                          "example": "[]"
+                        },
+                        "language": {
+                          "example": "id"
+                        },
+                        "_id": {
+                          "example": true
+                        },
+                        "fullname": {
+                          "example": "santo michael"
                         },
                         "email": {
                           "example": "gonzales@gmail.com"
                         },
-                        "language": {
-                          "example": "id"
+                        "createdAt": {
+                          "example": "2020-02-28T02:33:46.931Z"
+                        },
+                        "updatedAt": {
+                          "example": "2020-02-28T02:50:31.661Z"
                         }
                       }
                     }
@@ -186,13 +215,13 @@
         ]
       }
     },
-    "/auth/login": {
+    "/auth": {
       "post": {
         "tags": [
           "user collection"
         ],
-        "summary": "generate token for user",
-        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+        "summary": "generate a token for user's credentials",
+        "description": "ask user for email and password, then if it''s valid it will generate a token'",
         "consumes": [
           "application/json"
         ],
@@ -211,7 +240,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfuly logged in",
+            "description": "successfuly logged in",
             "schema": {
               "type": "object",
               "properties": {
@@ -231,6 +260,15 @@
                     "email": {
                       "example": "sntmcl@gmail.com"
                     },
+                    "role": {
+                      "example": "USER"
+                    },
+                    "image": {
+                      "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
+                    },
+                    "verified": {
+                      "example": true
+                    },
                     "token": {
                       "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
                     }
@@ -240,7 +278,7 @@
             }
           },
           "422": {
-            "description": "Not successfully login",
+            "description": "unsuccessfully login",
             "schema": {
               "type": "object",
               "properties": {
@@ -263,7 +301,7 @@
         "tags": [
           "user collection"
         ],
-        "summary": "generate token for user",
+        "summary": "NOT AVAILABLE YET",
         "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
         "responses": {
           "200": {
@@ -319,7 +357,7 @@
         "tags": [
           "user collection"
         ],
-        "summary": "recover user password",
+        "summary": "recovering user's password",
         "description": "Ask user for email ",
         "consumes": [
           "application/json"
@@ -361,6 +399,56 @@
             }
           }
         }
+      }
+    },
+    "/resend-email": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "re-send verification email",
+        "description": "ask to re-send email verification confirmation",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "example": "verification email has been sent to sntmcl1@gmail.com, please check your email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/movies": {
