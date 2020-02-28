@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const incumbentSchema = new Schema ({
+const incumbentSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -12,7 +12,7 @@ const incumbentSchema = new Schema ({
     birthDate: {
         type: Date,
     },
-    age:  {
+    age: {
         type: Number,
     },
     image: {
@@ -33,21 +33,21 @@ incumbentSchema.plugin(mongoosePaginate)
 
 class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
     static register(role, bodyParams) {
-        return new Promise ((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to add new incumbent")
-            
+
             this.create(bodyParams)
-            .then(data => {
-                resolve(data)
-            })
-            .catch(err => {
-                reject(err)
-            })
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 
     static show(role, pagination, page) {
-        return new Promise ((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to see incumbent list")
 
             let options = {

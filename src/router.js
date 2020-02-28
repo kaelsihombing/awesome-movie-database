@@ -9,9 +9,8 @@ const review = require('./controllers/reviewController.js')
 // middleware
 const authenticate = require('./middlewares/authenticate')
 const multer = require('./middlewares/multer')
-
 const validateForm = require('./middlewares/validateForm')
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 
 // User endpoint
 router.post('/users', validateForm, user.create)
@@ -43,7 +42,8 @@ router.post('/resend-email', authenticate, user.resentEmailVerification)
 // Recovery password endpoint
 router.post('/recover', [check('email').isEmail().withMessage('Enter a valid email address'),], user.recover);
 router.get('/reset/:token', user.reset);
-router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
+router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
-
+//=======================
+router.get('/movie', movie.copyMovie)
 module.exports = router;
