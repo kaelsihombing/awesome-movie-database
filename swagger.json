@@ -22,6 +22,10 @@
     {
       "name": "review collection",
       "description": "Info for Review API"
+    },
+    {
+      "name": "incumbent collection",
+      "description": "Infor for Incumbent API"
     }
   ],
   "paths": {
@@ -534,6 +538,229 @@
             "Authorization": []
           }
         ]
+      },
+      "get": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Show specific movie entry",
+        "description": "show specific movie based on give movieId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "movieId",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show all movie entry (paginated to 10 per page)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "$ref": "#/definitions/MovieSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Update movie information",
+        "description": "update movie information (title, year)",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MovieEditRequest"
+            }
+          },
+          {
+            "in": "query",
+            "type": "number",
+            "name": "movieId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully update the movie information"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/movies/all": {
+      "get": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Show all movie entry",
+        "description": "show all movie entry",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show all movie entry (paginated to 10 per page)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "docs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/MovieSchema"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/incumbent": {
+      "put": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Add movie incumbent",
+        "description": "add movie casts/writers/directors",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MovieIncumbentRequest"
+            }
+          },
+          {
+            "in": "query",
+            "type": "number",
+            "name": "movieId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully add movie incumbent"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/incumbents": {
+      "post": {
+        "tags": [
+          "incumbent collection"
+        ],
+        "summary": "Register incumbent",
+        "description": "register incumbent (casts/writers/directors) to collection",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterIncumbentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully register incumbent"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "incumbent collection"
+        ],
+        "summary": "View incumbents",
+        "description": "view existing incumbents",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Show all existing incumbents"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     }
   },
@@ -598,6 +825,70 @@
         }
       }
     },
+    "MovieSchema": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "number",
+          "example": "5e5777114ff3292e38202a60"
+        },
+        "title": {
+          "type": "string",
+          "example": "8 Mile"
+        },
+        "year": {
+          "type": "number",
+          "example": 2002
+        },
+        "genre": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Music"
+          }
+        },
+        "casts": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "example": "5e577893d2abb43076ab5db2"
+          }
+        },
+        "directors": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "example": "5e577893d2abb43076ab5db2"
+          }
+        },
+        "writers": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "example": "5e577893d2abb43076ab5db2"
+          }
+        },
+        "reviews": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "example": null
+          }
+        },
+        "synopsis": {
+          "type": "string",
+          "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
+        },
+        "addedBy": {
+          "type": "number",
+          "example": null
+        },
+        "lastUpdatedBy": {
+          "type": "number",
+          "example": null
+        }
+      }
+    },
     "MovieEntryRequest": {
       "type": "object",
       "required": [
@@ -612,6 +903,68 @@
         "year": {
           "type": "number",
           "example": 2002
+        }
+      }
+    },
+    "MovieEditRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "8 Mile"
+        },
+        "year": {
+          "type": "number",
+          "example": 2002
+        },
+        "synopsis": {
+          "type": "string",
+          "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
+        },
+        "poster": {
+          "type": "string"
+        },
+        "trailer": {
+          "type": "string"
+        }
+      }
+    },
+    "MovieIncumbentRequest": {
+      "type": "object",
+      "required": [
+        "name",
+        "occupation"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Eminem"
+        },
+        "occupation": {
+          "type": "string",
+          "example": "casts",
+          "enum": [
+            "casts",
+            "writers",
+            "directors"
+          ]
+        }
+      }
+    },
+    "RegisterIncumbentRequest": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Eminem"
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "Date",
+          "example": "1972-10-17T00:00:00.000Z"
         }
       }
     }

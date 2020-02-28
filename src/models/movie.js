@@ -35,12 +35,15 @@ const movieSchema = new Schema({
     }],
     synopsis: {
         type: String,
+        default: '-'
     },
     poster: {
         type: String,
+        default: '-'
     },
     trailer: {
         type: String,
+        default: '-'
     },
     review: [{
         type: Schema.Types.ObjectId,
@@ -93,8 +96,8 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static show(pagination, page) {
-        return new Promise((resolve) => {
+    static show(pagination, page, movieId) {
+        return new Promise((resolve, reject) => {
             let options = {
                 page: page,
                 limit: 10,
@@ -102,8 +105,19 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 sort: '-updatedAt',
                 collation: { locale: 'en' }
             }
+            
+            if (movieId) {
+                this.findById(movieId)
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+            }
 
-            this.find({})
+            else if (!movieId) {
+                this.find({})
                 .then(data => {
                     let lastPage = Math.ceil(data.length / 10)
                     if (lastPage == 0) lastPage = 1
@@ -114,76 +128,63 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             resolve(data)
                         })
                 })
-        })
-    }
-
-    static update(id, editor, role, bodyParams) {
-        return new Promise((resolve, reject) => {
-            if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
-
-            let params = {
-                title: bodyParams.title,
-                year: bodyParams.year,
-                synopsis: bodyParams.synopsis,
-                lastUpdatedBy: editor,
             }
-            for (let prop in params) if (!params[prop]) delete params[prop]
-
-            this.findByIdAndUpdate(id, params, { new: true })
-                .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
         })
     }
+
+    static update(movieId, editor, role, bodyParams) {
+    return new Promise((resolve, reject) => {
+        if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
+
+        let params = {
+            title: bodyParams.title,
+            year: bodyParams.year,
+            synopsis: bodyParams.synopsis,
+            lastUpdatedBy: editor,
+        }
+        for (let prop in params) if (!params[prop]) delete params[prop]
+
+        this.findByIdAndUpdate(movieId, params, { new: true })
+            .then(data => {
+                resolve(data)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
 
     static addIncumbent(movieId, editor, role, bodyParams) {
-        return new Promise((resolve, reject) => {
-            if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
+    return new Promise((resolve, reject) => {
+        if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
 
-            let pushData
+        this.findById(movieId)
+            .then(movie => {
+                if (!movie._id) return reject(`There is no movie with given _id`)
+            })
 
-            switch (bodyParams.occupation) {
-                case "casts":
-                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Cast' })
-                        .then(incumbent => {
-                            if (!incumbent._id) return reject `There is no cast with name ${bodyParams.name} in the database`
-                            pushData = incumbent._id
-                        })
-                    break;
+        let pushData
 
-                case "writers":
-                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Writer' })
-                        .then(incumbent => {
-                            if (!incumbent._id) return reject `There is no writer with name ${bodyParams.name} in the database`
-                            pushData = incumbent._id
-                        })
-                    break;
+        Incumbent.findOne({ 'name': bodyParams.name })
+            .then(incumbent => {
+                if (!incumbent) return reject(`There is no incumbent with name '${bodyParams.name}' in the database`)
+                pushData = incumbent._id
+                incumbent.movie.push(movieId)
+                incumbent.save()
+            })
 
-                case "directors":
-                    Incumbent.findOne({ 'name': bodyParams.name, 'occupation': 'Director' })
-                        .then(incumbent => {
-                            if (!incumbent._id) return reject `There is no director with name ${bodyParams.name} in the database`
-                            pushData = incumbent._id
-                        })
-                    break;
-            }
-
-            this.findById(movieId)
-                .then(movie => {
-                    if (!movie._id) return reject `There is no movie with give _id`
-                    movie[`${bodyParams.occupation}`].push(pushData)
-                    movie.save()
-                    movie.lastUpdatedBy = editor
-                    resolve(movie)
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+        this.findById(movieId)
+            .then(movie => {
+                movie[`${bodyParams.occupation}`].push(pushData)
+                movie.save()
+                movie.lastUpdatedBy = editor
+                resolve(movie)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
 }
 
 module.exports = Movie
