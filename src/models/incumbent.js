@@ -7,18 +7,21 @@ const incumbentSchema = new Schema ({
     name: {
         type: String,
         required: true,
+        unique: true,
     },
     birthDate: {
         type: Date,
     },
     age:  {
-        type: Number
+        type: Number,
     },
-    occupation: {
+    image: {
         type: String,
-        enum: ['Cast','Director','Writer','Producer'],
-        required: true,
-    }
+    },
+    movie: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Movie',
+    }]
 },
     {
         versionKey: false,
@@ -40,6 +43,32 @@ class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
             .catch(err => {
                 reject(err)
             })
+        })
+    }
+
+    static show(role, pagination, page) {
+        return new Promise ((resolve, reject) => {
+            if (role != 'ADMIN') return reject("You're not allowed to see incumbent list")
+
+            let options = {
+                page: page,
+                limit: 10,
+                pagination: JSON.parse(pagination),
+                sort: '-updatedAt',
+                collation: { locale: 'en' }
+            }
+
+            this.find({})
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (lastPage == 0) lastPage = 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+
+                    this.paginate({}, options)
+                        .then(data => {
+                            resolve(data)
+                        })
+                })
         })
     }
 }
