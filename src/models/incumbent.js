@@ -19,8 +19,9 @@ const incumbentSchema = new Schema({
         type: String,
     },
     movie: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Movie',
+        type: String,
+        // type: Schema.Types.ObjectId,
+        // ref: 'Movie',
     }]
 },
     {

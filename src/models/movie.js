@@ -9,7 +9,6 @@ const movieSchema = new Schema({
   title: {
     type: String,
     required: true,
-    unique: true,
   },
   year: {
     type: Number,
@@ -79,27 +78,28 @@ class Movie extends mongoose.model('Movie', movieSchema) {
       let params = {
         title: bodyParams.title,
         year: bodyParams.year,
+        synopsis: bodyParams.synopsis,
+        genres:  bodyParams.genre,
+        casts: bodyParams.casts,
+        directors: bodyParams.directors,
+        writers: bodyParams.writers,
+        poster: bodyParams.poster,
+        trailer: bodyParams.trailer,
         addedBy: creator,
         lastUpdatedBy: creator,
       }
+      for (let prop in params) if (!params[prop]) delete params[prop]
 
       this.create(params)
         .then(data => {
-          resolve({
-            _id: data._id,
-            title: data.title,
-            year: data.year,
-            genre: data.genre,
-            casts: data.casts,
-            directors: data.directors,
-            writers: data.writers,
-          })
+          resolve(data)
         })
         .catch(err => {
           reject(err)
         })
     })
   }
+
 
   static show(pagination, page, movieId) {
     return new Promise((resolve, reject) => {
@@ -163,9 +163,12 @@ class Movie extends mongoose.model('Movie', movieSchema) {
     return new Promise((resolve, reject) => {
       if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
 
+      let movieTitle
+
       this.findById(movieId)
         .then(movie => {
           if (!movie._id) return reject(`There is no movie with given _id`)
+          movieTitle = movie.title
         })
 
       let pushData
@@ -173,8 +176,8 @@ class Movie extends mongoose.model('Movie', movieSchema) {
       Incumbent.findOne({ 'name': bodyParams.name })
         .then(incumbent => {
           if (!incumbent) return reject(`There is no incumbent with name '${bodyParams.name}' in the database`)
-          pushData = incumbent._id
-          incumbent.movie.push(movieId)
+          pushData = incumbent.name
+          incumbent.movie.push(movieTitle)
           incumbent.save()
         })
 
