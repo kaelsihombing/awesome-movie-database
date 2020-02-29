@@ -21,23 +21,15 @@ const movieSchema = new Schema({
     },
     genres: [{
         type: String
-        // type: Schema.Types.ObjectId,
-        // ref: 'Incumbent',
     }],
-    directors: [{
+    director: [{
         type: String
-        // type: Schema.Types.ObjectId,
-        // ref: 'Incumbent',
     }],
     writers: [{
         type: String
-        // type: Schema.Types.ObjectId,
-        // ref: 'Incumbent',
     }],
     casts: [{
         type: String
-        // type: Schema.Types.ObjectId,
-        // ref: 'Incumbent',
     }],
     synopsis: {
         type: String,
@@ -73,6 +65,7 @@ const movieSchema = new Schema({
 movieSchema.plugin(mongoosePaginate)
 
 class Movie extends mongoose.model('Movie', movieSchema) {
+
     static register(creator, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to add movie entry")
@@ -81,19 +74,115 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 title: bodyParams.title,
                 year: bodyParams.year,
                 synopsis: bodyParams.synopsis,
-                genres: bodyParams.genre,
-                casts: bodyParams.casts,
-                directors: bodyParams.directors,
-                writers: bodyParams.writers,
+                genres: [],
+                casts: [],
+                director: [],
+                writers: [],
                 poster: bodyParams.poster,
                 trailer: bodyParams.trailer,
                 addedBy: creator,
                 lastUpdatedBy: creator,
             }
+
             for (let prop in params) if (!params[prop]) delete params[prop]
 
+            //==============DIRECTOR==================
+            var directorSplit = bodyParams.director.split(',')
+            for (let i = 0; i <= directorSplit.length - 1; i++) {
+                params.director.push(directorSplit[i])
+            }
+
+            //==============GENRE====================
+            let genreSplit = bodyParams.genres.split(',');
+            let fixGenre = [];
+            for (let i = 0; i <= genreSplit.length - 1; i++) {
+                let newGenre = genreSplit[i].split(' (')
+                newGenre = newGenre[0]
+
+                if (newGenre[0] === ' ') {
+                    newGenre = newGenre.substring(1)
+                }
+                fixGenre.push(newGenre)
+            }
+            let noDuplicateGenre = [...new Set(fixGenre)]
+            noDuplicateGenre.map(item => params.genres.push(item))
+            console.log(params);
+            //================WRITER==================
+            let writerSplit = bodyParams.writers.split(',');
+            let fixWriter = [];
+            for (let i = 0; i <= writerSplit.length - 1; i++) {
+                let newWriter = writerSplit[i].split(' (')
+                newWriter = newWriter[0]
+
+                if (newWriter[0] === ' ') {
+                    newWriter = newWriter.substring(1)
+                }
+                fixWriter.push(newWriter)
+            }
+            let noDuplicateWriter = [...new Set(fixWriter)]
+            noDuplicateWriter.map(item => params.writers.push(item))
+            //================CAST/ACTOR==================
+            let castSplit = bodyParams.casts.split(',');
+            let fixCast = [];
+            for (let i = 0; i <= castSplit.length - 1; i++) {
+                let newCast = castSplit[i].split(' (')
+                newCast = newCast[0]
+
+                if (newCast[0] === ' ') {
+                    newCast = newCast.substring(1)
+                }
+                fixCast.push(newCast)
+            }
+            let noDuplicateCast = [...new Set(fixCast)]
+            noDuplicateCast.map(item => params.casts.push(item))
+
+            // console.log(params);
+            //================================================================
             this.create(params)
-                .then(data => {
+                .then(async data => {
+                    console.log(data);
+                    for (let i = 0; i <= data.director.length - 1; i++) {
+                        await Incumbent.findOne({ name: data.director[i] })
+                            .then(async dataIncumbent => {
+                                if (!dataIncumbent) {
+                                    let newIncumbent = {
+                                        name: data.director[i],
+                                        movie: data.title
+                                    }
+                                    await Incumbent.create(newIncumbent)
+                                } else {
+                                    await dataIncumbent.movie.push(data.title)
+                                }
+                            })
+                    }
+                    for (let i = 0; i <= data.writers.length - 1; i++) {
+                        await Incumbent.findOne({ name: data.writers[i] })
+                            .then(async dataIncumbent => {
+                                if (!dataIncumbent) {
+                                    let newIncumbent = {
+                                        name: data.writers[i],
+                                        movie: data.title
+                                    }
+                                    await Incumbent.create(newIncumbent)
+                                } else {
+                                    await dataIncumbent.movie.push(data.title)
+                                }
+                            })
+                    }
+                    for (let i = 0; i <= data.casts.length - 1; i++) {
+                        await Incumbent.findOne({ name: data.casts[i] })
+                            .then(async dataIncumbent => {
+                                if (!dataIncumbent) {
+                                    let newIncumbent = {
+                                        name: data.casts[i],
+                                        movie: data.title
+                                    }
+                                    await Incumbent.create(newIncumbent)
+                                } else {
+                                    await dataIncumbent.movie.push(data.title)
+                                }
+                            })
+                    }
                     resolve(data)
                 })
                 .catch(err => {
