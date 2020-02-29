@@ -30,4 +30,4 @@ deploy:
 announce:
     stage: announce
     script:
-        - curl --data chat_id=$TELEGRAM_CHAT_ID --data-urlencode text="[$CI_COMMIT_REF_NAME] by $GITLAB_USER_NAME | $CI_COMMIT_TITLE" $TELEGRAM_BOT_URL/sendMessage
+        - curl --data chat_id=$TELEGRAM_CHAT_ID --data-urlencode text="[$CI_COMMIT_REF_NAME] CI_PROJECT_NAME | $CI_COMMIT_TITLE by $GITLAB_USER_NAME" $TELEGRAM_BOT_URL/sendMessage
