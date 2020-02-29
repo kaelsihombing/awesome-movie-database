@@ -11,6 +11,7 @@ const userFixtures = require('../fixtures/userFixture.js')
 const staticSample = userFixtures.create()
 
 const Movie = require('../models/movie.js')
+const Incumbent = require('../models/incumbent.js')
 
 describe('USER API TESTING', () => {
     before(function () {
@@ -23,6 +24,7 @@ describe('USER API TESTING', () => {
 
     after(function () {
         Movie.deleteMany({}, () => { })
+        Incumbent.deleteMany({}, () => {})
         User.deleteMany({}, () => { })
     })
 

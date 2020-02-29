@@ -20,6 +20,8 @@ const incumbentSchema = new Schema({
     },
     movie: [{
         type: String,
+        // type: Schema.Types.ObjectId,
+        // ref: 'Movie',
     }]
 },
     {

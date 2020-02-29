@@ -26,14 +26,14 @@ exports.view = async (req, res) => {
   }
 }
 
-exports.all = async (req, res) => {
-  try {
-    let result = await Movie.show(true, req.query.page || 1, null)
-    success(res, result, 200)
-  }
-  catch (err) {
-    error(res, err, 422)
-  }
+exports.all = async(req, res) => {
+    try {
+        let result = await Movie.show(req.query.pagination || true, req.query.page || 1, null)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
 }
 
 exports.edit = async (req, res) => {
