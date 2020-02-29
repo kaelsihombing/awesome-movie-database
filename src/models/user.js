@@ -69,6 +69,11 @@ const userSchema = new Schema({
     ref: 'Movie',
   }],
 
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+
   language: {
     type: String,
     required: true,
@@ -170,8 +175,6 @@ class User extends mongoose.model('User', userSchema) {
             .catch(err => {
               reject(err)
             })
-
-
 
         })
         .catch(err => {

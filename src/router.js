@@ -33,7 +33,9 @@ router.put('/movies/incumbent', authenticate, movie.incumbent)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
-router.get('/reviews', review.reviews)
+router.get('/reviews', authenticate, review.mine)
+router.get('/reviews/movie', review.reviews)
+router.put('/reviews', authenticate, review.edit)
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)

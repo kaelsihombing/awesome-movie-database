@@ -7,7 +7,6 @@ const {
 
 exports.add = async (req, res) => {
     try {
-        // console.log(req.body);
         let result = await Movie.register(req.user._id, req.user.role, req.body)
         success(res, result, 201)
     }
@@ -27,13 +26,8 @@ exports.view = async (req, res) => {
 }
 
 exports.all = async (req, res) => {
-    try {
         let result = await Movie.show(req.query.pagination || true, req.query.page || 1, null)
         success(res, result, 200)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
 }
 
 exports.edit = async (req, res) => {

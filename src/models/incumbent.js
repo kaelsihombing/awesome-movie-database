@@ -20,8 +20,6 @@ const incumbentSchema = new Schema({
     },
     movie: [{
         type: String,
-        // type: Schema.Types.ObjectId,
-        // ref: 'Movie',
     }]
 },
     {
@@ -61,8 +59,7 @@ class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
 
             this.find({})
                 .then(data => {
-                    let lastPage = Math.ceil(data.length / 10)
-                    if (lastPage == 0) lastPage = 1
+                    let lastPage = Math.floor(data.length / 10) + 1
                     if (options.page > lastPage || options.page < 0) options.page = 1
 
                     this.paginate({}, options)
