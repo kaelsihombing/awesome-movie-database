@@ -4,35 +4,6 @@ stages:
   - announce
 
 test:
-<<<<<<< Updated upstream
-  image: node:12.13-alpine
-  stage: test
-  variables:
-    DB_CONNECTION_TEST: "mongodb://localhost:27018"
-  services:
-    - mongo:latest
-  script:
-    - npm install
-    - npm test
-  only:
-    - development
-
-deploy:
-  image: ruby:2.5.6
-  stage: deploy
-  script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
-  only:
-    - development
-
-announce:
-  stage: announce
-  script:
-    - curl --data chat_id=$TELEGRAM_CHAT_ID --data-urlencode text="[$CI_COMMIT_REF_NAME] $CI_PROJECT_NAME | $CI_COMMIT_TITLE by $GITLAB_USER_NAME" $TELEGRAM_BOT_URL/sendMessage
-=======
     image: node:12.13
     stage: test
     variables:
@@ -55,4 +26,3 @@ deploy:
         - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
     only:
         - development
->>>>>>> Stashed changes
