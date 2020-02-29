@@ -1,11 +1,9 @@
-
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const axios = require('axios');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-let Incumbent = require('./incumbent.js')
+const Incumbent = require('./incumbent.js')
 
 const movieSchema = new Schema({
     title: {
@@ -22,7 +20,7 @@ const movieSchema = new Schema({
     genres: [{
         type: String
     }],
-    director: [{
+    directors: [{
         type: String
     }],
     writers: [{
@@ -43,7 +41,7 @@ const movieSchema = new Schema({
         type: String,
         default: '-'
     },
-    review: [{
+    reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review',
     }],
@@ -76,7 +74,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 synopsis: bodyParams.synopsis,
                 genres: [],
                 casts: [],
-                director: [],
+                directors: [],
                 writers: [],
                 poster: bodyParams.poster,
                 trailer: bodyParams.trailer,
@@ -84,64 +82,88 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 lastUpdatedBy: creator,
             }
 
-            for (let prop in params) if (!params[prop]) delete params[prop]
-
             //==============DIRECTOR==================
-            var directorSplit = bodyParams.director.split(',')
-            for (let i = 0; i <= directorSplit.length - 1; i++) {
-                params.director.push(directorSplit[i])
+            if (bodyParams.directors) {
+                var directorSplit = bodyParams.directors.split(',')
+                for (let i = 0; i <= directorSplit.length - 1; i++) {
+                    params.directors.push(directorSplit[i])
+                }
+            }
+
+            if (!bodyParams.directors) {
+                delete params.directors
             }
 
             //==============GENRE====================
-            let genreSplit = bodyParams.genres.split(',');
-            let fixGenre = [];
-            for (let i = 0; i <= genreSplit.length - 1; i++) {
-                let newGenre = genreSplit[i].split(' (')
-                newGenre = newGenre[0]
+            if (bodyParams.genres) {
+                let genreSplit = bodyParams.genres.split(',');
+                let fixGenre = [];
+                for (let i = 0; i <= genreSplit.length - 1; i++) {
+                    let newGenre = genreSplit[i].split(' (')
+                    newGenre = newGenre[0]
 
-                if (newGenre[0] === ' ') {
-                    newGenre = newGenre.substring(1)
+                    if (newGenre[0] === ' ') {
+                        newGenre = newGenre.substring(1)
+                    }
+                    fixGenre.push(newGenre)
                 }
-                fixGenre.push(newGenre)
+                let noDuplicateGenre = [...new Set(fixGenre)]
+                noDuplicateGenre.map(item => params.genres.push(item))
             }
-            let noDuplicateGenre = [...new Set(fixGenre)]
-            noDuplicateGenre.map(item => params.genres.push(item))
-            console.log(params);
+
+            if (!bodyParams.genres) {
+                delete params.genres
+            }
+
             //================WRITER==================
-            let writerSplit = bodyParams.writers.split(',');
-            let fixWriter = [];
-            for (let i = 0; i <= writerSplit.length - 1; i++) {
-                let newWriter = writerSplit[i].split(' (')
-                newWriter = newWriter[0]
+            if (bodyParams.writers) {
+                let writerSplit = bodyParams.writers.split(',');
+                let fixWriter = [];
+                for (let i = 0; i <= writerSplit.length - 1; i++) {
+                    let newWriter = writerSplit[i].split(' (')
+                    newWriter = newWriter[0]
 
-                if (newWriter[0] === ' ') {
-                    newWriter = newWriter.substring(1)
+                    if (newWriter[0] === ' ') {
+                        newWriter = newWriter.substring(1)
+                    }
+                    fixWriter.push(newWriter)
                 }
-                fixWriter.push(newWriter)
+                let noDuplicateWriter = [...new Set(fixWriter)]
+                noDuplicateWriter.map(item => params.writers.push(item))
             }
-            let noDuplicateWriter = [...new Set(fixWriter)]
-            noDuplicateWriter.map(item => params.writers.push(item))
+
+            if (!bodyParams.writers) {
+                delete params.writers
+            }
             //================CAST/ACTOR==================
-            let castSplit = bodyParams.casts.split(',');
-            let fixCast = [];
-            for (let i = 0; i <= castSplit.length - 1; i++) {
-                let newCast = castSplit[i].split(' (')
-                newCast = newCast[0]
+            if (bodyParams.casts) {
+                let castSplit = bodyParams.casts.split(',');
+                let fixCast = [];
+                for (let i = 0; i <= castSplit.length - 1; i++) {
+                    let newCast = castSplit[i].split(' (')
+                    newCast = newCast[0]
 
-                if (newCast[0] === ' ') {
-                    newCast = newCast.substring(1)
+                    if (newCast[0] === ' ') {
+                        newCast = newCast.substring(1)
+                    }
+                    fixCast.push(newCast)
                 }
-                fixCast.push(newCast)
+                let noDuplicateCast = [...new Set(fixCast)]
+                noDuplicateCast.map(item => params.casts.push(item))
             }
-            let noDuplicateCast = [...new Set(fixCast)]
-            noDuplicateCast.map(item => params.casts.push(item))
 
-            // console.log(params);
+            if (!bodyParams.casts) {
+                delete params.casts
+            }
+
+            for (let prop in params) if (!params[prop] || params[prop] == undefined) delete params[prop]
+
             //================================================================
             this.create(params)
                 .then(async data => {
-                    console.log(data);
-                    for (let i = 0; i <= data.director.length - 1; i++) {
+                    resolve(data)
+
+                    for (let i = 0; i <= data.directors.length - 1; i++) {
                         await Incumbent.findOne({ name: data.director[i] })
                             .then(async dataIncumbent => {
                                 if (!dataIncumbent) {
@@ -152,6 +174,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     await Incumbent.create(newIncumbent)
                                 } else {
                                     await dataIncumbent.movie.push(data.title)
+                                    dataIncumbent.save()
                                 }
                             })
                     }
@@ -166,6 +189,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     await Incumbent.create(newIncumbent)
                                 } else {
                                     await dataIncumbent.movie.push(data.title)
+                                    dataIncumbent.save()
                                 }
                             })
                     }
@@ -180,10 +204,10 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     await Incumbent.create(newIncumbent)
                                 } else {
                                     await dataIncumbent.movie.push(data.title)
+                                    dataIncumbent.save()
                                 }
                             })
                     }
-                    resolve(data)
                 })
                 .catch(err => {
                     reject(err)
@@ -215,8 +239,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             else if (!movieId) {
                 this.find({})
                     .then(data => {
-                        let lastPage = Math.ceil(data.length / 10)
-                        if (lastPage == 0) lastPage = 1
+                        let lastPage = Math.floor(data.length / 10) + 1
                         if (options.page > lastPage || options.page < 0) options.page = 1
 
                         this.paginate({}, options)
@@ -255,15 +278,21 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
 
             let movieTitle
-
             this.findById(movieId)
                 .then(movie => {
-                    if (!movie._id) return reject(`There is no movie with given _id`)
+
+                    let params = ['casts', 'directors', 'writers']
+                    for (let i = 0; i < params.length; i++) {
+                        if ((movie[params[i]].indexOf(bodyParams.name)) >= 0) return reject(`This incumbent was already added to this movie's ${params[i]}`)
+                    }
+
                     movieTitle = movie.title
+                })
+                .catch(err => {
+                    reject(err)
                 })
 
             let pushData
-
             Incumbent.findOne({ 'name': bodyParams.name })
                 .then(incumbent => {
                     if (!incumbent) return reject(`There is no incumbent with name '${bodyParams.name}' in the database`)
@@ -279,6 +308,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                     movie.lastUpdatedBy = editor
                     resolve(movie)
                 })
+
                 .catch(err => {
                     reject(err)
                 })

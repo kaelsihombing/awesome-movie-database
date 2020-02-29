@@ -26,6 +26,7 @@
     "exceptionHandler.js",
     "userSpec.js",
     "movieSpec.js",
-    "incumbentSpec.js"
+    "incumbentSpec.js",
+    "reviewSpec.js"
   ]
 }

@@ -15,6 +15,10 @@ const Incumbent = require('../models/incumbent.js')
 const incumbentFixtures = require('../fixtures/incumbentFixture.js')
 const staticIncumbent = incumbentFixtures.create()
 
+const Movie = require('../models/movie.js')
+
+const Review = require('../models/review.js')
+
 describe('INCUMBENT API TESTING', () => {
     before(function () {
         staticAdmin.password_confirmation = staticAdmin.password

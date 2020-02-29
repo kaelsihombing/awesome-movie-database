@@ -7,7 +7,8 @@ const {
 // const translator = require('../helpers/translate').translator
 
 exports.add = async (req, res) => {
-    try{
+    try
+    {
         let result = await Review.register(req.user._id, req.query.movieId, req.body)
         success(res, result, 201)
     }
@@ -16,12 +17,29 @@ exports.add = async (req, res) => {
     }
 }
 
+exports.mine = async (req, res) => {
+    let result = await Review.myReview(req.user._id, req.query.pagination || true, req.query.page || 1)
+    success(res, result, 200)
+}
+
 exports.reviews = async (req, res) => {
-    try{
+    try
+    {
         let result = await Review.movieReview(req.query.movieId, req.query.pagination || true, req.query.page ||1)
         success(res, result, 200)
     }
     catch (err){
+        error(res, err, 422)
+    }
+}
+
+exports.edit = async (req, res) => {
+    try
+    {
+        let result = await Review.editReview(req.user._id, req.query.reviewId, req.body)
+        success(res, result, 201)
+    }
+    catch(err){
         error(res, err, 422)
     }
 }
