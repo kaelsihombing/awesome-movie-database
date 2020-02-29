@@ -14,7 +14,7 @@ test:
         - npm install
         - npm test
     only:
-        - develop
+        - development
 
 deploy:
     image: ruby:2.5.6
@@ -25,7 +25,7 @@ deploy:
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
     only:
-        - develop
+        - development
 
 announce:
     stage: announce
