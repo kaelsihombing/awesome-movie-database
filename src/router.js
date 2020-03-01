@@ -47,5 +47,5 @@ router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
 //=======================
-router.get('/movie', movie.copyMovie)
+router.get('/movie', authenticate, movie.copyMovie)
 module.exports = router;
