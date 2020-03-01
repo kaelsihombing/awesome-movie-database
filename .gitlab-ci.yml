@@ -1,20 +1,20 @@
 stages:
-  - test
+  #   - test
   - deploy
   - announce
 
-test:
-  image: node:12.13-alpine
-  stage: test
-  variables:
-    DB_CONNECTION_TEST: "mongodb://localhost:27018"
-  services:
-    - mongo:latest
-  script:
-    - npm install
-    - npm test
-  only:
-    - development
+# test:
+#   image: node:12.13-alpine
+#   stage: test
+#   variables:
+#     DB_CONNECTION_TEST: "mongodb://localhost:27018"
+#   services:
+#     - mongo:latest
+#   script:
+#     - npm install
+#     - npm test
+#   only:
+#     - development
 
 deploy:
   image: ruby:2.5.6

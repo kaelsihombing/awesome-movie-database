@@ -66,7 +66,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
     static register(creator, role, bodyParams) {
         return new Promise((resolve, reject) => {
-            if (role != 'ADMIN') return reject("You're not allowed to add movie entry")
+            if (role != 'ADMIN') return reject("You're not Authorized!")
 
             let params = {
                 title: bodyParams.title,
@@ -83,17 +83,19 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             }
 
             //==============DIRECTOR==================
-            if (bodyParams.directors) {
-                var directorSplit = bodyParams.directors.split(',')
-                for (let i = 0; i <= directorSplit.length - 1; i++) {
-                    params.directors.push(directorSplit[i])
+            var directorsSplit = bodyParams.directors.split(',')
+            let fixDirectors = [];
+            for (let i = 0; i <= directorsSplit.length - 1; i++) {
+                let newDirectors = directorsSplit[i].split(' (')
+                newDirectors = newDirectors[0]
+
+                if (newDirectors[0] === ' ') {
+                    newDirectors = newDirectors.substring(1)
                 }
+                fixDirectors.push(newDirectors)
             }
-
-            if (!bodyParams.directors) {
-                delete params.directors
-            }
-
+            let noDuplicateDirectors = [...new Set(fixDirectors)]
+            noDuplicateDirectors.map(item => params.directors.push(item))
             //==============GENRE====================
             if (bodyParams.genres) {
                 let genreSplit = bodyParams.genres.split(',');
@@ -161,20 +163,18 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             //================================================================
             this.create(params)
                 .then(async data => {
-                    resolve(data)
 
                     for (let i = 0; i <= data.directors.length - 1; i++) {
-                        await Incumbent.findOne({ name: data.director[i] })
+                        await Incumbent.findOne({ name: data.directors[i] })
                             .then(async dataIncumbent => {
                                 if (!dataIncumbent) {
                                     let newIncumbent = {
-                                        name: data.director[i],
+                                        name: data.directors[i],
                                         movie: data.title
                                     }
                                     await Incumbent.create(newIncumbent)
                                 } else {
-                                    await dataIncumbent.movie.push(data.title)
-                                    dataIncumbent.save()
+                                    await Incumbent.findOneAndUpdate({ name: data.directors[i] }, { $push: { movie: data.title } })
                                 }
                             })
                     }
@@ -188,8 +188,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     }
                                     await Incumbent.create(newIncumbent)
                                 } else {
-                                    await dataIncumbent.movie.push(data.title)
-                                    dataIncumbent.save()
+                                    await Incumbent.findOneAndUpdate({ name: data.writers[i] }, { $push: { movie: data.title } })
                                 }
                             })
                     }
@@ -203,11 +202,11 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     }
                                     await Incumbent.create(newIncumbent)
                                 } else {
-                                    await dataIncumbent.movie.push(data.title)
-                                    dataIncumbent.save()
+                                    await Incumbent.findOneAndUpdate({ name: data.casts[i] }, { $push: { movie: data.title } })
                                 }
                             })
                     }
+                    resolve(data)
                 })
                 .catch(err => {
                     reject(err)
@@ -315,8 +314,9 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static copyMovie(movieId) {
+    static copyMovie(movieId, author, role) {
         return new Promise((resolve, reject) => {
+            if (role !== 'ADMIN') return reject('You are not Authorized')
             axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&i=` + movieId)
                 .then(data => {
                     this.findOne({ title: data.data.Title })
@@ -325,24 +325,48 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             if (foundData) return reject('Movie already exist in the database!')
 
                             let movieData = data.data;
+                            console.log(movieData);
 
                             let movie = {
                                 title: movieData.Title,
-                                year: movieData.Year,
                                 duration: movieData.Runtime,
                                 genres: [],
-                                director: [],
+                                directors: [],
                                 writers: [],
                                 casts: [],
                                 synopsis: movieData.Plot,
                                 poster: movieData.Poster,
+                                addedBy: author,
+                                lastUpdatedBy: author
                             }
 
-                            //==============DIRECTOR==================
-                            var directorSplit = movieData.Director.split(',')
-                            for (let i = 0; i <= directorSplit.length - 1; i++) {
-                                movie.director.push(directorSplit[i])
+                            //==============YEAR==================
+                            var minIndex = movieData.Year.indexOf("–")
+                            if (minIndex > -1) {
+                                var yearSplit = movieData.Year.split(',')
+                                for (let i = 0; i <= yearSplit.length - 1; i++) {
+                                    let newYear = yearSplit[i].split('-')
+                                    newYear = parseInt(newYear[0])
+                                    movie.year = newYear
+                                }
+                            } else {
+                                movie.year = movieData.Year
                             }
+                            //==============DIRECTOR==================
+                            var directorsSplit = movieData.Director.split(',')
+                            let fixDirectors = [];
+                            for (let i = 0; i <= directorsSplit.length - 1; i++) {
+                                let newDirectors = directorsSplit[i].split(' (')
+                                newDirectors = newDirectors[0]
+
+                                if (newDirectors[0] === ' ') {
+                                    newDirectors = newDirectors.substring(1)
+                                }
+                                fixDirectors.push(newDirectors)
+                            }
+                            let noDuplicateDirectors = [...new Set(fixDirectors)]
+                            noDuplicateDirectors.map(item => movie.directors.push(item))
+
                             //==============GENRE====================
                             let genreSplit = movieData.Genre.split(',');
                             let fixGenre = [];
@@ -388,17 +412,19 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             //=============================================
                             this.create(movie).then(async data => {
 
-                                for (let i = 0; i <= data.director.length - 1; i++) {
-                                    await Incumbent.findOne({ name: data.director[i] })
+                                for (let i = 0; i <= data.directors.length - 1; i++) {
+                                    await Incumbent.findOne({ name: data.directors[i] })
                                         .then(async dataIncumbent => {
                                             if (!dataIncumbent) {
                                                 let newIncumbent = {
-                                                    name: data.director[i],
+                                                    name: data.directors[i],
                                                     movie: data.title
                                                 }
-                                                await Incumbent.create(newIncumbent)
+                                                if (data.directors[i] !== 'N/A') {
+                                                    await Incumbent.create(newIncumbent)
+                                                }
                                             } else {
-                                                await dataIncumbent.movie.push(data.title)
+                                                await Incumbent.findOneAndUpdate({ name: data.directors[i] }, { $push: { movie: data.title } })
                                             }
                                         })
                                 }
@@ -412,7 +438,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                                 }
                                                 await Incumbent.create(newIncumbent)
                                             } else {
-                                                await dataIncumbent.movie.push(data.title)
+                                                await Incumbent.findOneAndUpdate({ name: data.writers[i] }, { $push: { movie: data.title } })
                                             }
                                         })
                                 }
@@ -426,7 +452,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                                 }
                                                 await Incumbent.create(newIncumbent)
                                             } else {
-                                                await dataIncumbent.movie.push(data.title)
+                                                await Incumbent.findOneAndUpdate({ name: data.casts[i] }, { $push: { movie: data.title } })
                                             }
                                         })
                                 }

@@ -26,8 +26,8 @@ exports.view = async (req, res) => {
 }
 
 exports.all = async (req, res) => {
-        let result = await Movie.show(req.query.pagination || true, req.query.page || 1, null)
-        success(res, result, 200)
+    let result = await Movie.show(req.query.pagination || true, req.query.page || 1, null)
+    success(res, result, 200)
 }
 
 exports.edit = async (req, res) => {
@@ -52,7 +52,7 @@ exports.incumbent = async (req, res) => {
 
 exports.copyMovie = async (req, res) => {
     try {
-        let result = await Movie.copyMovie(req.query.i)
+        let result = await Movie.copyMovie(req.query.i, req.user._id, req.user.role)
         success(res, result, 201)
     }
     catch (err) {
