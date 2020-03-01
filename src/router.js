@@ -33,7 +33,9 @@ router.put('/movies/incumbent', authenticate, movie.incumbent)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
-router.get('/reviews', review.reviews)
+router.get('/reviews', authenticate, review.mine)
+router.get('/reviews/movie', review.reviews)
+router.put('/reviews', authenticate, review.edit)
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
@@ -45,5 +47,5 @@ router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
 //=======================
-router.get('/movie', movie.copyMovie)
+router.get('/movie', authenticate, movie.copyMovie)
 module.exports = router;

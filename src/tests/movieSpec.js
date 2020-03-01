@@ -29,7 +29,7 @@ describe('MOVIE API TESTING', () => {
             .post('/api/v1/users')
             .set('Content-Type', 'application/json')
             .send(JSON.stringify(staticUser))
-            .end(() => { })
+            .end((err, res) => { })
 
         chai.request(server)
             .post('/api/v1/auth')
@@ -69,6 +69,32 @@ describe('MOVIE API TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     let movieSample = movieFixtures.create()
+                    chai.request(server)
+                        .post('/api/v1/movies')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', token)
+                        .send(JSON.stringify(movieSample))
+                        .end((err, res) => {
+                            expect(res.status).to.equal(201)
+                            let { success, data } = res.body
+                            expect(success).to.eq(true)
+                            expect(data).to.be.an('object');
+                        })
+                })
+        })
+
+        it('Should add new movie with only required information', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticAdmin))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let movieSample = movieFixtures.create()
+                    delete movieSample.genres
+                    delete movieSample.directors
+                    delete movieSample.writers
+                    delete movieSample.casts
                     chai.request(server)
                         .post('/api/v1/movies')
                         .set('Content-Type', 'application/json')
@@ -291,6 +317,41 @@ describe('MOVIE API TESTING', () => {
                 })
         })
 
+        it('Should not update movie information due to lack of authority', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticUser))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/movies/all')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', token)
+                        .query({ pagination: false })
+                        .end((err, res) => {
+                            let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                            let movieId = res.body.data.docs[i]._id
+                            let update = movieFixtures.create()
+                            delete update.year
+                            chai.request(server)
+                                .put('/api/v1/movies')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(update))
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422)
+                                    let { success, error } = res.body
+                                    expect(success).to.eq(false)
+                                    expect(error).to.eq("You're not allowed to edit movie information")
+                                })
+                        })
+
+                })
+        })
+
+
         it('Should not update movie information due to invalid movieId', () => {
             chai.request(server)
                 .post('/api/v1/auth')
@@ -357,6 +418,126 @@ describe('MOVIE API TESTING', () => {
                                     let { success, data } = res.body
                                     expect(success).to.eq(true)
                                     expect(data).to.be.an('object');
+                                })
+                        })
+
+                })
+        })
+
+        it('Should not add movie incumbent (casts/writers/directors) due to lack of authority', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticUser))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/movies/all')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', token)
+                        .query({ pagination: false })
+                        .end((err, res) => {
+                            let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                            let movieId = res.body.data.docs[i]._id
+                            let occupationEnum = ['casts', 'directors', 'writers']
+                            let occupation = occupationEnum[Math.floor(Math.random() * occupationEnum.length)]
+                            let incumbent = {
+                                name: staticIncumbent.name,
+                                occupation: occupation
+                            }
+                            chai.request(server)
+                                .put('/api/v1/movies/incumbent')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(incumbent))
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422)
+                                    let { success, error } = res.body
+                                    expect(success).to.eq(false)
+                                    expect(error).to.eq("You're not allowed to edit movie information");
+                                })
+                        })
+
+                })
+        })
+
+        it('Should not add movie incumbent (casts/writers/directors) due to invalid movieId', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticAdmin))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/movies/all')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', token)
+                        .query({ pagination: false })
+                        .end((err, res) => {
+                            let movieId = 'movieId'
+                            let occupationEnum = ['casts', 'directors', 'writers']
+                            let occupation = occupationEnum[Math.floor(Math.random() * occupationEnum.length)]
+                            let incumbent = {
+                                name: staticIncumbent.name,
+                                occupation: occupation
+                            }
+                            chai.request(server)
+                                .put('/api/v1/movies/incumbent')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(incumbent))
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422)
+                                    let { success, error } = res.body
+                                    expect(success).to.eq(false)
+                                    expect(error.message).to.eq('Cast to ObjectId failed for value "movieId" at path "_id" for model "Movie"')
+                                })
+                        })
+
+                })
+        })
+
+        it('Should not add movie incumbent (casts/writers/directors) due to duplicate incumbent in same occupation', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticAdmin))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/movies/all')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', token)
+                        .query({ pagination: false })
+                        .end((err, res) => {
+                            let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                            let movieId = res.body.data.docs[i]._id
+                            let occupationEnum = ['casts', 'directors', 'writers']
+                            let occupation = occupationEnum[Math.floor(Math.random() * occupationEnum.length)]
+                            let incumbent = {
+                                name: staticIncumbent.name,
+                                occupation: occupation
+                            }
+                            chai.request(server)
+                                .put('/api/v1/movies/incumbent')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(incumbent))
+                                .end((err, res) => {
+                                    chai.request(server)
+                                        .put('/api/v1/movies/incumbent')
+                                        .set('Content-Type', 'application/json')
+                                        .set('Authorization', token)
+                                        .query({ movieId: movieId })
+                                        .send(JSON.stringify(incumbent))
+                                        .end((err, res) => {
+                                            expect(res.status).to.equal(422)
+                                            let { success, error } = res.body
+                                            expect(success).to.eq(false)
+                                        })
                                 })
                         })
 
