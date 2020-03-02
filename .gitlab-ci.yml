@@ -1,5 +1,6 @@
 stages:
   - test
+  - build
   - deploy
   - announce
 
@@ -20,12 +21,34 @@ deploy:
   image: ruby:2.5.6
   stage: deploy
   script:
-    - apt-get update -qy
+    - apt-get update -q
     - apt-get install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
   only:
     - development
+
+build-image-to-production:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
+    - docker build -t $DOCKER_IMAGE_NAME:stable
+    - docker push $DOCKER_IMAGE_NAME:stable
+  only:
+    - master
+
+deploy-to-production:
+  stage: deploy
+  script:
+    - 'which ssh-agent || (apt-get update && apt-get install ssh-agent -y)'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo $PRIVATE_KEY)
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh root@134.209.105.240 bash --login "./app/backend/deploy.sh"
 
 announce:
   stage: announce
