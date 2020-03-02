@@ -16,6 +16,7 @@ const { check } = require('express-validator');
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
+router.delete('/users', authenticate, user.deleteAccount)
 
 // Admin endpoint
 router.post('/admins', validateForm, user.createAdmin)
@@ -28,14 +29,16 @@ router.get('/incumbents', authenticate, incumbent.view)
 router.post('/movies', authenticate, movie.add)
 router.get('/movies', movie.view)
 router.get('/movies/all', movie.all)
-router.put('/movies', authenticate, movie.edit)
-router.put('/movies/incumbent', authenticate, movie.incumbent)
+router.put('/movies', authenticate, movie.edit) // not ready yet
+router.put('/movies/incumbent', authenticate, movie.incumbent) //?
+router.delete('/movies', authenticate, movie.deleteMovie)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
 router.get('/reviews', authenticate, review.mine)
 router.get('/reviews/movie', review.reviews)
 router.put('/reviews', authenticate, review.edit)
+
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
@@ -46,6 +49,6 @@ router.post('/recover', [check('email').isEmail().withMessage('Enter a valid ema
 router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
-//=======================
+//Input movie to database from imdb
 router.get('/movie', authenticate, movie.copyMovie)
 module.exports = router;

@@ -1,0 +1,620 @@
+[33mcommit daa0674a0e6639c9a542df2f6f7e832059040d1c[m[33m ([m[1;36mHEAD -> [m[1;32mbugs/movie[m[33m, [m[1;31morigin/feature/bugs[m[33m, [m[1;31morigin/bugs/movie[m[33m, [m[1;32mfeature/bugs[m[33m)[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sun Mar 1 22:12:43 2020 +0700
+
+    [MIKE]fixing movies bugs
+
+[33mcommit 11fb9ec3ee483efca88f20c2fbffb0478daac01d[m[33m ([m[1;31morigin/development[m[33m, [m[1;32mfeature/register[m[33m)[m
+Merge: 8c1d1f6 d8a52c1
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Sat Feb 29 18:48:10 2020 +0000
+
+    Merge branch 'feature/editReview' into 'development'
+    
+    Feature/edit review
+    
+    See merge request ellvisca/awesome-movie-database!28
+
+[33mcommit d8a52c1776ae1c5e97ffa86a2d4c9eae77c4132f[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Sun Mar 1 01:46:22 2020 +0700
+
+    [kevin] fix conflict gitlab ci
+
+[33mcommit d6335edb785e0f158bb8e964dc2de99d47a60137[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Sun Mar 1 01:43:31 2020 +0700
+
+    [kevin] fix file conflict
+
+[33mcommit c0a47b1db1c21de6d2cb9f620b2e45809eec2422[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Sun Mar 1 01:37:13 2020 +0700
+
+    [Kevin] Add edit review
+
+[33mcommit 8c1d1f64682a4a80c29821667ebb2c1c7b3a176d[m
+Merge: c7030e1 2d73afd
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 11:22:11 2020 +0000
+
+    Merge branch 'feature/register' into 'development'
+    
+    [MIKE]fixing create user
+    
+    See merge request ellvisca/awesome-movie-database!26
+
+[33mcommit 2d73afdc21645020c7cada758f35a130e9a65420[m[33m ([m[1;31morigin/feature/register[m[33m)[m
+Merge: e9db1b4 c7030e1
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 18:20:29 2020 +0700
+
+    MIKE-fixing conflict
+
+[33mcommit e9db1b4cce916b145257406a607de06bd507cdad[m
+Merge: c36b602 c484541
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 18:19:07 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/register
+
+[33mcommit c36b602843452a9e9b57d696c0d94672fb6fc6bf[m[33m ([m[1;32mfeature/mike[m[33m)[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 18:13:40 2020 +0700
+
+    [MIKE]fixing create user
+
+[33mcommit c7030e155840ec2ff2a044b24771c0e47e5b8bc3[m
+Author: Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>
+Date:   Sat Feb 29 10:14:24 2020 +0000
+
+    [Fikk] Change branch affected to CI
+
+[33mcommit 71c99e54608b1eac16dd48b460f08dd89b0f87d7[m
+Author: Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>
+Date:   Sat Feb 29 10:13:14 2020 +0000
+
+    [Fikk] oops, forgot to add $
+
+[33mcommit ee9cddda3b6bf0fdb4a769c97c58c20a1b05e988[m
+Author: Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>
+Date:   Sat Feb 29 10:11:35 2020 +0000
+
+    [Fikk] Update .gitlab-ci.yml
+
+[33mcommit 7b82fb879a3f705d8861d885d61f838cc80fc5c3[m
+Author: Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>
+Date:   Sat Feb 29 10:08:49 2020 +0000
+
+    [Fikk] Add bot script .gitlab-ci.yml
+
+[33mcommit c4845413bac5f90f4670a480f377e6ffe394ed95[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: bf14060 cb4d204
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 09:15:00 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    Feature/mike
+    
+    See merge request ellvisca/awesome-movie-database!25
+
+[33mcommit cb4d20478562cbe153822683a2dc8b020c72516e[m[33m ([m[1;31morigin/feature/mike[m[33m)[m
+Merge: 8fb347b bf14060
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 16:07:09 2020 +0700
+
+    [MIKE]
+
+[33mcommit 8fb347b8e319e292a57d1b3c059a24183717a97f[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Sat Feb 29 10:10:33 2020 +0700
+
+    [MIKE]
+
+[33mcommit bf14060086e03f4b32859cee2a8dcdc6533d9bcc[m
+Merge: c688a9b 7cdaa69
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Fri Feb 28 09:40:57 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Update Testing
+    
+    See merge request ellvisca/awesome-movie-database!24
+
+[33mcommit 7cdaa694a3c97d0ec5049199996ca741b2bb0369[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Fri Feb 28 16:40:04 2020 +0700
+
+    [Kevin] Update Testing
+
+[33mcommit c688a9b3821217a542c4d24094697a75fa2ad0c2[m
+Merge: 016f195 a156ccc
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 08:31:08 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    Feature/mike
+    
+    See merge request ellvisca/awesome-movie-database!23
+
+[33mcommit a156cccecf99cf4b16e8d3ab95058ed26d8220e5[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 15:30:34 2020 +0700
+
+    [MIKE]add movie automatically
+
+[33mcommit fe9cdda5e29eb1c1f4df7249b67e85cbfdf7de98[m
+Merge: f66876e 016f195
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 12:54:17 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/mike
+
+[33mcommit f66876e950c01f0fbb721ae7f57e5b6ea983d16a[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 12:54:10 2020 +0700
+
+    mike
+
+[33mcommit 016f195aeea58944fe2aadc676fe7f31ec143c0d[m
+Merge: cb1346c 6de3fc5
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Fri Feb 28 05:00:05 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Edit movie functions
+    
+    See merge request ellvisca/awesome-movie-database!22
+
+[33mcommit 6de3fc549556d20c2d4f75425233e584a02e561e[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Fri Feb 28 11:58:53 2020 +0700
+
+    [Kevin] Edit movie functions
+
+[33mcommit cb1346c4914a2816d64e42225389da9632ea2f52[m
+Merge: 4cd6454 2ce6f7a
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 03:30:15 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]update swagger
+    
+    See merge request ellvisca/awesome-movie-database!21
+
+[33mcommit 2ce6f7ade2d4cf53e295bf4cce655d0a95f995e0[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Fri Feb 28 10:29:32 2020 +0700
+
+    [MIKE]update swagger
+
+[33mcommit 4cd645402142ce87afcd6c3881e967f32b441929[m
+Merge: c311709 4abf122
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 15:13:05 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    Feature/mike
+    
+    See merge request ellvisca/awesome-movie-database!20
+
+[33mcommit 4abf1228130fa0bdf82063147e89b5ab7df338d0[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 22:10:55 2020 +0700
+
+    [MIKE]
+
+[33mcommit efe93ea660102450fe1c9b2546c4003bb71a2b34[m
+Merge: f36ac98 c311709
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 19:23:19 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/mike
+
+[33mcommit c311709405e3c7d254e4cad1d435184ccfb65ffe[m
+Merge: 867c75c 187cbae
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 09:37:57 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Add Incumbent Model
+    
+    See merge request ellvisca/awesome-movie-database!19
+
+[33mcommit 187cbae22a12bf1db8c4b7e66e66509e7e310903[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 16:37:16 2020 +0700
+
+    [Kevin] Add Incumbent Model
+
+[33mcommit f36ac9828fb803bbe3b702de4db7044167177fae[m
+Merge: d5f4749 867c75c
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 14:28:58 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/mike
+
+[33mcommit d5f474992ac9ad4053fcbdaa6423b21f70d03735[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 14:28:48 2020 +0700
+
+    MIKE
+
+[33mcommit 867c75c299ba06dc3276377e4b06d48a02612637[m
+Merge: dff3750 0c2007d
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 07:21:40 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Re-enabling Testing Script
+    
+    See merge request ellvisca/awesome-movie-database!18
+
+[33mcommit 0c2007d3cefc7ce5b7afcca13fbd75b840c212d9[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 14:21:14 2020 +0700
+
+    [Kevin] Re-enabling Testing Script
+
+[33mcommit 9703d4b80603720450cf69dc376a963367aed636[m
+Merge: 7c6b3a9 dff3750
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 14:07:33 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/mike
+
+[33mcommit 7c6b3a921d4dc7eab4b9959283f08de9a0ca72e9[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 14:07:14 2020 +0700
+
+    [MIKE]
+
+[33mcommit dff375026f384e7d198947f5220b9bc0ee46a200[m
+Merge: cfbb1b0 0274eba
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 07:01:06 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Remove testing temporarily
+    
+    See merge request ellvisca/awesome-movie-database!17
+
+[33mcommit 0274eba421e2c17ecf9d29eed8f0bf8baf736154[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Thu Feb 27 14:00:07 2020 +0700
+
+    [Kevin] Remove testing temporarily
+
+[33mcommit cfbb1b0f8aa6063a384fefc825f2e818a88ab6b8[m
+Merge: 78dd088 3ed623b
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 20:03:29 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]
+    
+    See merge request ellvisca/awesome-movie-database!16
+
+[33mcommit 3ed623baa0559e86a6d61694e704001e15f236e9[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 03:02:51 2020 +0700
+
+    [MIKE]
+
+[33mcommit 78dd0886df3468cd325540154357213dbfced07f[m
+Merge: bc10dbf 52f01ed
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 19:51:20 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]
+    
+    See merge request ellvisca/awesome-movie-database!15
+
+[33mcommit 52f01ed0c5b12d2bc026e581d7f2c3955bdf0ea8[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Thu Feb 27 02:50:32 2020 +0700
+
+    [MIKE]
+
+[33mcommit bc10dbffae3affa00f1cae0f653dac39ace673ba[m
+Merge: 89f901e 7fbda91
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 16:50:17 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE] fix
+    
+    See merge request ellvisca/awesome-movie-database!14
+
+[33mcommit 7fbda912217860906d700e7b9504c359c12e0cbb[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 23:49:43 2020 +0700
+
+    [MIKE] fix
+
+[33mcommit 89f901ee55a28331509a02005aa98f32e5ef0fc4[m
+Merge: 91e46a1 3ed8ff2
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 16:02:47 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Add Edit Movie Info
+    
+    See merge request ellvisca/awesome-movie-database!13
+
+[33mcommit 3ed8ff2ee85c74582b8daece115cb732d371bcfd[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 23:02:13 2020 +0700
+
+    [Kevin] Add Edit Movie Info
+
+[33mcommit 91e46a125e15a708b538ca108eb723a4951c91ef[m
+Merge: 30c3035 c97fc14
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 15:24:35 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]recovery password
+    
+    See merge request ellvisca/awesome-movie-database!12
+
+[33mcommit c97fc14a3e3df5ae8b4708f6831383de846242f5[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 22:23:17 2020 +0700
+
+    [MIKE]recovery password
+
+[33mcommit 30c3035fa4d98cc31b817cb4408153e43d7805c6[m
+Merge: c40e1d0 6bd0254
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 14:11:48 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    Feature/mike
+    
+    See merge request ellvisca/awesome-movie-database!11
+
+[33mcommit 6bd0254f5f13c34cb2361b846748fe8130b2dc97[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 21:10:29 2020 +0700
+
+    [MIKE]feature update
+
+[33mcommit 6667fe5aa8f5bf0b92c5313f81b1e448b6abe5e9[m
+Merge: fc0c6a5 c40e1d0
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 19:27:27 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/mike
+
+[33mcommit fc0c6a51b6e8e900688e232c55a87fc57141f726[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 19:27:19 2020 +0700
+
+    [MIKE]add update user data
+
+[33mcommit c40e1d02249671a03bf908e813b9e25cb869c079[m
+Merge: 7156cc0 c233c20
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 12:21:07 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    Feature/movie
+    
+    See merge request ellvisca/awesome-movie-database!10
+
+[33mcommit c233c201fcc475532ee0f868043665f95c728ab8[m
+Merge: 0ec2859 7156cc0
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 19:20:28 2020 +0700
+
+    [kevin] add movie and resolve conflict
+
+[33mcommit 7156cc02c289b44caded11b0410c3b47a233503e[m
+Merge: d912293 d3769a2
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 12:13:29 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE] fix register
+    
+    See merge request ellvisca/awesome-movie-database!9
+
+[33mcommit d3769a2536dc70fb33f6d9dcdddde05558bb89da[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 19:12:59 2020 +0700
+
+    [MIKE] fix register
+
+[33mcommit 0ec2859e3c2878fba22534a337b657d73478a0ce[m
+Merge: 1427461 d912293
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 19:12:08 2020 +0700
+
+    Merge branch 'master' of gitlab.com:ellvisca/awesome-movie-database into feature/movie
+
+[33mcommit 1427461bd02c5df375c5526910e8b5beb0b9ab7c[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 19:11:50 2020 +0700
+
+    [Kevin] Add Movie
+
+[33mcommit d9122938340ec06fdf83ab515265172294705ecb[m
+Merge: 2e76a5b 48593a5
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 11:57:21 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]Auth feature
+    
+    See merge request ellvisca/awesome-movie-database!8
+
+[33mcommit 48593a5e510a17c6d1bcf09d6a3d6a8fb65f9a95[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 18:54:27 2020 +0700
+
+    [MIKE]Auth feature
+
+[33mcommit 2e76a5b2e9a84bebb560a652f9bff9ed2937e426[m
+Merge: 2db0d01 5e982c1
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 09:43:52 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    [MIKE]
+    
+    See merge request ellvisca/awesome-movie-database!7
+
+[33mcommit 5e982c19d4a6afac374f30dc7ba5d649065b1c5d[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 16:42:41 2020 +0700
+
+    [MIKE]
+
+[33mcommit 2db0d01064259e837fe3247afef1345bb4d713a5[m
+Merge: 6fcba6e 9f4bea4
+Author: Santo Michael Sihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 09:39:42 2020 +0000
+
+    Merge branch 'feature/mike' into 'master'
+    
+    Feature/mike
+    
+    See merge request ellvisca/awesome-movie-database!6
+
+[33mcommit 9f4bea4e94ee2e4250564d4d05dd0b69afefd1a2[m[33m ([m[1;32mmaster[m[33m)[m
+Merge: 0e2511d 6fcba6e
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 16:36:11 2020 +0700
+
+    [MIKE]
+
+[33mcommit 0e2511d3b62371c21f7f6d05509f2255485b100d[m
+Merge: 38380bf 71512ff
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 16:25:19 2020 +0700
+
+    MIKE
+
+[33mcommit 6fcba6e765b6096844a8f95ba94df0ad216f3915[m
+Merge: 71512ff 84a00f6
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 09:19:58 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Fix Test
+    
+    See merge request ellvisca/awesome-movie-database!5
+
+[33mcommit 84a00f6e1f7139b6fccb8495491c7543ea52a360[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 16:19:23 2020 +0700
+
+    [Kevin] Fix Test
+
+[33mcommit 38380bfeec892cb85a97c0bf735b22fd4ab0493d[m
+Author: michaelsihombing <sntmcl1@gmail.com>
+Date:   Wed Feb 26 16:04:17 2020 +0700
+
+    MIKE
+
+[33mcommit 71512fff23ed2317dee1bc043d7c9edc6cfe2880[m
+Merge: 0600817 0fac40e
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 08:59:07 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    Change Index.js to Server.js
+    
+    See merge request ellvisca/awesome-movie-database!4
+
+[33mcommit 0fac40e210994be023a6ad07393c63b5a3e11c71[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 15:58:35 2020 +0700
+
+    Change Index.js to Server.js
+
+[33mcommit 060081727e9a25b650c312f1d22b95e5dab7f19d[m
+Merge: e6e5cc0 d6ec82b
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 08:50:57 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Add Deployment Script
+    
+    See merge request ellvisca/awesome-movie-database!3
+
+[33mcommit d6ec82b17f62499fa7ad93c61cbb9ed4ad2005ff[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 15:50:29 2020 +0700
+
+    [Kevin] Add Deployment Script
+
+[33mcommit e6e5cc025e873e2422ba73ab1da0c5eac80f673b[m
+Merge: 3c1bcf1 13a3672
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 07:50:31 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Update schema
+    
+    See merge request ellvisca/awesome-movie-database!2
+
+[33mcommit 13a3672310594ff00a0ab2d65664060ab10faccd[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 14:50:00 2020 +0700
+
+    [Kevin] Update schema
+
+[33mcommit 3c1bcf1cb79cb80a8176eb28831f7ee836336e30[m
+Merge: 9e9cfb1 ff331b4
+Author: Kevin Andrio <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 06:18:25 2020 +0000
+
+    Merge branch 'feature/movie' into 'master'
+    
+    [Kevin] Create Schema
+    
+    See merge request ellvisca/awesome-movie-database!1
+
+[33mcommit ff331b4aa6f41ddb75b57f2e222eca5d5a426ee7[m[33m ([m[1;31morigin/feature/movie[m[33m)[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Wed Feb 26 13:17:25 2020 +0700
+
+    [Kevin] Create Schema
+
+[33mcommit 9e9cfb1c44cbb572b432e45783a2b15c5e825626[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Tue Feb 25 23:28:31 2020 +0700
+
+    [Kevin] Connect database and rood endpoint
+
+[33mcommit 40c11f811431c7426dde025368def9ce3cf73298[m
+Author: ellvisca <andrio.kevin12@gmail.com>
+Date:   Tue Feb 25 22:15:26 2020 +0700
+
+    Initial Commit
