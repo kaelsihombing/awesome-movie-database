@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-// const axios = require('axios');
+const axios = require('axios');
 const Imagekit = require('imagekit');
 const imagekit = new Imagekit({
     publicKey: process.env.publicKey,
@@ -279,65 +279,65 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    // static OAuthGoogle(token) {
+    static OAuthGoogle(token) {
 
-    //     return new Promise((resolve, reject) => {
-    //         axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
-    //             headers: {
-    //                 'Authorization': token
-    //             }
-    //         })
-    //             .then(data => {
-    //                 // console.log(data)
-    //                 resolve(data)
-    //             })
-    //             .catch(err => {
-    //                 reject(err)
-    //             })
-    //     })
-    // }
+        return new Promise((resolve, reject) => {
+            axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+                headers: {
+                    'Authorization': token
+                }
+            })
+                .then(data => {
+                    // console.log(data)
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
 
-    // static findOrRegister(result) {
-    //     return new Promise((resolve, reject) => {
-    //         this.findOne({ email: result.data.email })
-    //             .then(data => {
-    //                 if (!data) {
-    //                     this.collection.insert({
-    //                         fullname: result.data.name,
-    //                         email: result.data.email,
-    //                         image: result.data.picture,
-    //                         language: process.env.language
-    //                     })
-    //                         .then(user => {
-    //                             let newUser = user.ops[0]
+    static findOrRegister(result) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ email: result.data.email })
+                .then(data => {
+                    if (!data) {
+                        this.collection.insert({
+                            fullname: result.data.name,
+                            email: result.data.email,
+                            image: result.data.picture,
+                            language: process.env.language
+                        })
+                            .then(user => {
+                                let newUser = user.ops[0]
 
-    //                             let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
+                                let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
 
-    //                             return resolve({
-    //                                 _id: newUser._id,
-    //                                 fullname: newUser.fullname,
-    //                                 image: newUser.image,
-    //                                 email: newUser.email,
-    //                                 token: token
-    //                             })
-    //                         })
-    //                 } else {
-    //                     let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
+                                return resolve({
+                                    _id: newUser._id,
+                                    fullname: newUser.fullname,
+                                    image: newUser.image,
+                                    email: newUser.email,
+                                    token: token
+                                })
+                            })
+                    } else {
+                        let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
 
-    //                     return resolve({
-    //                         _id: data._id,
-    //                         fullname: data.fullname,
-    //                         image: data.image,
-    //                         email: data.email,
-    //                         token: token
-    //                     })
-    //                 }
-    //             })
-    //             .catch(err => {
-    //                 reject(err)
-    //             })
-    //     })
-    // }
+                        return resolve({
+                            _id: data._id,
+                            fullname: data.fullname,
+                            image: data.image,
+                            email: data.email,
+                            token: token
+                        })
+                    }
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
 
     static recover(req) {
         return new Promise((resolve, reject) => {
