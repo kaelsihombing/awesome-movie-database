@@ -16,6 +16,17 @@ exports.create = async (req, res) => {
     }
 }
 
+exports.deleteAccount = async (req, res) => {
+    try {
+        console.log('here');
+        let result = await User.deleteAccount(req.user._id)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
 exports.createAdmin = async (req, res) => {
     try {
         let result = await User.registerAdmin(req.body)
@@ -91,7 +102,7 @@ exports.resentEmailVerification = async (req, res) => {
         let result = await User.resendEmail(req)
         success(res, result, 201)
     }
-    catch(err) {
+    catch (err) {
         error(res, err, 422)
     }
 }

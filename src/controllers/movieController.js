@@ -15,6 +15,16 @@ exports.add = async (req, res) => {
     }
 }
 
+exports.deleteMovie = async (req, res) => {
+    try {
+        let result = await Movie.deleteMovie(req.user.role, req.query.movieId)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
 exports.view = async (req, res) => {
     try {
         let result = await Movie.show(false, 1, req.query.movieId)

@@ -314,6 +314,20 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
+    static deleteMovie(role, movieId) {
+        return new Promise((resolve, reject) => {
+            if (role !== 'ADMIN') return reject('Sorry you\'re not authorized to do this');
+            this.findByIdAndDelete(movieId)
+                .then(movie => {
+                    if (!movie) return reject('this movie is not exist in our database, please input a valid movie id')
+                    resolve({ message: `Movie '${movie.title}' successfuly deleted` })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
     static copyMovie(movieId, author, role) {
         return new Promise((resolve, reject) => {
             if (role !== 'ADMIN') return reject('You are not Authorized')
@@ -409,7 +423,9 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             }
                             let noDuplicateCast = [...new Set(fixCast)]
                             noDuplicateCast.map(item => movie.casts.push(item))
+
                             //=============================================
+
                             this.create(movie).then(async data => {
 
                                 for (let i = 0; i <= data.directors.length - 1; i++) {
