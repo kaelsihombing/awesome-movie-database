@@ -6,8 +6,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const incumbentSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true,
+        required: true
     },
     birthDate: {
         type: Date,

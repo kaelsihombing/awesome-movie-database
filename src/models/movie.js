@@ -85,8 +85,11 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             //==============DIRECTOR==================
             var directorsSplit = bodyParams.directors.split(',')
             let fixDirectors = [];
+
             for (let i = 0; i <= directorsSplit.length - 1; i++) {
+
                 let newDirectors = directorsSplit[i].split(' (')
+
                 newDirectors = newDirectors[0]
 
                 if (newDirectors[0] === ' ') {
@@ -94,6 +97,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 }
                 fixDirectors.push(newDirectors)
             }
+
             let noDuplicateDirectors = [...new Set(fixDirectors)]
             noDuplicateDirectors.map(item => params.directors.push(item))
             //==============GENRE====================
@@ -159,7 +163,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             }
 
             for (let prop in params) if (!params[prop] || params[prop] == undefined) delete params[prop]
-
             //================================================================
             this.create(params)
                 .then(async data => {
@@ -192,6 +195,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                 }
                             })
                     }
+
                     for (let i = 0; i <= data.casts.length - 1; i++) {
                         await Incumbent.findOne({ name: data.casts[i] })
                             .then(async dataIncumbent => {
@@ -228,6 +232,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             if (movieId) {
                 this.findById(movieId)
                     .then(data => {
+                        if (!data) return reject('the movie doesn\'t exist in database')
                         resolve(data)
                     })
                     .catch(err => {
@@ -279,7 +284,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             let movieTitle
             this.findById(movieId)
                 .then(movie => {
-
+                    if (!movie) return reject('Cannot find movie!')
                     let params = ['casts', 'directors', 'writers']
                     for (let i = 0; i < params.length; i++) {
                         if ((movie[params[i]].indexOf(bodyParams.name)) >= 0) return reject(`This incumbent was already added to this movie's ${params[i]}`)

@@ -1,19 +1,14 @@
 version: "3"
 services:
-  glints-project-mike:
-    image: kaelsihombing/glints-project-2:latest
-    container_name: "glints-project"
+  awesome-movie-database:
+    image: registry.gitlab.com/ellvisca/awesome-movie-database:stable
+    container_name: "awesome-movie-database"
     network_mode: "host"
     environment:
-      - NODE_ENV=development
-      - JWT_SIGNATURE_KEY=SECRET
-      - DB_CONNECTION_STAGGING=mongodb+srv://admin:admin@cluster0-ar0ma.mongodb.net/test?retryWrites=true&w=majority
-      - SENDGRID_API_KEY=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
-      - FROM_EMAIL=how-reply@movie.com
+      - JWT_SIGNATURE_KEY='SECRET'
+      - NODE_ENV=production
       - publicKey=public_5Hn55wwzH48M+rVl/7am9e6xqy0=
       - privateKey=private_i2qRf3R8NLPJkAUPb1gxGRT52Ak=
       - urlEndpoint=https://ik.imagekit.io/m1ke1magek1t
-      - MOVIE_API_KEY=4a5e611c
-      - BASE_URL="http://localhost:3000"
     ports:
-      - "3000:3000"
+      - "8000:8000"
