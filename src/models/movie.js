@@ -5,6 +5,7 @@ const axios = require('axios')
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Incumbent = require('./incumbent.js')
+const Genre = require('./genre')
 
 const movieSchema = new Schema({
     title: {
@@ -12,18 +13,17 @@ const movieSchema = new Schema({
         required: true
     },
     year: {
-        type: Number,
-        required: true,
+        type: Number
     },
     duration: {
         type: String
     },
     genres: [{
-        type: String
+        id: String,
+        genre: String
     }],
     directors: [{
-        id: String,
-        name: String
+        type: Object
     }],
     writers: [{
         id: String,
@@ -71,6 +71,28 @@ const movieSchema = new Schema({
 movieSchema.plugin(mongoosePaginate)
 
 class Movie extends mongoose.model('Movie', movieSchema) {
+
+    static findGenre(genre, movie) {
+        return new Promise((resolve, reject) => {
+            Genre.findOne({ genre: genre })
+                .then(async dataGenre => {
+                    if (!dataGenre) {
+                        let newGenre = {
+                            genre: genre
+                        }
+                        let result = await Genre.create(newGenre)
+                        resolve(result)
+                    } else {
+                        if (!dataGenre.movie.includes(movie)) {
+                            resolve(dataGenre)
+                        }
+                    }
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
 
     static findIncumbent(incumbent, title) {
         return new Promise((resolve, reject) => {
@@ -170,13 +192,32 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 promiseCasts.push(Movie.findIncumbent(item, bodyParams.title))
             })
         }
+        //==============GENRE====================
+        let promiseGenres = [];
+        if (bodyParams.genres) {
+            let genreSplit = bodyParams.genres.split(',');
+            let fixGenre = [];
+            for (let i = 0; i <= genreSplit.length - 1; i++) {
+                let newGenre = genreSplit[i].split(' (')
+                newGenre = newGenre[0]
+
+                if (newGenre[0] === ' ') {
+                    newGenre = newGenre.substring(1)
+                }
+                fixGenre.push(newGenre)
+            }
+            let noDuplicateGenre = [...new Set(fixGenre)]
+            noDuplicateGenre.map(item => {
+                promiseGenres.push(Movie.findGenre(item, bodyParams.title))
+            })
+        }
 
 
         //===================================================================================
         let directorList = await Promise.all(promiseDirectors);
         let writerList = await Promise.all(promiseWriters);
         let castList = await Promise.all(promiseCasts);
-
+        let genreList = await Promise.all(promiseGenres)
         //===================================================================================
 
         return new Promise((resolve, reject) => {
@@ -200,46 +241,20 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 params.directors.push({ id: item._id, name: item.name })
             })
 
-            if (!bodyParams.directors) {
-                delete params.directors
-            }
 
             writerList.map(item => {
                 params.writers.push({ id: item._id, name: item.name })
             })
 
-            if (!bodyParams.writers) {
-                delete params.writers
-            }
 
             castList.map(item => {
                 params.casts.push({ id: item._id, name: item.name })
             })
 
-            if (!bodyParams.casts) {
-                delete params.casts
-            }
 
-            //==============GENRE====================
-            if (bodyParams.genres) {
-                let genreSplit = bodyParams.genres.split(',');
-                let fixGenre = [];
-                for (let i = 0; i <= genreSplit.length - 1; i++) {
-                    let newGenre = genreSplit[i].split(' (')
-                    newGenre = newGenre[0]
-
-                    if (newGenre[0] === ' ') {
-                        newGenre = newGenre.substring(1)
-                    }
-                    fixGenre.push(newGenre)
-                }
-                let noDuplicateGenre = [...new Set(fixGenre)]
-                noDuplicateGenre.map(item => params.genres.push(item))
-            }
-
-            if (!bodyParams.genres) {
-                delete params.genres
-            }
+            genreList.map(item => {
+                params.genres.push({ id: item._id, genre: item.genre })
+            })
 
             for (let prop in params) {
                 if (!params[prop] || params[prop].length === 0) delete params[prop]
@@ -253,14 +268,22 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
                         })
                     }
+
                     if (data.directors) {
                         data.directors.map(async item => {
                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
                         })
                     }
+
                     if (data.writers) {
                         data.writers.map(async item => {
                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
+                        })
+                    }
+
+                    if (data.genres) {
+                        data.genres.map(async item => {
+                            await Genre.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, title: data.title, poster: data.poster } } })
                         })
                     }
 
@@ -404,12 +427,13 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
                 let movieData = data.data;
 
-                Movie.findOne({ title: data.data.Title })
+                Movie.findOne({ title: movieData.Title })
                     .then(async foundData => {
+
                         if (foundData) return ('Movie already exist in the database!')
                         //==============DIRECTOR==================
                         let promiseDirectors = [];
-                        if (movieData.Director) {
+                        if (movieData.Director && movieData.Director !== 'N/A') {
                             var directorsSplit = movieData.Director.split(',')
                             let fixDirectors = [];
 
@@ -476,11 +500,32 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             })
                         }
 
+                        //==============GENRE====================
+                        let promiseGenres = [];
+                        if (movieData.Genre) {
+                            let genreSplit = movieData.Genre.split(',');
+                            let fixGenre = [];
+                            for (let i = 0; i <= genreSplit.length - 1; i++) {
+                                let newGenre = genreSplit[i].split(' (')
+                                newGenre = newGenre[0]
+
+                                if (newGenre[0] === ' ') {
+                                    newGenre = newGenre.substring(1)
+                                }
+                                fixGenre.push(newGenre)
+                            }
+                            let noDuplicateGenre = [...new Set(fixGenre)]
+                            noDuplicateGenre.map(item => {
+                                item = item.toLowerCase()
+                                promiseGenres.push(Movie.findGenre(item, movieData.title))
+                            })
+                        }
 
                         //===================================================================================
                         let directorList = await Promise.all(promiseDirectors);
                         let writerList = await Promise.all(promiseWriters);
                         let castList = await Promise.all(promiseCasts);
+                        let genreList = await Promise.all(promiseGenres)
 
                         //===================================================================================
 
@@ -490,7 +535,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
                             let params = {
                                 title: movieData.Title,
-                                year: movieData.Year,
                                 synopsis: movieData.Plot,
                                 genres: [],
                                 casts: [],
@@ -499,6 +543,22 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                 poster: movieData.Poster,
                                 addedBy: creator,
                                 lastUpdatedBy: creator,
+                            }
+
+                            if (movieData.Director === 'N/A') {
+                                params.directors.push(movieData.Director)
+                            }
+                            //==============YEAR==================
+                            var minIndex = movieData.Year.indexOf("–")
+                            if (minIndex > -1) {
+                                var yearSplit = movieData.Year.split(',')
+                                for (let i = 0; i <= yearSplit.length - 1; i++) {
+                                    let newYear = yearSplit[i].split('-')
+                                    newYear = parseInt(newYear[0])
+                                    params.year = newYear
+                                }
+                            } else {
+                                params.year = movieData.Year
                             }
 
                             directorList.map(item => {
@@ -513,49 +573,38 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                 params.casts.push({ id: item._id, name: item.name })
                             })
 
-
-                            //==============GENRE====================
-                            if (movieData.Genre) {
-                                let genreSplit = movieData.Genre.split(',');
-                                let fixGenre = [];
-                                for (let i = 0; i <= genreSplit.length - 1; i++) {
-                                    let newGenre = genreSplit[i].split(' (')
-                                    newGenre = newGenre[0]
-
-                                    if (newGenre[0] === ' ') {
-                                        newGenre = newGenre.substring(1)
-                                    }
-                                    fixGenre.push(newGenre)
-                                }
-                                let noDuplicateGenre = [...new Set(fixGenre)]
-                                noDuplicateGenre.map(item => params.genres.push(item))
-                            }
-
-                            for (let prop in params) {
-                                if (!params[prop] || params[prop].length === 0) delete params[prop]
-                            }
-
+                            genreList.map(item => {
+                                params.genres.push({ id: item._id, genre: item.genre })
+                            })
 
                             Movie.create(params)
                                 .then(data => {
-
+                                    resolve(data)
                                     if (data.casts) {
                                         data.casts.map(async item => {
                                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
                                         })
                                     }
-                                    if (data.directors) {
+
+                                    if (data.directors == data.directors !== 'N/A') {
                                         data.directors.map(async item => {
                                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
                                         })
                                     }
+
                                     if (data.writers) {
                                         data.writers.map(async item => {
                                             await Incumbent.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, movie: data.title } } })
                                         })
                                     }
 
-                                    resolve(data)
+                                    if (data.genres) {
+                                        data.genres.map(async item => {
+                                            await Genre.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, title: data.title, poster: data.poster } } })
+                                        })
+                                    }
+
+
                                 })
                         })
                     })
