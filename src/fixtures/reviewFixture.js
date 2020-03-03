@@ -4,7 +4,7 @@ function create() {
     return {
         title: faker.lorem.sentence(),
         description: faker.lorem.sentence(),
-        rating: faker.random.number({ 'min': 0, 'max': 10 }),
+        rating: faker.random.number({ 'min': 1, 'max': 10 }),
     }
 }
 

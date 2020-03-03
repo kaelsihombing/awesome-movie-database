@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const axios = require('axios');
+const mongoose = require('mongoose')
+const Double = require('@mongoosejs/double')
+const Schema = mongoose.Schema
+const axios = require('axios')
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Incumbent = require('./incumbent.js')
@@ -48,6 +49,10 @@ const movieSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review',
     }],
+    rating: {
+        type: Double,
+        default: 0,
+    },
     addedBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -561,6 +566,18 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             .catch(err => {
                 return (err)
             })
+    }
+
+    static findByTitle(title) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ title: title })
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
     }
 }
 

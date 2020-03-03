@@ -32,6 +32,7 @@ router.get('/movies/all', movie.all)
 router.put('/movies', authenticate, movie.edit) // not ready yet
 router.put('/movies/incumbent', authenticate, movie.incumbent) //?
 router.delete('/movies', authenticate, movie.deleteMovie)
+router.get('/movies/title', movie.findTitle)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
@@ -39,7 +40,6 @@ router.get('/reviews', authenticate, review.mine)
 router.get('/reviews/movie', review.reviews)
 router.put('/reviews', authenticate, review.edit)
 router.delete('/reviews', authenticate, review.delete)
-
 
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
