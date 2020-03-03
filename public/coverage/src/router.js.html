@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.88% </span>
+                <span class="strong">97.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/32</span>
+                <span class='fraction'>36/37</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/31</span>
+                <span class='fraction'>36/36</span>
             </div>
         
             
@@ -106,7 +106,12 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -124,15 +129,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -140,6 +148,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -173,6 +183,7 @@ const { check } = require('express-validator');
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
+router.delete('/users', authenticate, user.deleteAccount)
 &nbsp;
 // Admin endpoint
 router.post('/admins', validateForm, user.createAdmin)
@@ -185,13 +196,17 @@ router.get('/incumbents', authenticate, incumbent.view)
 router.post('/movies', authenticate, movie.add)
 router.get('/movies', movie.view)
 router.get('/movies/all', movie.all)
-router.put('/movies', authenticate, movie.edit)
-router.put('/movies/incumbent', authenticate, movie.incumbent)
+router.put('/movies', authenticate, movie.edit) // not ready yet
+router.put('/movies/incumbent', authenticate, movie.incumbent) //?
+router.delete('/movies', authenticate, movie.deleteMovie)
+router.get('/movies/title', movie.findTitle)
 &nbsp;
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
 router.get('/reviews', authenticate, review.mine)
 router.get('/reviews/movie', review.reviews)
+router.put('/reviews', authenticate, review.edit)
+router.delete('/reviews', authenticate, review.delete)
 &nbsp;
 // Verify email endpoint
 router.get('/verified/:token', user.verifyEmail)
@@ -202,8 +217,8 @@ router.post('/recover', [check('email').isEmail().withMessage('Enter a valid ema
 router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom(<span class="fstat-no" title="function not covered" >(v</span>alue, { req }) =&gt; (<span class="cstat-no" title="statement not covered" >value === req.body.password)</span>),], user.resetPassword);
 &nbsp;
-//=======================
-router.get('/movie', movie.copyMovie)
+//Input movie to database from imdb
+router.get('/movie', authenticate, movie.copyMovie)
 module.exports = router;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -211,7 +226,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Mar 01 2020 00:43:39 GMT+0700 (Western Indonesia Time)
+                at Wed Mar 04 2020 00:14:10 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

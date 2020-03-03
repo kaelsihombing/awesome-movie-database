@@ -69,3 +69,13 @@ exports.copyMovie = async (req, res) => {
         error(res, err, 422)
     }
 }
+
+exports.findTitle = async (req, res) => {
+    try{
+        let result = await Movie.findByTitle(req.query.title)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}

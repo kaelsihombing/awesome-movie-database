@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const mongoosePaginate = require('mongoose-paginate-v2')
 
-const Movies = require('./movie.js')
+const Movie = require('./movie.js')
 const User = require('./user.js')
 
 const reviewSchema = new Schema({
@@ -22,7 +22,7 @@ const reviewSchema = new Schema({
     },
     movieId: {
         type: Schema.Types.ObjectId,
-        ref: 'Movie'
+        ref: 'Movie',
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -40,38 +40,43 @@ reviewSchema.plugin(mongoosePaginate)
 class Review extends mongoose.model('Review', reviewSchema) {
     static register(author, movieId, bodyParams) {
         return new Promise((resolve, reject) => {
-            User.findById(author)
-                .then(user => {
-                    let movieCheck = user.reviews.indexOf(movieId) > 0
-                    if (movieCheck) return reject("You've created a review for this movie")
-                })
+            this.find({ movieId: movieId, author: author })
+                .then(data => {
+                    if (data.length != 0) reject("You've already created a review for this movie")
+                    else {
+                        let params = {
+                            title: bodyParams.title,
+                            description: bodyParams.description,
+                            rating: bodyParams.rating,
+                            author: author,
+                            movieId: movieId,
+                        }
 
-            let params = {
-                title: bodyParams.title,
-                description: bodyParams.description,
-                rating: bodyParams.rating,
-                author: author,
-                movieId: movieId,
-            }
+                        let pushData
+                        let addRating
 
-            let pushData
+                        this.create(params)
+                            .then(review => {
+                                pushData = review._id
+                                addRating = review.rating
 
-            this.create(params)
-                .then(review => {
-                    pushData = review._id
-                    resolve(review)
-                })
+                                User.findById(author)
+                                    .then(user => {
+                                        user.reviews.push(pushData)
+                                        user.save()
+                                    })
 
-            User.findById(author)
-                .then(user => {
-                    user.reviews.push(pushData)
-                    user.save()
-                })
+                                Movie.findById(movieId)
+                                    .then(movie => {
+                                        movie.rating = (movie.rating * movie.reviews.length) + addRating
+                                        movie.reviews.push(pushData)
+                                        movie.rating = movie.rating / movie.reviews.length
+                                        movie.save()
+                                    })
 
-            Movies.findById(movieId)
-                .then(movie => {
-                    movie.reviews.push(pushData)
-                    movie.save()
+                                resolve(review)
+                            })
+                    }
                 })
         })
     }
@@ -83,6 +88,14 @@ class Review extends mongoose.model('Review', reviewSchema) {
                 limit: 10,
                 pagination: JSON.parse(pagination),
                 sort: '-updatedAt',
+                populate: [{
+                    path: 'movieId',
+                    select: ['title']
+                },
+                {
+                    path: 'author',
+                    select: ['fullname']
+                }],
                 collation: { locale: 'en' }
             }
 
@@ -96,9 +109,6 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             resolve(data)
                         })
                 })
-                .catch(err => {
-                    reject(err)
-                })
         })
     }
 
@@ -109,6 +119,14 @@ class Review extends mongoose.model('Review', reviewSchema) {
                 limit: 10,
                 pagination: JSON.parse(pagination),
                 sort: '-updatedAt',
+                populate: [{
+                    path: 'movieId',
+                    select: ['title']
+                },
+                {
+                    path: 'author',
+                    select: ['fullname']
+                }],
                 collation: { locale: 'en' }
             }
 
@@ -122,10 +140,6 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             resolve(data)
                         })
                 })
-                .catch(err => {
-                    reject(err)
-                })
-
         })
     }
 
@@ -138,9 +152,43 @@ class Review extends mongoose.model('Review', reviewSchema) {
             }
             for (let prop in params) if (!params[prop]) delete params[prop]
 
-            this.findOneAndUpdate({author: author, _id: reviewId}, params, {new: true})
+            this.findOneAndUpdate({ author: author, _id: reviewId }, params, { new: true })
                 .then(data => {
                     resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static destroy(author, reviewId) {
+        return new Promise((resolve, reject) => {
+            let subRating
+            
+            this.findById(reviewId)
+                .then(data => {
+                    subRating = data.rating
+                    User.findById(data.author)
+                        .then(user => {
+                            user.reviews.splice(user.reviews.indexOf(data._id), 1)
+                        })
+
+                    Movie.findById(data.movieId)
+                        .then(movie => {
+                            movie.rating = (movie.rating * movie.reviews.length) - subRating
+                            movie.reviews.splice(movie.reviews.indexOf(data._id), 1)
+                            if (movie.reviews.length == 0) movie.rating = 0
+                            else movie.rating = movie.rating / movie.reviews.length
+                        })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+
+            this.findOneAndDelete({ _id: reviewId, author: author })
+                .then(review => {
+                    resolve(review)
                 })
                 .catch(err => {
                     reject(err)

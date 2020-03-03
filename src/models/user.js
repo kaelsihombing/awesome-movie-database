@@ -210,9 +210,7 @@ class User extends mongoose.model('User', userSchema) {
                     })
                 })
                 .catch(err => {
-                    reject({
-                        message: err.message
-                    })
+                    reject(err)
                 })
         })
     }

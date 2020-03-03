@@ -1,9 +1,9 @@
-version: '3'
+version: "3"
 services:
   awesome-movie-database:
     image: registry.gitlab.com/ellvisca/awesome-movie-database:stable
     container_name: "awesome-movie-database"
-    network_mode: 'host'
+    network_mode: "host"
     environment:
       - JWT_SIGNATURE_KEY='SECRET'
       - NODE_ENV=production
