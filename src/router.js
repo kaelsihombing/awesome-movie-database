@@ -5,7 +5,7 @@ const user = require('./controllers/userController.js')
 const incumbent = require('./controllers/incumbentController.js')
 const movie = require('./controllers/movieController.js')
 const review = require('./controllers/reviewController.js')
-
+const genre = require('./controllers/genreController')
 // middleware
 const authenticate = require('./middlewares/authenticate')
 const multer = require('./middlewares/multer')
@@ -32,6 +32,9 @@ router.get('/movies/all', movie.all)
 router.put('/movies', authenticate, movie.edit) // not ready yet
 router.put('/movies/incumbent', authenticate, movie.incumbent) //?
 router.delete('/movies', authenticate, movie.deleteMovie)
+
+// Genre endpoint
+router.get('/genre', genre.filter)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
