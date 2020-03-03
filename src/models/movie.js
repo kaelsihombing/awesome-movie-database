@@ -83,23 +83,30 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             }
 
             //==============DIRECTOR==================
-            var directorsSplit = bodyParams.directors.split(',')
-            let fixDirectors = [];
+            if (bodyParams.directors) {
+                var directorsSplit = bodyParams.directors.split(',')
+                let fixDirectors = [];
 
-            for (let i = 0; i <= directorsSplit.length - 1; i++) {
+                for (let i = 0; i <= directorsSplit.length - 1; i++) {
 
-                let newDirectors = directorsSplit[i].split(' (')
+                    let newDirectors = directorsSplit[i].split(' (')
 
-                newDirectors = newDirectors[0]
+                    newDirectors = newDirectors[0]
 
-                if (newDirectors[0] === ' ') {
-                    newDirectors = newDirectors.substring(1)
+                    if (newDirectors[0] === ' ') {
+                        newDirectors = newDirectors.substring(1)
+                    }
+                    let noDuplicateDirectors = [...new Set(fixDirectors)]
+                    noDuplicateDirectors.map(item => params.directors.push(item))
                 }
-                fixDirectors.push(newDirectors)
+
+                let noDuplicateDirectors = [...new Set(fixDirectors)]
+                noDuplicateDirectors.map(item => params.directors.push(item))
             }
 
-            let noDuplicateDirectors = [...new Set(fixDirectors)]
-            noDuplicateDirectors.map(item => params.directors.push(item))
+            if (!bodyParams.directors) {
+                delete params.directors
+            }
             //==============GENRE====================
             if (bodyParams.genres) {
                 let genreSplit = bodyParams.genres.split(',');
@@ -162,7 +169,10 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 delete params.casts
             }
 
-            for (let prop in params) if (!params[prop] || params[prop] == undefined) delete params[prop]
+            for (let prop in params) {
+                if (!params[prop] || params[prop].length === 0) delete params[prop]
+            }
+
             //================================================================
             this.create(params)
                 .then(async data => {
@@ -210,6 +220,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                 }
                             })
                     }
+
                     resolve(data)
                 })
                 .catch(err => {
@@ -225,6 +236,14 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
+                populate: [{
+                    path: 'addedBy',
+                    select: ['fullname', 'role']
+                },
+                {
+                    path: 'lastUpdatedBy',
+                    select: ['fullname', 'role']
+                }],
                 sort: '-updatedAt',
                 collation: { locale: 'en' }
             }
