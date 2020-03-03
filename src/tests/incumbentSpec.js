@@ -21,6 +21,10 @@ const Review = require('../models/review.js')
 
 describe('INCUMBENT API TESTING', () => {
     before(function () {
+        Review.deleteMany({}, () => { })
+        Movie.deleteMany({}, () => { })
+        Incumbent.deleteMany({}, () => { })
+        User.deleteMany({}, () => { })
         staticAdmin.password_confirmation = staticAdmin.password
         User.registerAdmin(staticAdmin)
     })
