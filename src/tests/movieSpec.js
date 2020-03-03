@@ -460,42 +460,42 @@ describe('MOVIE API TESTING', () => {
                 })
         })
 
-        it('Should not add movie incumbent (casts/writers/directors) due to invalid movieId', () => {
-            chai.request(server)
-                .post('/api/v1/auth')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(staticAdmin))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/movies/all')
-                        .set('Content-Type', 'application/json')
-                        .set('Authorization', token)
-                        .query({ pagination: false })
-                        .end((err, res) => {
-                            let movieId = 'movieId'
-                            let occupationEnum = ['casts', 'directors', 'writers']
-                            let occupation = occupationEnum[Math.floor(Math.random() * occupationEnum.length)]
-                            let incumbent = {
-                                name: staticIncumbent.name,
-                                occupation: occupation
-                            }
-                            chai.request(server)
-                                .put('/api/v1/movies/incumbent')
-                                .set('Content-Type', 'application/json')
-                                .set('Authorization', token)
-                                .query({ movieId: movieId })
-                                .send(JSON.stringify(incumbent))
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(422)
-                                    let { success, error } = res.body
-                                    expect(success).to.eq(false)
-                                    expect(error.message).to.eq('Cast to ObjectId failed for value "movieId" at path "_id" for model "Movie"')
-                                })
-                        })
+        // it('Should not add movie incumbent (casts/writers/directors) due to invalid movieId', () => {
+        //     chai.request(server)
+        //         .post('/api/v1/auth')
+        //         .set('Content-Type', 'application/json')
+        //         .send(JSON.stringify(staticAdmin))
+        //         .end((err, res) => {
+        //             let token = res.body.data.token
+        //             chai.request(server)
+        //                 .get('/api/v1/movies/all')
+        //                 .set('Content-Type', 'application/json')
+        //                 .set('Authorization', token)
+        //                 .query({ pagination: false })
+        //                 .end((err, res) => {
+        //                     let movieId = 'movieId'
+        //                     let occupationEnum = ['casts', 'directors', 'writers']
+        //                     let occupation = occupationEnum[Math.floor(Math.random() * occupationEnum.length)]
+        //                     let incumbent = {
+        //                         name: staticIncumbent.name,
+        //                         occupation: occupation
+        //                     }
+        //                     chai.request(server)
+        //                         .put('/api/v1/movies/incumbent')
+        //                         .set('Content-Type', 'application/json')
+        //                         .set('Authorization', token)
+        //                         .query({ movieId: movieId })
+        //                         .send(JSON.stringify(incumbent))
+        //                         .end((err, res) => {
+        //                             expect(res.status).to.equal(422)
+        //                             let { success, error } = res.body
+        //                             expect(success).to.eq(false)
+        //                             expect(error.message).to.eq('Cast to ObjectId failed for value "movieId" at path "_id" for model "Movie"')
+        //                         })
+        //                 })
 
-                })
-        })
+        //         })
+        // })
 
         // it('Should not add movie incumbent (casts/writers/directors) due to duplicate incumbent in same occupation', () => {
         //     chai.request(server)

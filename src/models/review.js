@@ -42,34 +42,41 @@ class Review extends mongoose.model('Review', reviewSchema) {
         return new Promise((resolve, reject) => {
             this.find({ movieId: movieId, author: author })
                 .then(data => {
-                    if (data.length > 0) return reject("You've already created a review for this movie")
-                })
+                    if (data.length != 0) reject("You've already created a review for this movie")
+                    else {
+                        let params = {
+                            title: bodyParams.title,
+                            description: bodyParams.description,
+                            rating: bodyParams.rating,
+                            author: author,
+                            movieId: movieId,
+                        }
 
-            let params = {
-                title: bodyParams.title,
-                description: bodyParams.description,
-                rating: bodyParams.rating,
-                author: author,
-                movieId: movieId,
-            }
+                        let pushData
+                        let addRating
 
-            let pushData
+                        this.create(params)
+                            .then(review => {
+                                pushData = review._id
+                                addRating = review.rating
 
-            this.create(params)
-                .then(review => {
-                    pushData = review._id
-                    User.findById(author)
-                        .then(user => {
-                            user.reviews.push(pushData)
-                            user.save()
-                        })
+                                User.findById(author)
+                                    .then(user => {
+                                        user.reviews.push(pushData)
+                                        user.save()
+                                    })
 
-                    Movie.findById(movieId)
-                        .then(movie => {
-                            movie.reviews.push(pushData)
-                            movie.save()
-                        })
-                    resolve(review)
+                                Movie.findById(movieId)
+                                    .then(movie => {
+                                        movie.rating = (movie.rating * movie.reviews.length) + addRating
+                                        movie.reviews.push(pushData)
+                                        movie.rating = movie.rating / movie.reviews.length
+                                        movie.save()
+                                    })
+
+                                resolve(review)
+                            })
+                    }
                 })
         })
     }
@@ -157,9 +164,11 @@ class Review extends mongoose.model('Review', reviewSchema) {
 
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
-            this.findOneAndDelete({ author: author, _id: reviewId })
+            let subRating
+            
+            this.findById(reviewId)
                 .then(data => {
-
+                    subRating = data.rating
                     User.findById(data.author)
                         .then(user => {
                             user.reviews.splice(user.reviews.indexOf(data._id), 1)
@@ -167,10 +176,19 @@ class Review extends mongoose.model('Review', reviewSchema) {
 
                     Movie.findById(data.movieId)
                         .then(movie => {
+                            movie.rating = (movie.rating * movie.reviews.length) - subRating
                             movie.reviews.splice(movie.reviews.indexOf(data._id), 1)
+                            if (movie.reviews.length == 0) movie.rating = 0
+                            else movie.rating = movie.rating / movie.reviews.length
                         })
+                })
+                .catch(err => {
+                    reject(err)
+                })
 
-                    resolve(data)
+            this.findOneAndDelete({ _id: reviewId, author: author })
+                .then(review => {
+                    resolve(review)
                 })
                 .catch(err => {
                     reject(err)

@@ -17,8 +17,13 @@ exports.add = async (req, res) => {
 }
 
 exports.mine = async (req, res) => {
+    try{
     let result = await Review.myReview(req.user._id, req.query.pagination || true, req.query.page || 1)
     success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
 }
 
 exports.reviews = async (req, res) => {
