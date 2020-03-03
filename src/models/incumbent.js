@@ -18,7 +18,7 @@ const incumbentSchema = new Schema({
         type: String,
     },
     movie: [{
-        type: String,
+        type: Object
     }]
 },
     {
