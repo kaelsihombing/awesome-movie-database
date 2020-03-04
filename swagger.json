@@ -762,6 +762,149 @@
           }
         ]
       }
+    },
+    "/reviews": {
+      "post": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "add new review for a movie",
+        "description": "post new review for a movie",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "movieId",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateReviewRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully created movie review"
+          },
+          "422": {
+            "description": "failed to created movie review"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "get all reviews from current user",
+        "description": "view current user's reviews",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully view user's reviews"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "edit movie review",
+        "description": "edit existing movie review",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "reviewId",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/EditReviewRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully updated movie review"
+          },
+          "422": {
+            "description": "failed to update movie review"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "delete movie review",
+        "description": "delete existing movie review",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "reviewId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully deleted movie review"
+          },
+          "422": {
+            "description": "failed to delete movie review"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -947,6 +1090,69 @@
             "casts",
             "writers",
             "directors"
+          ]
+        }
+      }
+    },
+    "CreateReviewRequest": {
+      "type": "object",
+      "required": [
+        "title",
+        "description",
+        "rating"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "This is lit"
+        },
+        "description": {
+          "type": "string",
+          "example": "This movie is lit because Eminem is in it"
+        },
+        "rating": {
+          "type": "number",
+          "example": 5,
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        }
+      }
+    },
+    "EditReviewRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "This is very lit"
+        },
+        "description": {
+          "type": "string",
+          "example": "This movie is lit because Eminem and Mike Phifer is in it"
+        },
+        "rating": {
+          "type": "number",
+          "example": 10,
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
           ]
         }
       }

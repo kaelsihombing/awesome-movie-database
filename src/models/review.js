@@ -17,7 +17,7 @@ const reviewSchema = new Schema({
     },
     rating: {
         type: Number,
-        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         required: true,
     },
     movieId: {
@@ -40,9 +40,14 @@ reviewSchema.plugin(mongoosePaginate)
 class Review extends mongoose.model('Review', reviewSchema) {
     static register(author, movieId, bodyParams) {
         return new Promise((resolve, reject) => {
+            Movie.findById(movieId)
+                .then(movie => {
+                    if(!movie) return reject ("There's no movie with given id")
+                })
+
             this.find({ movieId: movieId, author: author })
                 .then(data => {
-                    if (data.length != 0) reject("You've already created a review for this movie")
+                    if (data.length != 0) return reject("You've already created a review for this movie")
                     else {
                         let params = {
                             title: bodyParams.title,
@@ -77,6 +82,9 @@ class Review extends mongoose.model('Review', reviewSchema) {
                                 resolve(review)
                             })
                     }
+                })
+                .catch(err=> {
+                    reject(err)
                 })
         })
     }
@@ -140,6 +148,9 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             resolve(data)
                         })
                 })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 
@@ -165,13 +176,16 @@ class Review extends mongoose.model('Review', reviewSchema) {
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
             let subRating
-
-            this.findById(reviewId)
+            
+            this.findByIdAndDelete(reviewId)
                 .then(data => {
+                    if (data.author != author) return reject("You're not allowed to delete other's review")
+
                     subRating = data.rating
                     User.findById(data.author)
                         .then(user => {
                             user.reviews.splice(user.reviews.indexOf(data._id), 1)
+                            user.save()
                         })
 
                     Movie.findById(data.movieId)
@@ -180,19 +194,14 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             movie.reviews.splice(movie.reviews.indexOf(data._id), 1)
                             if (movie.reviews.length == 0) movie.rating = 0
                             else movie.rating = movie.rating / movie.reviews.length
+                            movie.save()
                         })
+                    
+                    resolve(data)
                 })
                 .catch(err => {
                     reject(err)
                 })
-
-            this.findOneAndDelete({ _id: reviewId, author: author })
-                .then(review => {
-                    resolve(review)
-                }), reject
-                    .catch(err => {
-                        reject(err)
-                    })
         })
     }
 }

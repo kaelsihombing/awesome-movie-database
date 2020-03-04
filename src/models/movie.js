@@ -317,6 +317,9 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
             if (movieId) {
                 this.findById(movieId)
+                .populate({
+                    path: 'reviews',
+                })
                     .then(data => {
                         if (!data) return reject('the movie doesn\'t exist in database')
                         resolve(data)
