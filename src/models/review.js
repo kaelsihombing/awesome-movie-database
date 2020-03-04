@@ -40,11 +40,6 @@ reviewSchema.plugin(mongoosePaginate)
 class Review extends mongoose.model('Review', reviewSchema) {
     static register(author, movieId, bodyParams) {
         return new Promise((resolve, reject) => {
-            Movie.findById(movieId)
-                .then(movie => {
-                    if (!movie) return reject("There's no movie with given id")
-                })
-
             this.find({ movieId: movieId, author: author })
                 .then(data => {
                     if (data.length != 0) return reject("You've already created a review for this movie")
@@ -176,11 +171,9 @@ class Review extends mongoose.model('Review', reviewSchema) {
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
             let subRating
-
-            this.findByIdAndDelete(reviewId)
+            
+            this.findOneAndDelete({author: author, _id:reviewId})
                 .then(data => {
-                    if (data.author != author) return reject("You're not allowed to delete other's review")
-
                     subRating = data.rating
                     User.findById(data.author)
                         .then(user => {

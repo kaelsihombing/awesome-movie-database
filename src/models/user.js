@@ -161,7 +161,7 @@ class User extends mongoose.model('User', userSchema) {
                             resolve({
                                 message: 'A verify email has been sent to ' + data.email + ', please check your email.',
                                 data: {
-                                    id: data._id,
+                                    _id: data._id,
                                     fullname: data.fullname,
                                     email: data.email,
                                     language: data.language,
@@ -199,7 +199,7 @@ class User extends mongoose.model('User', userSchema) {
 
                     let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
-                        id: data._id,
+                        _id: data._id,
                         fullname: data.fullname,
                         email: data.email,
                         role: data.role,

@@ -319,118 +319,118 @@ describe('REVIEW API TESTING', () => {
         })
     })
 
-    // context('DELETE /api/v1/reviews', () => {
-    //     it('Should delete a review', () => {
-    //         chai.request(server)
-    //             .get('/api/v1/movies/title')
-    //             .query({ title: staticMovie.title })
-    //             .end((err, res) => {
-    //                 let movieId = res.body.data._id
-    //                 chai.request(server)
-    //                     .post('/api/v1/auth')
-    //                     .set('Content-Type', 'application/json')
-    //                     .send(JSON.stringify(staticUser))
-    //                     .end((err, res) => {
-    //                         let token = res.body.data.token
-    //                         let reviewSample = reviewFixtures.create()
-    //                         chai.request(server)
-    //                             .post('/api/v1/reviews')
-    //                             .set('Content-Type', 'application/json')
-    //                             .set('Authorization', token)
-    //                             .query({ movieId: movieId })
-    //                             .send(JSON.stringify(reviewSample))
-    //                             .end((err, res) => {
-    //                                 let reviewId = res.body.data._id
-    //                                 chai.request(server)
-    //                                     .delete('/api/v1/reviews')
-    //                                     .set('Authorization', token)
-    //                                     .query({ reviewId: reviewId })
-    //                                     .end((err, res) => {
-    //                                         expect(res.status).to.equal(200)
-    //                                         let { success, data } = res.body
-    //                                         expect(success).to.eq(true)
-    //                                     })
-    //                             })
-    //                     })
+    context('DELETE /api/v1/reviews', () => {
+        it('Should delete a review', () => {
+            chai.request(server)
+                .get('/api/v1/movies/title')
+                .query({ title: staticMovie.title })
+                .end((err, res) => {
+                    let movieId = res.body.data._id
+                    chai.request(server)
+                        .post('/api/v1/auth')
+                        .set('Content-Type', 'application/json')
+                        .send(JSON.stringify(staticUser))
+                        .end((err, res) => {
+                            let token = res.body.data.token
+                            let reviewSample = reviewFixtures.create()
+                            chai.request(server)
+                                .post('/api/v1/reviews')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(reviewSample))
+                                .end((err, res) => {
+                                    let reviewId = res.body.data._id
+                                    chai.request(server)
+                                        .delete('/api/v1/reviews')
+                                        .set('Authorization', token)
+                                        .query({ reviewId: reviewId })
+                                        .end((err, res) => {
+                                            expect(res.status).to.equal(200)
+                                            let { success, data } = res.body
+                                            expect(success).to.eq(true)
+                                        })
+                                })
+                        })
 
-    //             })
-    //     })
+                })
+        })
 
-    //     it('Should delete a review v2', () => {
-    //         chai.request(server)
-    //             .get('/api/v1/movies/title')
-    //             .query({ title: staticMovie.title })
-    //             .end((err, res) => {
-    //                 let movieId = res.body.data._id
-    //                 chai.request(server)
-    //                     .post('/api/v1/auth')
-    //                     .set('Content-Type', 'application/json')
-    //                     .send(JSON.stringify(staticUser))
-    //                     .end((err, res) => {
-    //                         let token = res.body.data.token
-    //                         let reviewSample = reviewFixtures.create()
-    //                         chai.request(server)
-    //                             .post('/api/v1/reviews')
-    //                             .set('Content-Type', 'application/json')
-    //                             .set('Authorization', token)
-    //                             .query({ movieId: movieId })
-    //                             .send(JSON.stringify(reviewSample))
-    //                             .end((err, res) => {
-    //                                 chai.request(server)
-    //                                     .post('/api/v1/auth')
-    //                                     .set('Content-Type', 'application/json')
-    //                                     .send(JSON.stringify(staticUser2))
-    //                                     .end((err, res) => {
-    //                                         token = res.body.data.token
-    //                                         reviewSample = reviewFixtures.create()
-    //                                         chai.request(server)
-    //                                             .post('/api/v1/reviews')
-    //                                             .set('Content-Type', 'application/json')
-    //                                             .set('Authorization', token)
-    //                                             .query({ movieId: movieId })
-    //                                             .send(JSON.stringify(reviewSample))
-    //                                             .end((err, res) => {
-    //                                                 let reviewId = res.body.data._id
-    //                                                 chai.request(server)
-    //                                                     .delete('/api/v1/reviews')
-    //                                                     .set('Authorization', token)
-    //                                                     .query({ reviewId: reviewId })
-    //                                                     .end((err, res) => {
-    //                                                         expect(res.status).to.equal(200)
-    //                                                         let { success, data } = res.body
-    //                                                         expect(success).to.eq(true)
-    //                                                     })
-    //                                             })
-    //                                     })
-    //                             })
-    //                     })
-    //             })
-    //     })
+        it('Should delete a review v2', () => {
+            chai.request(server)
+                .get('/api/v1/movies/title')
+                .query({ title: staticMovie.title })
+                .end((err, res) => {  
+                    let movieId = res.body.data._id
+                    chai.request(server)
+                        .post('/api/v1/auth')
+                        .set('Content-Type', 'application/json')
+                        .send(JSON.stringify(staticUser))
+                        .end((err, res) => {
+                            let token = res.body.data.token
+                            let reviewSample = reviewFixtures.create()
+                            chai.request(server)
+                                .post('/api/v1/reviews')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ movieId: movieId })
+                                .send(JSON.stringify(reviewSample))
+                                .end((err, res) => {
+                                    chai.request(server)
+                                        .post('/api/v1/auth')
+                                        .set('Content-Type', 'application/json')
+                                        .send(JSON.stringify(staticUser2))
+                                        .end((err, res) => {
+                                            token = res.body.data.token
+                                            reviewSample = reviewFixtures.create()
+                                            chai.request(server)
+                                                .post('/api/v1/reviews')
+                                                .set('Content-Type', 'application/json')
+                                                .set('Authorization', token)
+                                                .query({ movieId: movieId })
+                                                .send(JSON.stringify(reviewSample))
+                                                .end((err, res) => {
+                                                    let reviewId = res.body.data._id
+                                                    chai.request(server)
+                                                        .delete('/api/v1/reviews')
+                                                        .set('Authorization', token)
+                                                        .query({ reviewId: reviewId })
+                                                        .end((err, res) => {
+                                                            expect(res.status).to.equal(200)
+                                                            let { success, data } = res.body
+                                                            expect(success).to.eq(true)
+                                                        })
+                                                })
+                                        })
+                                })
+                        })
+                })
+        })
 
-    //     it('Should not delete a review because of invalid reviewId', () => {
-    //         chai.request(server)
-    //             .post('/api/v1/auth')
-    //             .set('Content-Type', 'application/json')
-    //             .send(JSON.stringify(staticUser))
-    //             .end((err, res) => {
-    //                 let token = res.body.data.token
-    //                 chai.request(server)
-    //                     .get('/api/v1/reviews')
-    //                     .set('Authorization', token)
-    //                     .query({ pagination: false })
-    //                     .end((err, res) => {
-    //                         let reviewId = 'reviewId'
-    //                         chai.request(server)
-    //                             .delete('/api/v1/reviews')
-    //                             .set('Authorization', token)
-    //                             .query({ reviewId: reviewId })
-    //                             .end((err, res) => {
-    //                                 expect(res.status).to.equal(422)
-    //                                 let { success, data } = res.body
-    //                                 expect(success).to.eq(false)
-    //                             })
-    //                     })
-    //             })
-    //     })
-    // })
+        it('Should not delete a review because of invalid reviewId', () => {
+            chai.request(server)
+                .post('/api/v1/auth')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(staticUser))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/reviews')
+                        .set('Authorization', token)
+                        .query({ pagination: false })
+                        .end((err, res) => {
+                            let reviewId = 'reviewId'
+                            chai.request(server)
+                                .delete('/api/v1/reviews')
+                                .set('Authorization', token)
+                                .query({ reviewId: reviewId })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422)
+                                    let { success, data } = res.body
+                                    expect(success).to.eq(false)
+                                })
+                        })
+                })
+        })
+    })
 })
