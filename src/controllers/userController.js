@@ -137,3 +137,14 @@ exports.deleteOneMyWatchList = async (req, res) => {
         error(res, err.error, 422, err.message)
     }
 }
+
+exports.googleAuth = async (req, res) => {
+    try {
+        let result1 = await User.OAuthGoogle(req.headers.authorization)
+        let result2 = await User.findOrRegister(result1)
+        success(res, result2, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}

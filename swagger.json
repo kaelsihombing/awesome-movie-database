@@ -354,7 +354,7 @@
                 "tags": [
                     "user collection"
                 ],
-                "summary": "NOT AVAILABLE YET",
+                "summary": "login with google account",
                 "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
                 "responses": {
                     "200": {
@@ -818,12 +818,7 @@
                     "422": {
                         "description": "failed to getmovie"
                     }
-                },
-                "security": [
-                    {
-                        "Authorization": []
-                    }
-                ]
+                }
             }
         },
         "/movies/genre": {
@@ -843,6 +838,37 @@
                     {
                         "in": "query",
                         "name": "genre",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
+                    },
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                }
+            }
+        },
+        "/imdbmovie": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "get movie from IMDB and store to project database",
+                "description": "example ( api/v1/imdbmovie?i=tt8946378 ), use another movie id from imdb instead tt8946378",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "imdbIdMovie",
                         "type": "string",
                         "required": true
                     }

@@ -258,8 +258,6 @@ class User extends mongoose.model('User', userSchema) {
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
-        } else {
-            params.image = defaultImage();
         }
 
         return new Promise((resolve, reject) => {
@@ -284,7 +282,6 @@ class User extends mongoose.model('User', userSchema) {
                 }
             })
                 .then(data => {
-                    // console.log(data)
                     resolve(data)
                 })
                 .catch(err => {
@@ -580,6 +577,7 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+
 }
 
 module.exports = User;
