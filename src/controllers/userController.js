@@ -9,7 +9,8 @@ const {
 exports.create = async (req, res) => {
     try {
         let result = await User.register(req.body, req)
-        success(res, result, 201)
+
+        success(res, result.data, 201, result.message)
     }
     catch (err) {
         error(res, err, 422)

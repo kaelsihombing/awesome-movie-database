@@ -30,10 +30,12 @@ class Genre extends mongoose.model('Genre', genreSchema) {
         return new Promise((resolve, reject) => {
             this.findOne({ genre: genre })
                 .then(data => {
+                    console.log(data);
                     if (!data) return reject(`${genre} genre doesn't exist!`)
                     resolve({
-                        genre: data[0].genre,
-                        movies: data[0].movie
+                        // data,
+                        genre: data.genre,
+                        movies: data.movie
                     })
                 })
                 .catch(err => {

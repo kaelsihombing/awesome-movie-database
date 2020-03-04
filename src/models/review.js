@@ -82,7 +82,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
     }
 
     static myReview(author, pagination, page) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let options = {
                 page: page,
                 limit: 10,
@@ -113,7 +113,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
     }
 
     static movieReview(movieId, pagination, page) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let options = {
                 page: page,
                 limit: 10,
@@ -165,7 +165,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
             let subRating
-            
+
             this.findById(reviewId)
                 .then(data => {
                     subRating = data.rating
@@ -189,10 +189,10 @@ class Review extends mongoose.model('Review', reviewSchema) {
             this.findOneAndDelete({ _id: reviewId, author: author })
                 .then(review => {
                     resolve(review)
-                })
-                .catch(err => {
-                    reject(err)
-                })
+                }), reject
+                    .catch(err => {
+                        reject(err)
+                    })
         })
     }
 }
