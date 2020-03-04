@@ -80,3 +80,13 @@ exports.findTitle = async (req, res) => {
         error(res, err, 422)
     }
 }
+
+exports.filterByPopulate = async (req, res) => {
+    try {
+        let result = await Movie.filterByPopulate(req.query.pagination || true, req.query.page || 1, req.query.sortingBy)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}

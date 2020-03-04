@@ -14,6 +14,7 @@ const imagekit = new Imagekit({
 const mailer = require('../helpers/nodeMailer');
 const isEmpty = require('../helpers/isEmpty');
 const Auth = require('../events/auth');
+const Movie = require('./movie')
 
 require('mongoose-type-email');
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid';
@@ -267,7 +268,6 @@ class User extends mongoose.model('User', userSchema) {
             this.findByIdAndUpdate(user._id, params, { new: true })
                 .then(data => {
                     resolve(data)
-                    // .select('-encrypted_password')
                 })
                 .catch(err => {
                     reject(err)
@@ -486,9 +486,95 @@ class User extends mongoose.model('User', userSchema) {
             this.findByIdAndDelete(id)
                 .then(data => {
                     if (!data) return reject('This account has already deleted')
-                    console.log(data)
                     resolve({ message: `Account '${data.email}' has been deleted, Thank you for using our service` })
                 })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static addWatchList(user, movieId) {
+        return new Promise((resolve, reject) => {
+
+            Movie.findById(movieId)
+                .then(movie => {
+                    this.findById(user)
+                        .then(async userData => {
+                            if (userData.watchList.indexOf(movieId) < 0) {
+                                this.findByIdAndUpdate(userData._id, { $push: { watchList: movieId } })
+                                    .then(() => {
+                                        resolve({
+                                            message: `${movie.title} has been added to your watchlist!`,
+                                            data: userData.watchList
+                                        })
+                                    })
+                            } else {
+                                return reject(`${movie.title} has already in your watchlist`)
+                            }
+                        })
+                        .then(userData => {
+                            console.log(userData);
+
+                        })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static viewMyWatchList(user) {
+
+        return new Promise((resolve, reject) => {
+
+            this.findById(user)
+                .populate({
+                    path: 'watchList',
+                    select: ['title', 'poster', 'casts', 'genres']
+                })
+                .select(['watchList', '-_id'])
+                .then(movie => {
+                    if (movie.watchList.length === 0) {
+                        reject({
+                            message: 'You have no movie in your watchlist',
+                        })
+                    } else {
+                        resolve(movie)
+                    }
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static deleteOneMyWatchList(user, movieId) {
+        return new Promise((resolve, reject) => {
+
+            this.findById(user)
+                .populate({
+                    path: 'watchList',
+                    select: ['title', 'poster', 'casts', 'genres']
+                })
+                .select(['watchList'])
+                .then(user => {
+                    user.watchList.splice(user.watchList.indexOf(movieId), 1)
+                    user.save()
+                        .then((data) => {
+                            if (data.watchList.length === 0) {
+                                reject({
+                                    message: 'You have no movie in your watchlist',
+                                })
+                            } else {
+                                resolve({
+                                    message: 'Movie has been removed from your watchlist',
+                                    data: user
+                                })
+                            }
+                        })
+                })
+
                 .catch(err => {
                     reject(err)
                 })
