@@ -31,15 +31,12 @@ router.get('/incumbents', authenticate, incumbent.view)
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
 router.get('/movies', movie.view)
-router.get('/movies/all', movie.all)
 router.put('/movies', authenticate, movie.edit) // not ready yet
-router.put('/movies/incumbent', authenticate, movie.incumbent) //?
 router.delete('/movies', authenticate, movie.deleteMovie)
+router.get('/movies/all', movie.all)
 router.get('/movies/title', movie.findTitle)
 router.get('/movies/popular', movie.filterByPopulate)
-
-// Genre endpoint
-router.get('/genre', genre.filter)
+router.get('/movies/genre', genre.filter)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)

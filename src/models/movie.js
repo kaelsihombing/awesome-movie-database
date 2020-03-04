@@ -385,48 +385,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static addIncumbent(movieId, editor, role, bodyParams) {
-        return new Promise((resolve, reject) => {
-            if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
-
-            let movieTitle
-            this.findById(movieId)
-                .then(movie => {
-                    if (!movie) return reject('Cannot find movie!')
-                    let params = ['casts', 'directors', 'writers']
-                    for (let i = 0; i < params.length; i++) {
-                        if ((movie[params[i]].indexOf(bodyParams.name)) >= 0) return reject(`This incumbent was already added to this movie's ${params[i]}`)
-                    }
-
-                    movieTitle = movie.title
-                })
-                .catch(err => {
-                    reject(err)
-                })
-
-            let pushData
-            Incumbent.findOne({ 'name': bodyParams.name })
-                .then(incumbent => {
-                    if (!incumbent) return reject(`There is no incumbent with name '${bodyParams.name}' in the database`)
-                    pushData = incumbent.name
-                    incumbent.movie.push(movieTitle)
-                    incumbent.save()
-                })
-
-            this.findById(movieId)
-                .then(movie => {
-                    movie[`${bodyParams.occupation}`].push(pushData)
-                    movie.save()
-                    movie.lastUpdatedBy = editor
-                    resolve(movie)
-                })
-
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
-
     static deleteMovie(role, movieId) {
         return new Promise((resolve, reject) => {
             if (role !== 'ADMIN') return reject('Sorry you\'re not authorized to do this');
@@ -667,7 +625,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
-    static filterByPopulate(pagination, page, sortingBy) {
+    static filterAndSorting(pagination, page, sortingBy) {
         return new Promise((resolve, reject) => {
             let options = {
                 page: page,

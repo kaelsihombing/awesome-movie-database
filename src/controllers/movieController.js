@@ -50,16 +50,6 @@ exports.edit = async (req, res) => {
     }
 }
 
-exports.incumbent = async (req, res) => {
-    try {
-        let result = await Movie.addIncumbent(req.query.movieId, req.user._id, req.user.role, req.body)
-        success(res, result, 201)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
-}
-
 exports.copyMovie = async (req, res) => {
     try {
         let result = await Movie.copyMovie(req.query.i, req.user._id, req.user.role)
@@ -83,7 +73,7 @@ exports.findTitle = async (req, res) => {
 
 exports.filterByPopulate = async (req, res) => {
     try {
-        let result = await Movie.filterByPopulate(req.query.pagination || true, req.query.page || 1, req.query.sortingBy)
+        let result = await Movie.filterAndSorting(req.query.pagination || true, req.query.page || 1, req.query.sortingBy)
         success(res, result, 200)
     }
     catch (err) {

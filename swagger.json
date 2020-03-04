@@ -1,1182 +1,1283 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "description": "This is an API Documentation awesome-movie-data.",
-    "version": "1.2.1",
-    "title": "How Movie",
-    "contact": {
-      "email": "andrio.kevin12@gmail.com"
-    }
-  },
-  "host": "awesome-movie-data.herokuapp.com",
-  "basePath": "/api/v1",
-  "tags": [
-    {
-      "name": "user collection",
-      "description": "Info for User API"
-    },
-    {
-      "name": "movie collection",
-      "description": "Info for Movie API"
-    },
-    {
-      "name": "review collection",
-      "description": "Info for Review API"
-    },
-    {
-      "name": "incumbent collection",
-      "description": "Infor for Incumbent API"
-    }
-  ],
-  "paths": {
-    "/users": {
-      "post": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "register a new user",
-        "description": "ask user for fullname, email, password, and password confirmation",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UsersRegisterRequest"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfuly created and the user should to click a link in the email that has been sent to confirmed email.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "object",
-                        "example": "A reset email has been sent to sntmcl1@gmail.com, please check your email."
-                      },
-                      "id": {
-                        "example": "5e587c0ab9820915192b33d9"
-                      },
-                      "fullname": {
-                        "example": "santo michael sihombing"
-                      },
-                      "email": {
-                        "example": "sntmcl@gmail.com"
-                      },
-                      "language": {
-                        "example": "en"
-                      },
-                      "verified": {
-                        "example": false
-                      },
-                      "image": {
-                        "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
-                      },
-                      "token": {
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Your credentials is not valid",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": "Password and Password Confirmation doesn't match"
-                }
-              }
-            }
-          }
+    "swagger": "2.0",
+    "info": {
+        "description": "This is an API Documentation awesome-movie-data.",
+        "version": "1.2.1",
+        "title": "How Movie",
+        "contact": {
+            "email": "andrio.kevin12@gmail.com"
         }
-      },
-      "put": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "updating user's data",
-        "description": "need to verify the email before updating user's data",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "formData",
-            "name": "fullname",
-            "type": "string",
-            "description": "fullname to be changed"
-          },
-          {
-            "in": "formData",
-            "name": "image",
-            "type": "file",
-            "description": "the image to upload"
-          },
-          {
-            "in": "formData",
-            "name": "language",
-            "type": "string",
-            "description": "the language to be changed (id / en )"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User data has been edited",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "image": {
-                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1582858227574_s2IEaP8G8"
-                        },
-                        "verified": {
-                          "example": true
-                        },
-                        "role": {
-                          "example": "USER"
-                        },
-                        "watchlist": {
-                          "example": "[]"
-                        },
-                        "language": {
-                          "example": "id"
-                        },
-                        "_id": {
-                          "example": true
-                        },
-                        "fullname": {
-                          "example": "santo michael"
-                        },
-                        "email": {
-                          "example": "gonzales@gmail.com"
-                        },
-                        "createdAt": {
-                          "example": "2020-02-28T02:33:46.931Z"
-                        },
-                        "updatedAt": {
-                          "example": "2020-02-28T02:50:31.661Z"
+    },
+    "host": "awesome-movie-data.herokuapp.com",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "user collection",
+            "description": "Info for User API"
+        },
+        {
+            "name": "movie collection",
+            "description": "Info for Movie API"
+        },
+        {
+            "name": "review collection",
+            "description": "Info for Review API"
+        },
+        {
+            "name": "incumbent collection",
+            "description": "Infor for Incumbent API"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "register a new user",
+                "description": "ask user for fullname, email, password, and password confirmation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UsersRegisterRequest"
                         }
-                      }
                     }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "not successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "example": "error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/auth": {
-      "post": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "generate a token for user's credentials",
-        "description": "ask user for email and password, then if it''s valid it will generate a token'",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UsersLoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successfuly logged in",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "5e467d3a15425d00171a4cac"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfuly created and the user should to click a link in the email that has been sent to confirmed email.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "object",
+                                                "example": "An email verify has been sent to sntmcl1@gmail.com, please check your email."
+                                            },
+                                            "id": {
+                                                "example": "5e587c0ab9820915192b33d9"
+                                            },
+                                            "fullname": {
+                                                "example": "santo michael sihombing"
+                                            },
+                                            "email": {
+                                                "example": "sntmcl@gmail.com"
+                                            },
+                                            "language": {
+                                                "example": "en"
+                                            },
+                                            "verified": {
+                                                "example": false
+                                            },
+                                            "image": {
+                                                "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
+                                            },
+                                            "token": {
+                                                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
-                    "fullname": {
-                      "example": "santo michael sihombing"
-                    },
-                    "email": {
-                      "example": "sntmcl@gmail.com"
-                    },
-                    "role": {
-                      "example": "USER"
-                    },
-                    "image": {
-                      "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
-                    },
-                    "verified": {
-                      "example": true
-                    },
-                    "token": {
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    "422": {
+                        "description": "Your credentials is not valid",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "error": {
+                                    "example": "Password and Password Confirmation doesn't match"
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
-            }
-          },
-          "422": {
-            "description": "unsuccessfully login",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "data": {
-                  "type": "string",
-                  "example": "Password is wrong"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/google": {
-      "post": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "NOT AVAILABLE YET",
-        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
-        "responses": {
-          "200": {
-            "description": "Successfuly logged in",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "5e467d3a15425d00171a4cac"
+            },
+            "put": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "updating user's data",
+                "description": "need to verify the email before updating user's data",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "fullname",
+                        "type": "string",
+                        "description": "fullname to be changed"
                     },
-                    "fullname": {
-                      "example": "santo michael sihombing"
+                    {
+                        "in": "formData",
+                        "name": "image",
+                        "type": "file",
+                        "description": "the image to upload"
                     },
-                    "email": {
-                      "example": "sntmcl@gmail.com"
-                    },
-                    "token": {
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    {
+                        "in": "formData",
+                        "name": "language",
+                        "type": "string",
+                        "description": "the language to be changed (id / en )"
                     }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Not successfully login",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "data": {
-                  "type": "string",
-                  "example": "Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/recover": {
-      "post": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "recovering user's password",
-        "description": "Ask user for email ",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ForgotPassword"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "example": "a reset email has been sent to sntmcl1@gmail.com, please check your email"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "failed",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "example": "Unauthorized"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resend-email": {
-      "post": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "re-send verification email",
-        "description": "ask to re-send email verification confirmation",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "example": "verification email has been sent to sntmcl1@gmail.com, please check your email."
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User data has been edited",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image": {
+                                                    "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1582858227574_s2IEaP8G8"
+                                                },
+                                                "verified": {
+                                                    "example": true
+                                                },
+                                                "role": {
+                                                    "example": "USER"
+                                                },
+                                                "watchlist": {
+                                                    "example": "[]"
+                                                },
+                                                "language": {
+                                                    "example": "id"
+                                                },
+                                                "_id": {
+                                                    "example": true
+                                                },
+                                                "fullname": {
+                                                    "example": "santo michael"
+                                                },
+                                                "email": {
+                                                    "example": "gonzales@gmail.com"
+                                                },
+                                                "createdAt": {
+                                                    "example": "2020-02-28T02:33:46.931Z"
+                                                },
+                                                "updatedAt": {
+                                                    "example": "2020-02-28T02:50:31.661Z"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "not successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "errors": {
+                                    "example": "error"
+                                }
+                            }
+                        }
                     }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "failed",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "example": "Unauthorized"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/movies": {
-      "post": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Add new movie entry",
-        "description": "ask authorized user for task title and dueDate",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MovieEntryRequest"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfuly created new task",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
                 },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e5645cd97119b556fe00d66"
-                    },
-                    "title": {
-                      "example": "8 Mile"
-                    },
-                    "year": {
-                      "example": "2002"
-                    },
-                    "genre": {
-                      "example": []
-                    },
-                    "casts": {
-                      "example": []
-                    },
-                    "directors": {
-                      "example": []
-                    },
-                    "writers": {
-                      "example": []
+                "security": [
+                    {
+                        "Authorization": []
                     }
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation error due to missing parameter(s)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": {}
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "get": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Show specific movie entry",
-        "description": "show specific movie based on give movieId",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "movieId",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show all movie entry (paginated to 10 per page)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "$ref": "#/definitions/MovieSchema"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Update movie information",
-        "description": "update movie information (title, year)",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MovieEditRequest"
-            }
-          },
-          {
-            "in": "query",
-            "type": "number",
-            "name": "movieId",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully update the movie information"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/movies/all": {
-      "get": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Show all movie entry",
-        "description": "show all movie entry",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show all movie entry (paginated to 10 per page)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "docs": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/MovieSchema"
-                      }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "delete current user account",
+                "responses": {
+                    "201": {
+                        "description": "User data has been edited",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "example": "Account 'test2@gmail.com' has been deleted, Thank you for using our service"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "not successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "errors": {
+                                    "example": "Unauthorized"
+                                }
+                            }
+                        }
                     }
-                  }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/auth": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "generate a token for user's credentials",
+                "description": "ask user for email and password, then if it''s valid it will generate a token'",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UsersLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfuly logged in",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "example": "5e467d3a15425d00171a4cac"
+                                        },
+                                        "fullname": {
+                                            "example": "santo michael sihombing"
+                                        },
+                                        "email": {
+                                            "example": "sntmcl@gmail.com"
+                                        },
+                                        "role": {
+                                            "example": "USER"
+                                        },
+                                        "image": {
+                                            "example": "https://ik.imagekit.io/m1ke1magek1t/default_image/WhatsApp_Image_2020-02-26_at_5.42.11_PM_QsD9fMMl-.jpeg"
+                                        },
+                                        "verified": {
+                                            "example": true
+                                        },
+                                        "token": {
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "unsuccessfully login",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "example": "Password is wrong"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
+        },
+        "/auth/google": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "NOT AVAILABLE YET",
+                "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+                "responses": {
+                    "200": {
+                        "description": "Successfuly logged in",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "example": "5e467d3a15425d00171a4cac"
+                                        },
+                                        "fullname": {
+                                            "example": "santo michael sihombing"
+                                        },
+                                        "email": {
+                                            "example": "sntmcl@gmail.com"
+                                        },
+                                        "token": {
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Not successfully login",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "example": "Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/recover": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "recovering user's password",
+                "description": "Ask user for email ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ForgotPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "example": "a reset email has been sent to sntmcl1@gmail.com, please check your email"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "example": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resend-email": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "re-send verification email",
+                "description": "ask to re-send email verification confirmation",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "example": "verification email has been sent to sntmcl1@gmail.com, please check your email."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "example": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/movies": {
+            "post": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "Add new movie entry",
+                "description": "ask authorized user for task title and dueDate",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MovieEntryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfuly created new task",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error due to missing parameter(s)",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "error": {
+                                    "example": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "Show specific movie",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "movieId",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully show movie",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "docs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/MovieSchema"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "Update movie information",
+                "description": "update movie information (title, year)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MovieEditRequest"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "type": "number",
+                        "name": "movieId",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully update the movie information"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "Delete specific movie",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "movieId",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted movie",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "docs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/MovieSchema"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/movies/all": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "Show all movie entry",
+                "description": "show all movie entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully show all movie entry (paginated to 10 per page)",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "docs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/MovieSchema"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/incumbents": {
+            "post": {
+                "tags": [
+                    "incumbent collection"
+                ],
+                "summary": "Register incumbent",
+                "description": "register incumbent (casts/writers/directors) to collection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegisterIncumbentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully register incumbent"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "incumbent collection"
+                ],
+                "summary": "View incumbents",
+                "description": "view existing incumbents",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show all existing incumbents"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/movies/sorting": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "filter and sorting",
+                "description": "example ( api/v1/movies/popular?sortingBy=-rating ), you change rating to year instead rating. use '-' for descending, and without'-' for ascending'",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "sortingBy",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
+                    },
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/movies/genre": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "filter and sorting",
+                "description": "example ( api/v1/movies/genre?genre=action ), you change action to another genre instead action",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "genre",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
+                    },
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/reviews": {
+            "post": {
+                "tags": [
+                    "review collection"
+                ],
+                "summary": "add new review for a movie",
+                "description": "post new review for a movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "movieId",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/CreateReviewRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully created movie review"
+                    },
+                    "422": {
+                        "description": "failed to created movie review"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "review collection"
+                ],
+                "summary": "get all reviews from current user",
+                "description": "view current user's reviews",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully view user's reviews"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "review collection"
+                ],
+                "summary": "edit movie review",
+                "description": "edit existing movie review",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "reviewId",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "$ref": "#/definitions/EditReviewRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully updated movie review"
+                    },
+                    "422": {
+                        "description": "failed to update movie review"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "review collection"
+                ],
+                "summary": "delete movie review",
+                "description": "delete existing movie review",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "reviewId",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully deleted movie review"
+                    },
+                    "422": {
+                        "description": "failed to delete movie review"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
         }
-      }
     },
-    "/movies/incumbent": {
-      "put": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Add movie incumbent",
-        "description": "add movie casts/writers/directors",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MovieIncumbentRequest"
-            }
-          },
-          {
-            "in": "query",
-            "type": "number",
-            "name": "movieId",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully add movie incumbent"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/incumbents": {
-      "post": {
-        "tags": [
-          "incumbent collection"
-        ],
-        "summary": "Register incumbent",
-        "description": "register incumbent (casts/writers/directors) to collection",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/RegisterIncumbentRequest"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfully register incumbent"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "get": {
-        "tags": [
-          "incumbent collection"
-        ],
-        "summary": "View incumbents",
-        "description": "view existing incumbents",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "Show all existing incumbents"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/reviews": {
-      "post": {
-        "tags": [
-          "review collection"
-        ],
-        "summary": "add new review for a movie",
-        "description": "post new review for a movie",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "movieId",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/CreateReviewRequest"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "successfully created movie review"
-          },
-          "422": {
-            "description": "failed to created movie review"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "get": {
-        "tags": [
-          "review collection"
-        ],
-        "summary": "get all reviews from current user",
-        "description": "view current user's reviews",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successfully view user's reviews"
-          }
+    "securityDefinitions": {
+        "Authorization": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
-      },
-      "put": {
-        "tags": [
-          "review collection"
-        ],
-        "summary": "edit movie review",
-        "description": "edit existing movie review",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "reviewId",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/EditReviewRequest"
+    },
+    "definitions": {
+        "UsersRegisterRequest": {
+            "type": "object",
+            "required": [
+                "fullname",
+                "email",
+                "password",
+                "password_confirmation"
+            ],
+            "properties": {
+                "fullname": {
+                    "type": "string",
+                    "example": "santo michael sihombing"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "sntmcl@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "sntmcl1"
+                },
+                "password_confirmation": {
+                    "type": "string",
+                    "example": "sntmcl1"
+                }
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "successfully updated movie review"
-          },
-          "422": {
-            "description": "failed to update movie review"
-          }
         },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "review collection"
-        ],
-        "summary": "delete movie review",
-        "description": "delete existing movie review",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "reviewId",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "successfully deleted movie review"
-          },
-          "422": {
-            "description": "failed to delete movie review"
-          }
+        "UsersLoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "sntmcl@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "sntmcl1"
+                }
+            }
         },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
+        "ForgotPassword": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "sntmcl1@gmail.com"
+                }
+            }
+        },
+        "MovieSchema": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "number",
+                    "example": "5e5777114ff3292e38202a60"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "8 Mile"
+                },
+                "year": {
+                    "type": "number",
+                    "example": 2002
+                },
+                "genre": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "Music"
+                    }
+                },
+                "casts": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "example": "5e577893d2abb43076ab5db2"
+                    }
+                },
+                "directors": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "example": "5e577893d2abb43076ab5db2"
+                    }
+                },
+                "writers": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "example": "5e577893d2abb43076ab5db2"
+                    }
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "example": null
+                    }
+                },
+                "synopsis": {
+                    "type": "string",
+                    "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
+                },
+                "addedBy": {
+                    "type": "number",
+                    "example": null
+                },
+                "lastUpdatedBy": {
+                    "type": "number",
+                    "example": null
+                }
+            }
+        },
+        "MovieEntryRequest": {
+            "type": "object",
+            "required": [
+                "title",
+                "year"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "example": "8 Mile"
+                },
+                "year": {
+                    "type": "number",
+                    "example": 2002
+                },
+                "duration": {
+                    "type": "string",
+                    "example": "132 min"
+                },
+                "genres": {
+                    "type": "string",
+                    "example": "Horror, Thriller"
+                },
+                "directors": {
+                    "type": "string",
+                    "example": "Nia DaCosta"
+                },
+                "writers": {
+                    "type": "string",
+                    "example": "Jordan Peele"
+                },
+                "casts": {
+                    "type": "string",
+                    "example": "Yahya Abdul-Mateen II, Teyonah Parris, Nathan Stewart-Jarrett"
+                },
+                "synopsis": {
+                    "type": "string",
+                    "example": "A 'spiritual sequel' to the 1992 horror film 'Candyman' that returns to the now-gentrified Chicago neighborhood where the legend began."
+                }
+            }
+        },
+        "MovieEditRequest": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "example": "8 Mile"
+                },
+                "year": {
+                    "type": "number",
+                    "example": 2002
+                },
+                "synopsis": {
+                    "type": "string",
+                    "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
+                },
+                "poster": {
+                    "type": "string"
+                },
+                "trailer": {
+                    "type": "string"
+                }
+            }
+        },
+        "RegisterIncumbentRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Eminem"
+                },
+                "birthDate": {
+                    "type": "string",
+                    "format": "Date",
+                    "example": "1972-10-17T00:00:00.000Z"
+                }
+            }
+        },
+        "CreateReviewRequest": {
+            "type": "object",
+            "required": [
+                "title",
+                "description",
+                "rating"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "example": "This is lit"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "This movie is lit because Eminem is in it"
+                },
+                "rating": {
+                    "type": "number",
+                    "example": 5,
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                }
+            }
+        },
+        "EditReviewRequest": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "example": "This is very lit"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "This movie is lit because Eminem and Mike Phifer is in it"
+                },
+                "rating": {
+                    "type": "number",
+                    "example": 10,
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                }
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "Back-End Repository",
+        "url": "https://gitlab.com/ellvisca/awesome-movie-database"
     }
-  },
-  "securityDefinitions": {
-    "Authorization": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  },
-  "definitions": {
-    "UsersRegisterRequest": {
-      "type": "object",
-      "required": [
-        "fullname",
-        "email",
-        "password",
-        "password_confirmation"
-      ],
-      "properties": {
-        "fullname": {
-          "type": "string",
-          "example": "santo michael sihombing"
-        },
-        "email": {
-          "type": "string",
-          "example": "sntmcl@gmail.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "sntmcl1"
-        },
-        "password_confirmation": {
-          "type": "string",
-          "example": "sntmcl1"
-        }
-      }
-    },
-    "UsersLoginRequest": {
-      "type": "object",
-      "required": [
-        "email",
-        "password"
-      ],
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "sntmcl@gmail.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "sntmcl1"
-        }
-      }
-    },
-    "ForgotPassword": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "sntmcl1@gmail.com"
-        }
-      }
-    },
-    "MovieSchema": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "number",
-          "example": "5e5777114ff3292e38202a60"
-        },
-        "title": {
-          "type": "string",
-          "example": "8 Mile"
-        },
-        "year": {
-          "type": "number",
-          "example": 2002
-        },
-        "genre": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "example": "Music"
-          }
-        },
-        "casts": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "example": "5e577893d2abb43076ab5db2"
-          }
-        },
-        "directors": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "example": "5e577893d2abb43076ab5db2"
-          }
-        },
-        "writers": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "example": "5e577893d2abb43076ab5db2"
-          }
-        },
-        "reviews": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "example": null
-          }
-        },
-        "synopsis": {
-          "type": "string",
-          "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
-        },
-        "addedBy": {
-          "type": "number",
-          "example": null
-        },
-        "lastUpdatedBy": {
-          "type": "number",
-          "example": null
-        }
-      }
-    },
-    "MovieEntryRequest": {
-      "type": "object",
-      "required": [
-        "title",
-        "year"
-      ],
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "8 Mile"
-        },
-        "year": {
-          "type": "number",
-          "example": 2002
-        }
-      }
-    },
-    "MovieEditRequest": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "8 Mile"
-        },
-        "year": {
-          "type": "number",
-          "example": 2002
-        },
-        "synopsis": {
-          "type": "string",
-          "example": "A young rapper, struggling with every aspect of his life, wants to make it big but his friends and foes make this odyssey of rap harder than it may seem."
-        },
-        "poster": {
-          "type": "string"
-        },
-        "trailer": {
-          "type": "string"
-        }
-      }
-    },
-    "MovieIncumbentRequest": {
-      "type": "object",
-      "required": [
-        "name",
-        "occupation"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Eminem"
-        },
-        "occupation": {
-          "type": "string",
-          "example": "casts",
-          "enum": [
-            "casts",
-            "writers",
-            "directors"
-          ]
-        }
-      }
-    },
-    "CreateReviewRequest": {
-      "type": "object",
-      "required": [
-        "title",
-        "description",
-        "rating"
-      ],
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "This is lit"
-        },
-        "description": {
-          "type": "string",
-          "example": "This movie is lit because Eminem is in it"
-        },
-        "rating": {
-          "type": "number",
-          "example": 5,
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-          ]
-        }
-      }
-    },
-    "EditReviewRequest": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "This is very lit"
-        },
-        "description": {
-          "type": "string",
-          "example": "This movie is lit because Eminem and Mike Phifer is in it"
-        },
-        "rating": {
-          "type": "number",
-          "example": 10,
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-          ]
-        }
-      }
-    },
-    "RegisterIncumbentRequest": {
-      "type": "object",
-      "required": [
-        "name"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Eminem"
-        },
-        "birthDate": {
-          "type": "string",
-          "format": "Date",
-          "example": "1972-10-17T00:00:00.000Z"
-        }
-      }
-    }
-  },
-  "externalDocs": {
-    "description": "Back-End Repository",
-    "url": "https://gitlab.com/ellvisca/awesome-movie-database"
-  }
 }
