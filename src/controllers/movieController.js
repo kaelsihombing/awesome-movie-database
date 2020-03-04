@@ -18,7 +18,7 @@ exports.add = async (req, res) => {
 exports.deleteMovie = async (req, res) => {
     try {
         let result = await Movie.deleteMovie(req.user.role, req.query.movieId)
-        success(res, result, 201)
+        success(res, result.id, 201, result.message)
     }
     catch (err) {
         error(res, err, 422)
@@ -63,6 +63,7 @@ exports.incumbent = async (req, res) => {
 exports.copyMovie = async (req, res) => {
     try {
         let result = await Movie.copyMovie(req.query.i, req.user._id, req.user.role)
+
         success(res, result, 201)
     }
     catch (err) {
@@ -71,7 +72,7 @@ exports.copyMovie = async (req, res) => {
 }
 
 exports.findTitle = async (req, res) => {
-    try{
+    try {
         let result = await Movie.findByTitle(req.query.title)
         success(res, result, 200)
     }

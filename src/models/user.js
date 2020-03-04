@@ -157,11 +157,9 @@ class User extends mongoose.model('User', userSchema) {
                                 // resolve({ message: 'A reset email has been sent to ' + data.email + ', please check your email.' });
                             });
 
-                            resolve([
-                                {
-                                    message: 'A verify email has been sent to ' + data.email + ', please check your email.'
-                                },
-                                {
+                            resolve({
+                                message: 'A verify email has been sent to ' + data.email + ', please check your email.',
+                                data: {
                                     id: data._id,
                                     fullname: data.fullname,
                                     email: data.email,
@@ -170,7 +168,7 @@ class User extends mongoose.model('User', userSchema) {
                                     image: data.image,
                                     token: token
                                 }
-                            ])
+                            })
                         })
                         .catch(err => {
                             reject(err)

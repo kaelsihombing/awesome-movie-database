@@ -7,7 +7,7 @@ function success(res, data, statusCode, message = undefined) {
         data
     }
 
-    if(isEmpty(message)) delete response.message
+    if (isEmpty(message)) delete response.message
 
     return res.status(statusCode).json(response)
 }
