@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Double = require('@mongoosejs/double')
+const mongooseFindAndFilter = require('mongoose-find-and-filter');
 const Schema = mongoose.Schema;
 const axios = require('axios');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -68,7 +69,7 @@ const movieSchema = new Schema({
         timestamps: true,
     }
 )
-
+movieSchema.plugin(mongooseFindAndFilter);
 movieSchema.plugin(mongoosePaginate)
 
 class Movie extends mongoose.model('Movie', movieSchema) {
@@ -317,9 +318,9 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
             if (movieId) {
                 this.findById(movieId)
-                .populate({
-                    path: 'reviews',
-                })
+                    .populate({
+                        path: 'reviews',
+                    })
                     .then(data => {
                         if (!data) return reject('the movie doesn\'t exist in database')
                         resolve(data)
@@ -666,6 +667,32 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         })
     }
 
+    static filterByPopulate(pagination, page, sortingBy) {
+        return new Promise((resolve, reject) => {
+            let options = {
+                page: page,
+                limit: 10,
+                pagination: JSON.parse(pagination),
+                select: ['rating', 'title', 'year', 'poster'],
+                sort: sortingBy,
+                collation: { locale: 'en' }
+            }
+            options.sort = sortingBy
+            this.find({})
+                .then(data => {
+                    let lastPage = Math.floor(data.length / 10) + 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+
+                    this.paginate({}, options)
+                        .then(data => {
+                            resolve(data)
+                        })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
 }
 
 module.exports = Movie

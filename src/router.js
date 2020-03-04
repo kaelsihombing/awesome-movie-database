@@ -17,6 +17,9 @@ router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
 router.delete('/users', authenticate, user.deleteAccount)
+router.post('/watchlist', authenticate, user.addWatchList)
+router.get('/watchlist', authenticate, user.viewMyWatchList)
+router.delete('/watchlist', authenticate, user.deleteOneMyWatchList)
 
 // Admin endpoint
 router.post('/admins', validateForm, user.createAdmin)
@@ -33,6 +36,7 @@ router.put('/movies', authenticate, movie.edit) // not ready yet
 router.put('/movies/incumbent', authenticate, movie.incumbent) //?
 router.delete('/movies', authenticate, movie.deleteMovie)
 router.get('/movies/title', movie.findTitle)
+router.get('/movies/popular', movie.filterByPopulate)
 
 // Genre endpoint
 router.get('/genre', genre.filter)

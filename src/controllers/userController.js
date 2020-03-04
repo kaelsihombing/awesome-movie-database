@@ -107,3 +107,33 @@ exports.resentEmailVerification = async (req, res) => {
         error(res, err, 422)
     }
 }
+
+exports.addWatchList = async (req, res) => {
+    try {
+        let result = await User.addWatchList(req.user._id, req.query.movieId)
+        success(res, result.data, 201, result.message)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.viewMyWatchList = async (req, res) => {
+    try {
+        let result = await User.viewMyWatchList(req.user._id)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err.error, 422, err.message)
+    }
+}
+
+exports.deleteOneMyWatchList = async (req, res) => {
+    try {
+        let result = await User.deleteOneMyWatchList(req.user._id)
+        success(res, result.data, 201, result.message)
+    }
+    catch (err) {
+        error(res, err.error, 422, err.message)
+    }
+}

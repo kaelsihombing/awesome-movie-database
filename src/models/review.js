@@ -42,7 +42,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
         return new Promise((resolve, reject) => {
             Movie.findById(movieId)
                 .then(movie => {
-                    if(!movie) return reject ("There's no movie with given id")
+                    if (!movie) return reject("There's no movie with given id")
                 })
 
             this.find({ movieId: movieId, author: author })
@@ -83,7 +83,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             })
                     }
                 })
-                .catch(err=> {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -121,7 +121,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
     }
 
     static movieReview(movieId, pagination, page) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let options = {
                 page: page,
                 limit: 10,
@@ -176,7 +176,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
             let subRating
-            
+
             this.findByIdAndDelete(reviewId)
                 .then(data => {
                     if (data.author != author) return reject("You're not allowed to delete other's review")
@@ -196,7 +196,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             else movie.rating = movie.rating / movie.reviews.length
                             movie.save()
                         })
-                    
+
                     resolve(data)
                 })
                 .catch(err => {
