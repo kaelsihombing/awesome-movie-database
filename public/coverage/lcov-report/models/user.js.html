@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">28.16% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>50/175</span>
+                <span class='fraction'>49/174</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">31.21% </span>
+                <span class="strong">31.41% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/157</span>
+                <span class='fraction'>49/156</span>
             </div>
         
             
@@ -638,11 +638,7 @@
 <a name='L579'></a><a href='#L579'>579</a>
 <a name='L580'></a><a href='#L580'>580</a>
 <a name='L581'></a><a href='#L581'>581</a>
-<a name='L582'></a><a href='#L582'>582</a>
-<a name='L583'></a><a href='#L583'>583</a>
-<a name='L584'></a><a href='#L584'>584</a>
-<a name='L585'></a><a href='#L585'>585</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L582'></a><a href='#L582'>582</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -902,8 +898,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -927,7 +921,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1220,13 +1213,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
-const mongoose = require('mongoose');
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -1380,7 +1373,7 @@ class User extends mongoose.model('User', userSchema) {
                             };
 &nbsp;
                             mailer.send(mailOptions, (error) =&gt; {
-                                <span class="missing-if-branch" title="else path not taken" >E</span>if (error) return reject({ message: error.message });
+                                <span class="missing-if-branch" title="if path not taken" >I</span>if (error) <span class="cstat-no" title="statement not covered" >return reject({ message: error.message });</span>
 &nbsp;
                                 // resolve({ message: 'A reset email has been sent to ' + data.email + ', please check your email.' });
                             });
@@ -1485,8 +1478,6 @@ class User extends mongoose.model('User', userSchema) {
 <span class="cstat-no" title="statement not covered" >        if (req.file) {</span>
             let url = <span class="cstat-no" title="statement not covered" >await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })</span>
 <span class="cstat-no" title="statement not covered" >            params.image = url.url</span>
-        } else {
-<span class="cstat-no" title="statement not covered" >            params.image = defaultImage();</span>
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
@@ -1511,7 +1502,6 @@ class User extends mongoose.model('User', userSchema) {
                 }
             })
                 .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
-                    // console.log(data)
 <span class="cstat-no" title="statement not covered" >                    resolve(data)</span>
                 })
                 .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
@@ -1807,6 +1797,7 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+&nbsp;
 }
 &nbsp;
 module.exports = User;</pre></td></tr></table></pre>
@@ -1816,7 +1807,7 @@ module.exports = User;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 05 2020 01:31:56 GMT+0700 (Western Indonesia Time)
+                at Thu Mar 05 2020 03:35:57 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
