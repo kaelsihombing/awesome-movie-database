@@ -16,6 +16,7 @@ const { check } = require('express-validator');
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
+router.get('/auth/google', user.googleAuth);
 router.delete('/users', authenticate, user.deleteAccount)
 router.post('/watchlist', authenticate, user.addWatchList)
 router.get('/watchlist', authenticate, user.viewMyWatchList)
@@ -55,5 +56,5 @@ router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
 //Input movie to database from imdb
-router.get('/movie', authenticate, movie.copyMovie)
+router.get('/imdbmovie', authenticate, movie.copyMovie)
 module.exports = router;

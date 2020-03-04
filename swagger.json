@@ -112,86 +112,58 @@
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "user collection"
-        ],
-        "summary": "updating user's data",
-        "description": "need to verify the email before updating user's data",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "formData",
-            "name": "fullname",
-            "type": "string",
-            "description": "fullname to be changed"
-          },
-          {
-            "in": "formData",
-            "name": "image",
-            "type": "file",
-            "description": "the image to upload"
-          },
-          {
-            "in": "formData",
-            "name": "language",
-            "type": "string",
-            "description": "the language to be changed (id / en )"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User data has been edited",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "image": {
-                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1582858227574_s2IEaP8G8"
-                        },
-                        "verified": {
-                          "example": true
-                        },
-                        "role": {
-                          "example": "USER"
-                        },
-                        "watchlist": {
-                          "example": "[]"
-                        },
-                        "language": {
-                          "example": "id"
-                        },
-                        "_id": {
-                          "example": true
-                        },
-                        "fullname": {
-                          "example": "santo michael"
-                        },
-                        "email": {
-                          "example": "gonzales@gmail.com"
-                        },
-                        "createdAt": {
-                          "example": "2020-02-28T02:33:46.931Z"
-                        },
-                        "updatedAt": {
-                          "example": "2020-02-28T02:50:31.661Z"
+        },
+        "/auth/google": {
+            "post": {
+                "tags": [
+                    "user collection"
+                ],
+                "summary": "login with google account",
+                "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+                "responses": {
+                    "200": {
+                        "description": "Successfuly logged in",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "example": "5e467d3a15425d00171a4cac"
+                                        },
+                                        "fullname": {
+                                            "example": "santo michael sihombing"
+                                        },
+                                        "email": {
+                                            "example": "sntmcl@gmail.com"
+                                        },
+                                        "token": {
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Not successfully login",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "example": "Error"
+                                }
+                            }
                         }
                       }
                     }
@@ -289,26 +261,124 @@
             "schema": {
               "$ref": "#/definitions/UsersLoginRequest"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successfuly logged in",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "5e467d3a15425d00171a4cac"
+        },
+        "/movies/sorting": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "filter and sorting",
+                "description": "example ( api/v1/movies/popular?sortingBy=-rating ), you change rating to year instead rating. use '-' for descending, and without'-' for ascending'",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "sortingBy",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
                     },
-                    "fullname": {
-                      "example": "santo michael sihombing"
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                }
+            }
+        },
+        "/movies/genre": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "filter and sorting",
+                "description": "example ( api/v1/movies/genre?genre=action ), you change action to another genre instead action",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "genre",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
+                    },
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                }
+            }
+        },
+        "/imdbmovie": {
+            "get": {
+                "tags": [
+                    "movie collection"
+                ],
+                "summary": "get movie from IMDB and store to project database",
+                "description": "example ( api/v1/imdbmovie?i=tt8946378 ), use another movie id from imdb instead tt8946378",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "imdbIdMovie",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully get movie"
+                    },
+                    "422": {
+                        "description": "failed to getmovie"
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/reviews": {
+            "post": {
+                "tags": [
+                    "review collection"
+                ],
+                "summary": "add new review for a movie",
+                "description": "post new review for a movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "movieId",
+                        "type": "string",
+                        "required": true
                     },
                     "email": {
                       "example": "sntmcl@gmail.com"

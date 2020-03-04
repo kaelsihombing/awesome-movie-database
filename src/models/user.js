@@ -281,7 +281,6 @@ class User extends mongoose.model('User', userSchema) {
                 }
             })
                 .then(data => {
-                    // console.log(data)
                     resolve(data)
                 })
                 .catch(err => {
@@ -577,6 +576,7 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+
 }
 
 module.exports = User;
