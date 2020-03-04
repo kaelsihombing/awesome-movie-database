@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
@@ -258,8 +257,6 @@ class User extends mongoose.model('User', userSchema) {
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
-        } else {
-            params.image = defaultImage();
         }
 
         return new Promise((resolve, reject) => {
