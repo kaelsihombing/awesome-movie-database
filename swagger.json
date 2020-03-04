@@ -69,7 +69,7 @@
                     "properties": {
                       "message": {
                         "type": "object",
-                        "example": "A reset email has been sent to sntmcl1@gmail.com, please check your email."
+                        "example": "An email verify has been sent to sntmcl1@gmail.com, please check your email."
                       },
                       "id": {
                         "example": "5e587c0ab9820915192b33d9"
@@ -207,6 +207,55 @@
               "properties": {
                 "errors": {
                   "example": "error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "delete current user account",
+        "responses": {
+          "201": {
+            "description": "User data has been edited",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "example": "Account 'test2@gmail.com' has been deleted, Thank you for using our service"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "not successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "example": "Unauthorized"
                 }
               }
             }
@@ -489,30 +538,7 @@
                   "example": true
                 },
                 "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e5645cd97119b556fe00d66"
-                    },
-                    "title": {
-                      "example": "8 Mile"
-                    },
-                    "year": {
-                      "example": "2002"
-                    },
-                    "genre": {
-                      "example": []
-                    },
-                    "casts": {
-                      "example": []
-                    },
-                    "directors": {
-                      "example": []
-                    },
-                    "writers": {
-                      "example": []
-                    }
-                  }
+                  "type": "object"
                 }
               }
             }
@@ -543,11 +569,7 @@
         "tags": [
           "movie collection"
         ],
-        "summary": "Show specific movie entry",
-        "description": "show specific movie based on give movieId",
-        "consumes": [
-          "application/json"
-        ],
+        "summary": "Show specific movie",
         "produces": [
           "application/json"
         ],
@@ -555,12 +577,12 @@
           {
             "in": "query",
             "name": "movieId",
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Successfully show all movie entry (paginated to 10 per page)",
+            "description": "Successfully show movie",
             "schema": {
               "type": "object",
               "properties": {
@@ -570,7 +592,14 @@
                 },
                 "data": {
                   "type": "object",
-                  "$ref": "#/definitions/MovieSchema"
+                  "properties": {
+                    "docs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/MovieSchema"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -615,6 +644,52 @@
             "Authorization": []
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "Delete specific movie",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "movieId",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted movie",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "docs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/MovieSchema"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/movies/all": {
@@ -629,13 +704,6 @@
         ],
         "produces": [
           "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "type": "number"
-          }
         ],
         "responses": {
           "200": {
@@ -662,47 +730,6 @@
             }
           }
         }
-      }
-    },
-    "/movies/incumbent": {
-      "put": {
-        "tags": [
-          "movie collection"
-        ],
-        "summary": "Add movie incumbent",
-        "description": "add movie casts/writers/directors",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MovieIncumbentRequest"
-            }
-          },
-          {
-            "in": "query",
-            "type": "number",
-            "name": "movieId",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully add movie incumbent"
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
       }
     },
     "/incumbents": {
@@ -754,6 +781,211 @@
         "responses": {
           "200": {
             "description": "Show all existing incumbents"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/movies/sorting": {
+      "get": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "filter and sorting",
+        "description": "example ( api/v1/movies/popular?sortingBy=-rating ), you change rating to year instead rating. use '-' for descending, and without'-' for ascending'",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sortingBy",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully get movie"
+          },
+          "422": {
+            "description": "failed to getmovie"
+          }
+        }
+      }
+    },
+    "/movies/genre": {
+      "get": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "filter and sorting",
+        "description": "example ( api/v1/movies/genre?genre=action ), you change action to another genre instead action",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "genre",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully get movie"
+          },
+          "422": {
+            "description": "failed to getmovie"
+          }
+        }
+      }
+    },
+    "/reviews": {
+      "post": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "add new review for a movie",
+        "description": "post new review for a movie",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "movieId",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateReviewRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully created movie review"
+          },
+          "422": {
+            "description": "failed to created movie review"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "get all reviews from current user",
+        "description": "view current user's reviews",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully view user's reviews"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "edit movie review",
+        "description": "edit existing movie review",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "reviewId",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/EditReviewRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully updated movie review"
+          },
+          "422": {
+            "description": "failed to update movie review"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "delete movie review",
+        "description": "delete existing movie review",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "reviewId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully deleted movie review"
+          },
+          "422": {
+            "description": "failed to delete movie review"
           }
         },
         "security": [
@@ -903,6 +1135,30 @@
         "year": {
           "type": "number",
           "example": 2002
+        },
+        "duration": {
+          "type": "string",
+          "example": "132 min"
+        },
+        "genres": {
+          "type": "string",
+          "example": "Horror, Thriller"
+        },
+        "directors": {
+          "type": "string",
+          "example": "Nia DaCosta"
+        },
+        "writers": {
+          "type": "string",
+          "example": "Jordan Peele"
+        },
+        "casts": {
+          "type": "string",
+          "example": "Yahya Abdul-Mateen II, Teyonah Parris, Nathan Stewart-Jarrett"
+        },
+        "synopsis": {
+          "type": "string",
+          "example": "A 'spiritual sequel' to the 1992 horror film 'Candyman' that returns to the now-gentrified Chicago neighborhood where the legend began."
         }
       }
     },
@@ -929,28 +1185,6 @@
         }
       }
     },
-    "MovieIncumbentRequest": {
-      "type": "object",
-      "required": [
-        "name",
-        "occupation"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Eminem"
-        },
-        "occupation": {
-          "type": "string",
-          "example": "casts",
-          "enum": [
-            "casts",
-            "writers",
-            "directors"
-          ]
-        }
-      }
-    },
     "RegisterIncumbentRequest": {
       "type": "object",
       "required": [
@@ -965,6 +1199,69 @@
           "type": "string",
           "format": "Date",
           "example": "1972-10-17T00:00:00.000Z"
+        }
+      }
+    },
+    "CreateReviewRequest": {
+      "type": "object",
+      "required": [
+        "title",
+        "description",
+        "rating"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "This is lit"
+        },
+        "description": {
+          "type": "string",
+          "example": "This movie is lit because Eminem is in it"
+        },
+        "rating": {
+          "type": "number",
+          "example": 5,
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        }
+      }
+    },
+    "EditReviewRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "This is very lit"
+        },
+        "description": {
+          "type": "string",
+          "example": "This movie is lit because Eminem and Mike Phifer is in it"
+        },
+        "rating": {
+          "type": "number",
+          "example": 10,
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
         }
       }
     }
