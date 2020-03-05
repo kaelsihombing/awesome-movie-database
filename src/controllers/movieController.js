@@ -80,3 +80,13 @@ exports.filterByPopulate = async (req, res) => {
         error(res, err, 422)
     }
 }
+
+exports.search = async (req, res) => {
+    try {
+        let result = await Movie.search(req.query.like, req.query.page || 1)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err.data, 422, err.message)
+    }
+}
