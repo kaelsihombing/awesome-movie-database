@@ -724,7 +724,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
             this.paginate({ title: { $regex: last, $options: 'i' } }, { select: ['_id', 'title', 'rating', 'poster', 'genre', 'year'], pages, limit })
                 .then(data => {
-                    if (data.docs) return reject({ message: `${query} not found` })
+                    if (data.docs === 0) return reject({ message: `${query} not found` })
                     resolve(data)
                 })
                 .catch(err => {
