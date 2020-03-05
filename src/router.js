@@ -38,6 +38,7 @@ router.get('/movies/all', movie.all)
 router.get('/movies/title', movie.findTitle)
 router.get('/movies/popular', movie.filterByPopulate)
 router.get('/movies/genre', genre.filter)
+router.get('/movies/search', movie.search)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)

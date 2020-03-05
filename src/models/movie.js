@@ -651,6 +651,90 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 })
         })
     }
+
+    static search(query, page) {
+        return new Promise((resolve, reject) => {
+
+            // util function to convert the input to string type
+            function myCamelFunction(value) {
+                function convertToString(input) {
+
+                    if (input) {
+
+                        if (typeof input === "string") {
+
+                            return input;
+                        }
+
+                        return String(input);
+                    }
+                    return '';
+                }
+
+                // convert string to words
+                function toWords(input) {
+
+                    input = convertToString(input);
+
+                    var regex = /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
+
+                    return input.match(regex);
+
+                }
+
+                // convert the input array to camel case
+                function toCamelCase(inputArray) {
+
+                    // let result = "";
+                    var newResult = []
+
+
+                    for (let i = 0, len = inputArray.length; i < len; i++) {
+
+                        let currentStr = inputArray[i];
+
+                        let tempStr = currentStr.toLowerCase();
+
+                        // if(i != 0) {
+                        // convert first letter to upper case (the word is in lowercase) 
+                        tempStr = tempStr.substr(0, 1).toUpperCase() + tempStr.substr(1);
+                        //  }
+
+                        // result += tempStr;
+                        newResult.push(tempStr)
+
+                    }
+                    var fix = newResult.join(' ')
+                    return fix;
+                }
+
+
+                // this function call all other functions
+
+                function toCamelCaseString(value) {
+
+                    let words = toWords(value);
+
+                    return toCamelCase(words);
+
+                }
+
+                return toCamelCaseString(value)
+            }
+            let last = myCamelFunction(query)
+            let limit = 10;
+            let pages = parseInt(page || 1, 10)
+
+            this.paginate({ title: { $regex: last, $options: 'i' } }, { select: ['_id', 'title', 'rating', 'poster', 'genre', 'year'], pages, limit })
+                .then(data => {
+                    if (data.docs) return reject({ message: `${query} not found` })
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject({ err, message: `${query} not found` })
+                })
+        })
+    }
 }
 
 module.exports = Movie
