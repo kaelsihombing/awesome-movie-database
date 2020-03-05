@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.84% </span>
+                <span class="strong">71.2% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>227/316</span>
+                <span class='fraction'>225/316</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.72% </span>
+                <span class="strong">52.83% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>58/106</span>
+                <span class='fraction'>56/106</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.63% </span>
+                <span class="strong">72.95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>215/292</span>
+                <span class='fraction'>213/292</span>
             </div>
         
             
@@ -896,18 +896,18 @@
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1631,7 +1631,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         return new Promise((resolve, reject) =&gt; {
             Incumbent.findOne({ name: incumbent })
                 .then(async dataIncumbent =&gt; {
-                    if (!dataIncumbent) {
+                    <span class="missing-if-branch" title="else path not taken" >E</span>if (!dataIncumbent) {
                         let newIncumbent = {
                             name: incumbent
                         }
@@ -1640,10 +1640,10 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             resolve(result)
                         }
                     } else {
-                        <span class="missing-if-branch" title="else path not taken" >E</span>if (!dataIncumbent.movie.includes(title)) {
+<span class="cstat-no" title="statement not covered" >                        if (!dataIncumbent.movie.includes(title)) {</span>
                             // dataIncumbent.movie.push(title)
                             // dataIncumbent.save()
-                            resolve(dataIncumbent)
+<span class="cstat-no" title="statement not covered" >                            resolve(dataIncumbent)</span>
                         } else {
 <span class="cstat-no" title="statement not covered" >                            resolve(dataIncumbent)</span>
                         }
@@ -1935,123 +1935,123 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                     resolve({ id: movie._id, message: `Movie '${movie.title}' successfuly deleted` })
                 })
                 .catch(err =&gt; {
-                    reject({message: 'this movie does not exist in our database, please input a valid movie id', err: err})
+                    reject({ message: 'this movie does not exist in our database, please input a valid movie id', err: err })
                 })
         })
     }
 &nbsp;
     static copyMovie(movieId, creator, role) {
         return new Promise((resolve, reject) =&gt; {
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (role !== 'ADMIN') <span class="cstat-no" title="statement not covered" >return ('You are not Authorized')</span>
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (role !== 'ADMIN') <span class="cstat-no" title="statement not covered" >return ('You are not Authorized')</span>
 &nbsp;
-        axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&amp;i=${movieId}`)
-            .then(data =&gt; {
+            axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&amp;i=${movieId}`)
+                .then(data =&gt; {
 &nbsp;
-                let movieData = data.data;
+                    let movieData = data.data;
 &nbsp;
-                Movie.findOne({ title: movieData.Title })
-                    .then(async foundData =&gt; {
+                    Movie.findOne({ title: movieData.Title })
+                        .then(async foundData =&gt; {
 &nbsp;
-                        <span class="missing-if-branch" title="if path not taken" >I</span>if (foundData) <span class="cstat-no" title="statement not covered" >return reject ('Movie already exist in the database!')</span>
-                        //==============DIRECTOR==================
-                        let promiseDirectors = [];
-                        <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Director &amp;&amp; movieData.Director !== 'N/A') {
-                            var directorsSplit = movieData.Director.split(',')
-                            let fixDirectors = [];
+                            <span class="missing-if-branch" title="if path not taken" >I</span>if (foundData) <span class="cstat-no" title="statement not covered" >return reject('Movie already exist in the database!')</span>
+                            //==============DIRECTOR==================
+                            let promiseDirectors = [];
+                            <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Director &amp;&amp; movieData.Director !== 'N/A') {
+                                var directorsSplit = movieData.Director.split(',')
+                                let fixDirectors = [];
 &nbsp;
-                            for (let i = 0; i &lt;= directorsSplit.length - 1; i++) {
+                                for (let i = 0; i &lt;= directorsSplit.length - 1; i++) {
 &nbsp;
-                                let newDirectors = directorsSplit[i].split(' (')
+                                    let newDirectors = directorsSplit[i].split(' (')
 &nbsp;
-                                newDirectors = newDirectors[0]
+                                    newDirectors = newDirectors[0]
 &nbsp;
-                                <span class="missing-if-branch" title="if path not taken" >I</span>if (newDirectors[0] === ' ') {
-<span class="cstat-no" title="statement not covered" >                                    newDirectors = newDirectors.substring(1)</span>
+                                    <span class="missing-if-branch" title="if path not taken" >I</span>if (newDirectors[0] === ' ') {
+<span class="cstat-no" title="statement not covered" >                                        newDirectors = newDirectors.substring(1)</span>
+                                    }
+&nbsp;
+                                    fixDirectors.push(newDirectors)
                                 }
-&nbsp;
-                                fixDirectors.push(newDirectors)
-                            }
-                            let noDuplicateDirectors = [...new Set(fixDirectors)]
-                            noDuplicateDirectors.map(item =&gt; {
-                                promiseDirectors.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
-&nbsp;
-                        //================WRITER==================
-                        let promiseWriters = [];
-                        <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Writer) {
-                            let writerSplit = movieData.Writer.split(',');
-                            let fixWriter = [];
-&nbsp;
-                            for (let i = 0; i &lt;= writerSplit.length - 1; i++) {
-&nbsp;
-                                let newWriter = writerSplit[i].split(' (')
-&nbsp;
-                                newWriter = newWriter[0]
-&nbsp;
-                                <span class="missing-if-branch" title="if path not taken" >I</span>if (newWriter[0] === ' ') {
-<span class="cstat-no" title="statement not covered" >                                    newWriter = newWriter.substring(1)</span>
-                                }
-&nbsp;
-                                fixWriter.push(newWriter)
+                                let noDuplicateDirectors = [...new Set(fixDirectors)]
+                                noDuplicateDirectors.map(item =&gt; {
+                                    promiseDirectors.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
 &nbsp;
-                            let noDuplicateWriter = [...new Set(fixWriter)]
-                            noDuplicateWriter.map(item =&gt; {
-                                promiseWriters.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
+                            //================WRITER==================
+                            let promiseWriters = [];
+                            <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Writer) {
+                                let writerSplit = movieData.Writer.split(',');
+                                let fixWriter = [];
 &nbsp;
-                        //================CAST/ACTOR==================
-                        let promiseCasts = []
-                        <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Actors) {
-                            let castSplit = movieData.Actors.split(',');
-                            let fixCast = [];
-                            for (let i = 0; i &lt;= castSplit.length - 1; i++) {
-                                let newCast = castSplit[i].split(' (')
-                                newCast = newCast[0]
+                                for (let i = 0; i &lt;= writerSplit.length - 1; i++) {
 &nbsp;
-                                if (newCast[0] === ' ') {
-                                    newCast = newCast.substring(1)
+                                    let newWriter = writerSplit[i].split(' (')
+&nbsp;
+                                    newWriter = newWriter[0]
+&nbsp;
+                                    <span class="missing-if-branch" title="if path not taken" >I</span>if (newWriter[0] === ' ') {
+<span class="cstat-no" title="statement not covered" >                                        newWriter = newWriter.substring(1)</span>
+                                    }
+&nbsp;
+                                    fixWriter.push(newWriter)
                                 }
-                                fixCast.push(newCast)
+&nbsp;
+                                let noDuplicateWriter = [...new Set(fixWriter)]
+                                noDuplicateWriter.map(item =&gt; {
+                                    promiseWriters.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
-                            let noDuplicateCast = [...new Set(fixCast)]
-                            noDuplicateCast.map(item =&gt; {
-                                promiseCasts.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
 &nbsp;
-                        //==============GENRE====================
-                        let promiseGenres = [];
-                        <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Genre) {
-                            let genreSplit = movieData.Genre.split(',');
-                            let fixGenre = [];
-                            for (let i = 0; i &lt;= genreSplit.length - 1; i++) {
-                                let newGenre = genreSplit[i].split(' (')
-                                newGenre = newGenre[0]
+                            //================CAST/ACTOR==================
+                            let promiseCasts = []
+                            <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Actors) {
+                                let castSplit = movieData.Actors.split(',');
+                                let fixCast = [];
+                                for (let i = 0; i &lt;= castSplit.length - 1; i++) {
+                                    let newCast = castSplit[i].split(' (')
+                                    newCast = newCast[0]
 &nbsp;
-                                if (newGenre[0] === ' ') {
-                                    newGenre = newGenre.substring(1)
+                                    if (newCast[0] === ' ') {
+                                        newCast = newCast.substring(1)
+                                    }
+                                    fixCast.push(newCast)
                                 }
-                                fixGenre.push(newGenre)
+                                let noDuplicateCast = [...new Set(fixCast)]
+                                noDuplicateCast.map(item =&gt; {
+                                    promiseCasts.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
-                            let noDuplicateGenre = [...new Set(fixGenre)]
-                            noDuplicateGenre.map(item =&gt; {
-                                item = item.toLowerCase()
-                                promiseGenres.push(Movie.findGenre(item, movieData.title))
-                            })
-                        }
 &nbsp;
-                        //===================================================================================
-                        let directorList = await Promise.all(promiseDirectors);
-                        let writerList = await Promise.all(promiseWriters);
-                        let castList = await Promise.all(promiseCasts);
-                        let genreList = await Promise.all(promiseGenres)
+                            //==============GENRE====================
+                            let promiseGenres = [];
+                            <span class="missing-if-branch" title="else path not taken" >E</span>if (movieData.Genre) {
+                                let genreSplit = movieData.Genre.split(',');
+                                let fixGenre = [];
+                                for (let i = 0; i &lt;= genreSplit.length - 1; i++) {
+                                    let newGenre = genreSplit[i].split(' (')
+                                    newGenre = newGenre[0]
 &nbsp;
-                        //===================================================================================
+                                    if (newGenre[0] === ' ') {
+                                        newGenre = newGenre.substring(1)
+                                    }
+                                    fixGenre.push(newGenre)
+                                }
+                                let noDuplicateGenre = [...new Set(fixGenre)]
+                                noDuplicateGenre.map(item =&gt; {
+                                    item = item.toLowerCase()
+                                    promiseGenres.push(Movie.findGenre(item, movieData.title))
+                                })
+                            }
 &nbsp;
-                        
+                            //===================================================================================
+                            let directorList = await Promise.all(promiseDirectors);
+                            let writerList = await Promise.all(promiseWriters);
+                            let castList = await Promise.all(promiseCasts);
+                            let genreList = await Promise.all(promiseGenres)
+&nbsp;
+                            //===================================================================================
+&nbsp;
+&nbsp;
 &nbsp;
                             <span class="missing-if-branch" title="if path not taken" >I</span>if (role != 'ADMIN') <span class="cstat-no" title="statement not covered" >return reject("You're not Authorized!")</span>
 &nbsp;
@@ -2131,11 +2131,11 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 <span class="cstat-no" title="statement not covered" >                                    reject(err)</span>
                                 })
                         })
-                    })
-                    .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
-<span class="cstat-no" title="statement not covered" >                        return (err)</span>
-                    })
-            })
+                })
+                .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return (err)</span>
+                })
+        })
             .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
 <span class="cstat-no" title="statement not covered" >                return (err)</span>
             })
@@ -2272,7 +2272,7 @@ module.exports = Movie</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 05 2020 23:52:52 GMT+0700 (Western Indonesia Time)
+                at Fri Mar 06 2020 01:09:26 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
