@@ -84,7 +84,7 @@ exports.filterByPopulate = async (req, res) => {
 exports.search = async (req, res) => {
     try {
         let result = await Movie.search(req.query.like, req.query.page || 1)
-        success(res, result, 201)
+        success(res, result, 200)
     }
     catch (err) {
         error(res, err.data, 422, err.message)

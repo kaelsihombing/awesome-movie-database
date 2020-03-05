@@ -347,25 +347,25 @@ class Movie extends mongoose.model('Movie', movieSchema) {
     static update(movieId, editor, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
-            this.findById(movieId)
-                .then(data => {
-                    data.directors.map(item => {
-                        console.log(item)
-                    })
-                })
-            if (bodyParams.directors) {
-                bodyParams.directors.map(item => {
-                    console.log(item);
-                    // Incumbent.findByIdAndUpdate({id: item.id}, {name:item})       
-                })
-            }
+            // this.findById(movieId)
+            //     .then(data => {
+            //         data.directors.map(item => {
+            //             console.log(item)
+            //         })
+            //     })
+            // if (bodyParams.directors) {
+            //     bodyParams.directors.map(item => {
+            //         console.log(item);
+            //         Incumbent.findByIdAndUpdate({id: item.id}, {name:item})       
+            //     })
+            // }
             let params = {
                 title: bodyParams.title,
                 year: bodyParams.year,
                 duration: bodyParams.duration,
-                directors: bodyParams.directors,
-                writers: bodyParams.writers,
-                casts: bodyParams.casts,
+                // directors: bodyParams.directors,
+                // writers: bodyParams.writers,
+                // casts: bodyParams.casts,
                 synopsis: bodyParams.synopsis,
                 poster: bodyParams.poster,
                 trailer: bodyParams.trailer,
@@ -614,10 +614,10 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         return new Promise((resolve, reject) => {
             this.findOne({ title: title })
                 .then(data => {
+                    if (!data) reject ("There is no movie with that title")
+                    else{
                     resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
+                    }
                 })
         })
     }
@@ -632,7 +632,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 sort: sortingBy,
                 collation: { locale: 'en' }
             }
-            options.sort = sortingBy
+           
             this.find({})
                 .then(data => {
                     let lastPage = Math.floor(data.length / 10) + 1

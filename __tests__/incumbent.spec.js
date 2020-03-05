@@ -13,6 +13,7 @@ const staticAdmin = userFixtures.create()
 
 const Incumbent = require('../src/models/incumbent.js')
 const incumbentFixtures = require('../src/fixtures/incumbentFixture.js')
+const staticIncumbent = incumbentFixtures.create()
 
 async function removeAllCollections() {
     const collections = Object.keys(mongoose.connection.collections)
@@ -74,6 +75,163 @@ describe('Create admin', () => {
                 let { success, data } = res.body
                 expect(success).toBe(true)
                 done()
+            })
+    })
+})
+
+describe('Create user', () => {
+    it('Should create a new user', async done => {
+        staticUser.password_confirmation = staticUser.password
+        request
+            .post('/api/v1/users')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                expect(res.status).toBe(201)
+                let { success, data } = res.body
+                expect(success).toBe(true)
+                done()
+            })
+    })
+})
+
+describe('POST /api/v1/incumbents', () => {
+    it('Should add new incumbent', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .post('/api/v1/incumbents')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(staticIncumbent))
+                    .then(res => {
+                        expect(res.status).toBe(201)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should not add new incumbent', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .post('/api/v1/incumbents')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(staticIncumbent))
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, data } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
+            })
+    })
+
+    it('Should not add new incumbent', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                let incumbentSample = incumbentFixtures.create()
+                request
+                    .post('/api/v1/incumbents')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(incumbentSample))
+                    .then(res => {
+                        request
+                            .post('/api/v1/incumbents')
+                            .set('Content-Type', 'application/json')
+                            .set('Authorization', token)
+                            .send(JSON.stringify(incumbentSample))
+                            .then(res => {
+                                expect(res.status).toBe(422)
+                                let { success, data } = res.body
+                                expect(success).toBe(false)
+                                done()
+                            })
+                    })
+            })
+    })
+})
+
+describe('GET /api/v1/incumbents', () => {
+    it('Should show all incumbents', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/incumbents')
+                    .set('Authorization', token)
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should show page 1 of all incumbents', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/incumbents')
+                    .query({ pagination: false })
+                    .set('Authorization', token)
+                    .then(res => {
+                        let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                        let page = lastPage + 1
+                        request
+                            .get('/api/v1/incumbents')
+                            .query({ page: page })
+                            .set('Authorization', token)
+                            .then(res => {
+                                expect(res.status).toBe(200)
+                                let { success, data } = res.body
+                                expect(success).toBe(true)
+                                done()
+                            })
+                    })
+            })
+    })
+
+    it('Should not show all incumbents', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/incumbents')
+                    .set('Authorization', token)
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, error } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
             })
     })
 })

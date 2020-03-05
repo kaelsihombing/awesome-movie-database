@@ -705,6 +705,13 @@
         "produces": [
           "application/json"
         ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully show all movie entry (paginated to 10 per page)",
