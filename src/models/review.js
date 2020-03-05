@@ -163,8 +163,9 @@ class Review extends mongoose.model('Review', reviewSchema) {
 
                     Movie.findById(data.movieId)
                         .then(movie => {
-                            movie.rating = (movie.rating * movie.reviews.length) - data.rating
-                            movie.rating = (movie.rating + params.rating)/movie.reviews.length
+                            movie.rating = (movie.rating * movie.reviews.length) - data.rating;
+                            movie.rating = (movie.rating + params.rating) / movie.reviews.length;
+                            // eslint-disable-next-line no-self-assign
                             movie.rating = movie.rating
                             movie.save()
                         })
@@ -179,8 +180,8 @@ class Review extends mongoose.model('Review', reviewSchema) {
     static destroy(author, reviewId) {
         return new Promise((resolve, reject) => {
             let subRating
-            
-            this.findOneAndDelete({author: author, _id:reviewId})
+
+            this.findOneAndDelete({ author: author, _id: reviewId })
                 .then(data => {
                     subRating = data.rating
                     User.findById(data.author)

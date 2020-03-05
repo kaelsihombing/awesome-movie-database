@@ -11,9 +11,6 @@ const genreSchema = new Schema({
     },
     movie: [{
         type: Object
-        // id: String,
-        // title: String,
-        // poster: String
     }]
 },
     {
