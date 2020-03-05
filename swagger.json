@@ -859,6 +859,23 @@
         }
       }
     },
+    "/movies/allgenre": {
+      "get": {
+        "tags": [
+          "movie collection"
+        ],
+        "summary": "get all genre available",
+        "description": "get all currently available genre",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully get all genre"
+          }
+        }
+      }
+    },
     "/imdbmovie": {
       "get": {
         "tags": [
