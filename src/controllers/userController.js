@@ -121,7 +121,7 @@ exports.addWatchList = async (req, res) => {
 exports.viewMyWatchList = async (req, res) => {
     try {
         let result = await User.viewMyWatchList(req.user._id)
-        success(res, result, 201)
+        success(res, result, 200)
     }
     catch (err) {
         error(res, err.error, 422, err.message)
@@ -130,7 +130,7 @@ exports.viewMyWatchList = async (req, res) => {
 
 exports.deleteOneMyWatchList = async (req, res) => {
     try {
-        let result = await User.deleteOneMyWatchList(req.user._id)
+        let result = await User.deleteOneMyWatchList(req.user._id, req.query.movieId)
         success(res, result.data, 201, result.message)
     }
     catch (err) {

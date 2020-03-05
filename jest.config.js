@@ -8,12 +8,12 @@ module.exports = {
     testEnvironment: 'node',
     modulePathIgnorePatterns: [
       '__tests__/fixtures',
-      '__tests__/CustomSequencer.js'
+      // '__tests__/CustomSequencer.js'
     ],
     coveragePathIgnorePatterns: [
       '/node_modules/'
     ],
     coverageReporters: ['lcov'],
-    testSequencer: path.join(__dirname, '__tests__', 'CustomSequencer.js')
+    // testSequencer: path.join(__dirname, '__tests__', 'CustomSequencer.js')
   }
   

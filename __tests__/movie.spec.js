@@ -254,6 +254,7 @@ describe('GET /api/v1/movies', () => {
     it('Should show specific movie', async done => {
         request
             .get('/api/v1/movies/all')
+            .query({pagination: false})
             .then(res => {
                 let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                 let movieId = res.body.data.docs[i]._id

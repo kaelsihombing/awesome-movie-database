@@ -260,11 +260,15 @@ class User extends mongoose.model('User', userSchema) {
         }
 
         return new Promise((resolve, reject) => {
-            if (user.verified === false) return reject('Sorry! you can\'t change your profile Please verified your email first')
-
-            this.findByIdAndUpdate(user._id, params, { new: true })
-                .then(data => {
-                    resolve(data)
+            this.findOne({ _id: user._id })
+                .then(user => {
+                    if (user.verified == false) reject('Sorry! you can\'t change your profile Please verified your email first')
+                    else {
+                        this.findByIdAndUpdate(user._id, params, { new: true })
+                            .then(data => {
+                                resolve(data)
+                            })
+                    }
                 })
                 .catch(err => {
                     reject(err)
@@ -509,10 +513,6 @@ class User extends mongoose.model('User', userSchema) {
                                 return reject(`${movie.title} has already in your watchlist`)
                             }
                         })
-                        .then(userData => {
-                            console.log(userData);
-
-                        })
                 })
                 .catch(err => {
                     reject(err)
@@ -539,9 +539,6 @@ class User extends mongoose.model('User', userSchema) {
                         resolve(movie)
                     }
                 })
-                .catch(err => {
-                    reject(err)
-                })
         })
     }
 
@@ -549,30 +546,17 @@ class User extends mongoose.model('User', userSchema) {
         return new Promise((resolve, reject) => {
 
             this.findById(user)
-                .populate({
-                    path: 'watchList',
-                    select: ['title', 'poster', 'casts', 'genres']
-                })
-                .select(['watchList'])
                 .then(user => {
-                    user.watchList.splice(user.watchList.indexOf(movieId), 1)
-                    user.save()
-                        .then((data) => {
-                            if (data.watchList.length === 0) {
-                                reject({
-                                    message: 'You have no movie in your watchlist',
-                                })
-                            } else {
-                                resolve({
-                                    message: 'Movie has been removed from your watchlist',
-                                    data: user
-                                })
-                            }
-                        })
-                })
+                    if (user.watchList.indexOf(movieId) < 0) reject ("There is no movie with give Id")
+                    else {
+                        user.watchList.splice(user.watchList.indexOf(movieId), 1)
+                        user.save()
 
-                .catch(err => {
-                    reject(err)
+                        resolve({
+                            message: 'Movie has been removed from your watchlist',
+                            data: user
+                        })
+                    }
                 })
         })
     }
