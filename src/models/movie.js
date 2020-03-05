@@ -322,7 +322,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                         path: 'reviews',
                     })
                     .then(data => {
-                        if (!data) return reject('the movie doesn\'t exist in database')
                         resolve(data)
                     })
                     .catch(err => {
@@ -392,7 +391,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
             this.findByIdAndDelete(movieId)
                 .then(movie => {
-                    if (!movie) return reject('this movie is not exist in our database, please input a valid movie id')
                     if (movie.directors) {
                         movie.directors.map(item => {
                             Incumbent.findById(item.id)
@@ -406,16 +404,16 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                     resolve({ id: movie._id, message: `Movie '${movie.title}' successfuly deleted` })
                 })
                 .catch(err => {
-                    reject(err)
+                    reject({message: 'this movie does not exist in our database, please input a valid movie id', err: err})
                 })
         })
     }
 
     static copyMovie(movieId, creator, role) {
+        return new Promise((resolve, reject) => {
         if (role !== 'ADMIN') return ('You are not Authorized')
 
-        axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&i=` + movieId)
-
+        axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&i=${movieId}`)
             .then(data => {
 
                 let movieData = data.data;
@@ -423,7 +421,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 Movie.findOne({ title: movieData.Title })
                     .then(async foundData => {
 
-                        if (foundData) return ('Movie already exist in the database!')
+                        if (foundData) return reject ('Movie already exist in the database!')
                         //==============DIRECTOR==================
                         let promiseDirectors = [];
                         if (movieData.Director && movieData.Director !== 'N/A') {
@@ -522,7 +520,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
 
                         //===================================================================================
 
-                        return new Promise((resolve, reject) => {
+                        
 
                             if (role != 'ADMIN') return reject("You're not Authorized!")
 
@@ -596,7 +594,6 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                             await Genre.findByIdAndUpdate(item.id, { $push: { movie: { id: data._id, title: data.title, poster: data.poster } } })
                                         })
                                     }
-
                                     resolve(data)
                                 })
                                 .catch(err => {

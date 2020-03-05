@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = {
     collectCoverage: false,
-    collectCoverageFrom: ['./src/controllers/**/*.js', './src/models/**/*.js', './routes/**/*.js', '!routes/index.js', '!controllers/auth.js'],
+    collectCoverageFrom: ['./src/controllers/**/*.js', './src/models/**/*.js', ],
     coverageDirectory: './public/coverage',
     testTimeout: 10000,
     testEnvironment: 'node',
