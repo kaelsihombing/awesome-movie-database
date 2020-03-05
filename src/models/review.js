@@ -158,8 +158,16 @@ class Review extends mongoose.model('Review', reviewSchema) {
             }
             for (let prop in params) if (!params[prop]) delete params[prop]
 
-            this.findOneAndUpdate({ author: author, _id: reviewId }, params, { new: true })
+            this.findOneAndUpdate({ author: author, _id: reviewId }, params)
                 .then(data => {
+
+                    Movie.findById(data.movieId)
+                        .then(movie => {
+                            movie.rating = (movie.rating * movie.reviews.length) - data.rating
+                            movie.rating = (movie.rating + params.rating)/movie.reviews.length
+                            movie.rating = movie.rating
+                            movie.save()
+                        })
                     resolve(data)
                 })
                 .catch(err => {
