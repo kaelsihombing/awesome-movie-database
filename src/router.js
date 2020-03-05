@@ -16,7 +16,11 @@ const { check } = require('express-validator');
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.update)
 router.post('/auth', validateForm, user.auth)
+router.get('/auth/google', user.googleAuth);
 router.delete('/users', authenticate, user.deleteAccount)
+router.post('/watchlist', authenticate, user.addWatchList)
+router.get('/watchlist', authenticate, user.viewMyWatchList)
+router.delete('/watchlist', authenticate, user.deleteOneMyWatchList)
 
 // Admin endpoint
 router.post('/admins', validateForm, user.createAdmin)
@@ -28,14 +32,13 @@ router.get('/incumbents', authenticate, incumbent.view)
 // Movie endpoint
 router.post('/movies', authenticate, movie.add)
 router.get('/movies', movie.view)
-router.get('/movies/all', movie.all)
 router.put('/movies', authenticate, movie.edit) // not ready yet
-router.put('/movies/incumbent', authenticate, movie.incumbent) //?
 router.delete('/movies', authenticate, movie.deleteMovie)
+router.get('/movies/all', movie.all)
 router.get('/movies/title', movie.findTitle)
-
-// Genre endpoint
-router.get('/genre', genre.filter)
+router.get('/movies/popular', movie.filterByPopulate)
+router.get('/movies/genre', genre.filter)
+router.get('/movies/search', movie.search)
 
 // Review endpoint
 router.post('/reviews', authenticate, review.add)
@@ -54,5 +57,5 @@ router.get('/reset/:token', user.reset);
 router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'), check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),], user.resetPassword);
 
 //Input movie to database from imdb
-router.get('/movie', authenticate, movie.copyMovie)
+router.get('/imdbmovie', authenticate, movie.copyMovie)
 module.exports = router;

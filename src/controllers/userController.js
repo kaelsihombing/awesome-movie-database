@@ -9,7 +9,8 @@ const {
 exports.create = async (req, res) => {
     try {
         let result = await User.register(req.body, req)
-        success(res, result, 201)
+
+        success(res, result.data, 201, result.message)
     }
     catch (err) {
         error(res, err, 422)
@@ -40,7 +41,7 @@ exports.createAdmin = async (req, res) => {
 exports.auth = async (req, res) => {
     try {
         let result = await User.auth(req)
-        success(res, result, 201)
+        success(res, result, 200)
     }
     catch (err) {
         error(res, err, 422)
@@ -101,6 +102,47 @@ exports.resentEmailVerification = async (req, res) => {
     try {
         let result = await User.resendEmail(req)
         success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.addWatchList = async (req, res) => {
+    try {
+        let result = await User.addWatchList(req.user._id, req.query.movieId)
+        success(res, result.data, 201, result.message)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.viewMyWatchList = async (req, res) => {
+    try {
+        let result = await User.viewMyWatchList(req.user._id)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err.error, 422, err.message)
+    }
+}
+
+exports.deleteOneMyWatchList = async (req, res) => {
+    try {
+        let result = await User.deleteOneMyWatchList(req.user._id, req.query.movieId)
+        success(res, result.data, 201, result.message)
+    }
+    catch (err) {
+        error(res, err.error, 422, err.message)
+    }
+}
+
+exports.googleAuth = async (req, res) => {
+    try {
+        let result1 = await User.OAuthGoogle(req.headers.authorization)
+        let result2 = await User.findOrRegister(result1)
+        success(res, result2, 200)
     }
     catch (err) {
         error(res, err, 422)

@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
@@ -14,6 +13,7 @@ const imagekit = new Imagekit({
 const mailer = require('../helpers/nodeMailer');
 const isEmpty = require('../helpers/isEmpty');
 const Auth = require('../events/auth');
+const Movie = require('./movie')
 
 require('mongoose-type-email');
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid';
@@ -157,12 +157,10 @@ class User extends mongoose.model('User', userSchema) {
                                 // resolve({ message: 'A reset email has been sent to ' + data.email + ', please check your email.' });
                             });
 
-                            resolve([
-                                {
-                                    message: 'A verify email has been sent to ' + data.email + ', please check your email.'
-                                },
-                                {
-                                    id: data._id,
+                            resolve({
+                                message: 'A verify email has been sent to ' + data.email + ', please check your email.',
+                                data: {
+                                    _id: data._id,
                                     fullname: data.fullname,
                                     email: data.email,
                                     language: data.language,
@@ -170,7 +168,7 @@ class User extends mongoose.model('User', userSchema) {
                                     image: data.image,
                                     token: token
                                 }
-                            ])
+                            })
                         })
                         .catch(err => {
                             reject(err)
@@ -200,7 +198,7 @@ class User extends mongoose.model('User', userSchema) {
 
                     let token = jwt.sign({ _id: data._id, role: data.role }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
-                        id: data._id,
+                        _id: data._id,
                         fullname: data.fullname,
                         email: data.email,
                         role: data.role,
@@ -259,17 +257,18 @@ class User extends mongoose.model('User', userSchema) {
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
-        } else {
-            params.image = defaultImage();
         }
 
         return new Promise((resolve, reject) => {
-            if (user.verified === false) return reject('Sorry! you can\'t change your profile Please verified your email first')
-
-            this.findByIdAndUpdate(user._id, params, { new: true })
-                .then(data => {
-                    resolve(data)
-                    // .select('-encrypted_password')
+            this.findOne({ _id: user._id })
+                .then(user => {
+                    if (user.verified == false) reject('Sorry! you can\'t change your profile Please verified your email first')
+                    else {
+                        this.findByIdAndUpdate(user._id, params, { new: true })
+                            .then(data => {
+                                resolve(data)
+                            })
+                    }
                 })
                 .catch(err => {
                     reject(err)
@@ -286,7 +285,6 @@ class User extends mongoose.model('User', userSchema) {
                 }
             })
                 .then(data => {
-                    // console.log(data)
                     resolve(data)
                 })
                 .catch(err => {
@@ -488,7 +486,6 @@ class User extends mongoose.model('User', userSchema) {
             this.findByIdAndDelete(id)
                 .then(data => {
                     if (!data) return reject('This account has already deleted')
-                    console.log(data)
                     resolve({ message: `Account '${data.email}' has been deleted, Thank you for using our service` })
                 })
                 .catch(err => {
@@ -496,6 +493,74 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+
+    static addWatchList(user, movieId) {
+        return new Promise((resolve, reject) => {
+
+            Movie.findById(movieId)
+                .then(movie => {
+                    this.findById(user)
+                        .then(async userData => {
+                            if (userData.watchList.indexOf(movieId) < 0) {
+                                this.findByIdAndUpdate(userData._id, { $push: { watchList: movieId } })
+                                    .then(() => {
+                                        resolve({
+                                            message: `${movie.title} has been added to your watchlist!`,
+                                            data: userData.watchList
+                                        })
+                                    })
+                            } else {
+                                return reject(`${movie.title} has already in your watchlist`)
+                            }
+                        })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static viewMyWatchList(user) {
+
+        return new Promise((resolve, reject) => {
+
+            this.findById(user)
+                .populate({
+                    path: 'watchList',
+                    select: ['title', 'poster', 'casts', 'genres']
+                })
+                .select(['watchList', '-_id'])
+                .then(movie => {
+                    if (movie.watchList.length === 0) {
+                        reject({
+                            message: 'You have no movie in your watchlist',
+                        })
+                    } else {
+                        resolve(movie)
+                    }
+                })
+        })
+    }
+
+    static deleteOneMyWatchList(user, movieId) {
+        return new Promise((resolve, reject) => {
+
+            this.findById(user)
+                .then(user => {
+                    if (user.watchList.indexOf(movieId) < 0) reject ("There is no movie with give Id")
+                    else {
+                        user.watchList.splice(user.watchList.indexOf(movieId), 1)
+                        user.save()
+
+                        resolve({
+                            message: 'Movie has been removed from your watchlist',
+                            data: user
+                        })
+                    }
+                })
+        })
+    }
+
 }
 
 module.exports = User;

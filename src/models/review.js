@@ -17,7 +17,7 @@ const reviewSchema = new Schema({
     },
     rating: {
         type: Number,
-        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         required: true,
     },
     movieId: {
@@ -42,7 +42,7 @@ class Review extends mongoose.model('Review', reviewSchema) {
         return new Promise((resolve, reject) => {
             this.find({ movieId: movieId, author: author })
                 .then(data => {
-                    if (data.length != 0) reject("You've already created a review for this movie")
+                    if (data.length != 0) return reject("You've already created a review for this movie")
                     else {
                         let params = {
                             title: bodyParams.title,
@@ -78,11 +78,14 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             })
                     }
                 })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 
     static myReview(author, pagination, page) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let options = {
                 page: page,
                 limit: 10,
@@ -140,6 +143,9 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             resolve(data)
                         })
                 })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 
@@ -152,8 +158,16 @@ class Review extends mongoose.model('Review', reviewSchema) {
             }
             for (let prop in params) if (!params[prop]) delete params[prop]
 
-            this.findOneAndUpdate({ author: author, _id: reviewId }, params, { new: true })
+            this.findOneAndUpdate({ author: author, _id: reviewId }, params)
                 .then(data => {
+
+                    Movie.findById(data.movieId)
+                        .then(movie => {
+                            movie.rating = (movie.rating * movie.reviews.length) - data.rating
+                            movie.rating = (movie.rating + params.rating)/movie.reviews.length
+                            movie.rating = movie.rating
+                            movie.save()
+                        })
                     resolve(data)
                 })
                 .catch(err => {
@@ -166,12 +180,13 @@ class Review extends mongoose.model('Review', reviewSchema) {
         return new Promise((resolve, reject) => {
             let subRating
             
-            this.findById(reviewId)
+            this.findOneAndDelete({author: author, _id:reviewId})
                 .then(data => {
                     subRating = data.rating
                     User.findById(data.author)
                         .then(user => {
                             user.reviews.splice(user.reviews.indexOf(data._id), 1)
+                            user.save()
                         })
 
                     Movie.findById(data.movieId)
@@ -180,15 +195,10 @@ class Review extends mongoose.model('Review', reviewSchema) {
                             movie.reviews.splice(movie.reviews.indexOf(data._id), 1)
                             if (movie.reviews.length == 0) movie.rating = 0
                             else movie.rating = movie.rating / movie.reviews.length
+                            movie.save()
                         })
-                })
-                .catch(err => {
-                    reject(err)
-                })
 
-            this.findOneAndDelete({ _id: reviewId, author: author })
-                .then(review => {
-                    resolve(review)
+                    resolve(data)
                 })
                 .catch(err => {
                     reject(err)

@@ -22,7 +22,7 @@ exports.mine = async (req, res) => {
     success(res, result, 200)
     }
     catch (err) {
-        error(res, err, 422)
+        error(res, err, 422)    
     }
 }
 

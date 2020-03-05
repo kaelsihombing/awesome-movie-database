@@ -354,7 +354,7 @@
         "tags": [
           "user collection"
         ],
-        "summary": "NOT AVAILABLE YET",
+        "summary": "login with google account",
         "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
         "responses": {
           "200": {
@@ -953,7 +953,12 @@
           "200": {
             "description": "successfully view user's reviews"
           }
-        }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -1029,6 +1034,41 @@
             "Authorization": []
           }
         ]
+      }
+    },
+    "/reviews/movie": {
+      "get": {
+        "tags": [
+          "review collection"
+        ],
+        "summary": "get all reviews from one specific movie",
+        "description": "view movie reviews",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "movieId",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully view user's reviews"
+          },
+          "422": {
+            "description": "invalid movieId"
+          }
+        }
       }
     }
   },

@@ -18,7 +18,7 @@ exports.add = async (req, res) => {
 exports.deleteMovie = async (req, res) => {
     try {
         let result = await Movie.deleteMovie(req.user.role, req.query.movieId)
-        success(res, result, 201)
+        success(res, result.id, 201, result.message)
     }
     catch (err) {
         error(res, err, 422)
@@ -50,19 +50,10 @@ exports.edit = async (req, res) => {
     }
 }
 
-exports.incumbent = async (req, res) => {
-    try {
-        let result = await Movie.addIncumbent(req.query.movieId, req.user._id, req.user.role, req.body)
-        success(res, result, 201)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
-}
-
 exports.copyMovie = async (req, res) => {
     try {
         let result = await Movie.copyMovie(req.query.i, req.user._id, req.user.role)
+
         success(res, result, 201)
     }
     catch (err) {
@@ -71,11 +62,31 @@ exports.copyMovie = async (req, res) => {
 }
 
 exports.findTitle = async (req, res) => {
-    try{
+    try {
         let result = await Movie.findByTitle(req.query.title)
         success(res, result, 200)
     }
     catch (err) {
         error(res, err, 422)
+    }
+}
+
+exports.filterByPopulate = async (req, res) => {
+    try {
+        let result = await Movie.filterAndSorting(req.query.pagination || true, req.query.page || 1, req.query.sortingBy)
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.search = async (req, res) => {
+    try {
+        let result = await Movie.search(req.query.like, req.query.page || 1)
+        success(res, result, 201)
+    }
+    catch (err) {
+        error(res, err.data, 422, err.message)
     }
 }

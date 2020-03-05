@@ -360,7 +360,7 @@ describe('REVIEW API TESTING', () => {
             chai.request(server)
                 .get('/api/v1/movies/title')
                 .query({ title: staticMovie.title })
-                .end((err, res) => {
+                .end((err, res) => {  
                     let movieId = res.body.data._id
                     chai.request(server)
                         .post('/api/v1/auth')

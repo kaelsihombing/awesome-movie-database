@@ -27,6 +27,9 @@
     "userSpec.js",
     "movieSpec.js",
     "incumbentSpec.js",
-    "reviewSpec.js"
+    "reviewSpec.js",
+    "review.spec.js",
+    "movie.spec.js",
+    "jest.config.js"
   ]
 }
