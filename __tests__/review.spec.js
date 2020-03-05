@@ -118,7 +118,7 @@ describe('Login admin and create movie', () => {
         request
             .post('/api/v1/auth')
             .set('Content-Type', 'application/json')
-            .send({ email: staticAdmin.email, password: staticAdmin.password })
+            .send(JSON.stringify(staticAdmin))
             .then(res => {
                 let token = res.body.data.token
                 request

@@ -1,5 +1,6 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
+require('axios')
 require('dotenv').config()
 
 const server = require('../src/server.js')
@@ -79,6 +80,348 @@ describe('Create admin', () => {
                 let { success, data } = res.body
                 expect(success).toBe(true)
                 done()
+            })
+    })
+})
+
+describe('Create user', () => {
+    it('Should create a new user', async done => {
+        staticUser.password_confirmation = staticUser.password
+        request
+            .post('/api/v1/users')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let { success, data } = res.body
+                expect(success).toBe(true)
+                done()
+            })
+    })
+})
+
+describe('Create 2nd user', () => {
+    it('Should create a new user (2nd)', async done => {
+        staticUser2.password_confirmation = staticUser2.password
+        request
+            .post('/api/v1/users')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser2))
+            .then(res => {
+                let { success, data } = res.body
+                expect(success).toBe(true)
+                done()
+            })
+    })
+})
+
+describe('POST /api/v1/movies', () => {
+    it('Should login admin and successfully create movie', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                let movieSample = movieFixtures.create()
+                request
+                    .post('/api/v1/movies')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(movieSample))
+                    .then(res => {
+                        expect(res.status).toBe(201)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should successfully create movie with only required information', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                let movieSample = movieFixtures.create()
+                delete movieSample.genres
+                delete movieSample.directors
+                delete movieSample.writers
+                delete movieSample.casts
+                request
+                    .post('/api/v1/movies')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(movieSample))
+                    .then(res => {
+                        expect(res.status).toBe(201)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should failed to create movie due to missing information', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                let movieSample = movieFixtures.create()
+                delete movieSample.title
+                delete movieSample.year
+                request
+                    .post('/api/v1/movies')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(movieSample))
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, data } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
+            })
+    })
+
+    it('Should login user and failed to create movie', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let token = res.body.data.token
+                let movieSample = movieFixtures.create()
+                request
+                    .post('/api/v1/movies')
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', token)
+                    .send(JSON.stringify(movieSample))
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, data } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
+            })
+    })
+})
+
+describe('GET /api/v1/movies/all', () => {
+    it('Should show all movies paginated to 10 per page', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                let page = Math.ceil(Math.random() * (lastPage))
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ page: page })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should show page 1 of all movies due to invalid page', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                let page = lastPage + 1
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ page: page })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+})
+
+describe('GET /api/v1/movies', () => {
+    it('Should show specific movie', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .then(res => {
+                let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                let movieId = res.body.data.docs[i]._id
+                request
+                    .get('/api/v1/movies')
+                    .query({ movieId: movieId })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should not show specific movie due to invalid movieId', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .then(res => {
+                let movieId = 'movieId'
+                request
+                    .get('/api/v1/movies')
+                    .query({ movieId: movieId })
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, data } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
+            })
+    })
+})
+
+// describe('PUT /api/v1/movies', () => {
+//     it('Should update existing movie information', async done => {
+//         request
+//             .post('/api/v1/auth')
+//             .set('Content-Type', 'application/json')
+//             .send(JSON.stringify(staticAdmin))
+//             .then(res => {
+//                 let token = res.body.data.token
+//                 request
+//                     .get('/api/v1/movies/all')
+//                     .query({ pagination: false })
+//                     .then(res => {
+//                         let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+//                         let movieId = res.body.data.docs[i]._id
+//                         let update = movieFixtures.create()
+//                         delete update.year
+//                         request
+//                             .put('/api/v1/movies')
+//                             .set('Content-Type', 'application/json')
+//                             .set('Authorization', token)
+//                             .query({ movieId: movieId })
+//                             .send(JSON.stringify(update))
+//                             .then(res => {
+//                                 console.log(res.body);
+//                                 expect(res.status).toBe(201)
+//                                 let { success, data } = res.body
+//                                 expect(success).toBe(true)
+//                                 done()
+//                             })
+//                     })
+//             })
+//     })
+// })
+
+describe('DELETE /api/v1/movies', () => {
+    it('Should not delete a movie because of unauthorized user', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                        let movieId = res.body.data.docs[i]._id
+                        request
+                            .delete('/api/v1/movies')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .then(res => {
+                                expect(res.status).toBe(422)
+                                let { success, data } = res.body
+                                expect(success).toBe(false)
+                                done()
+                            })
+                    })
+            })
+    })
+
+    it('Should not delete a movie because of invalid movieId', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let movieId = 'movieId'
+                        request
+                            .delete('/api/v1/movies')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .then(res => {
+                                expect(res.status).toBe(422)
+                                let { success, data } = res.body
+                                expect(success).toBe(false)
+                                done()
+                            })
+                    })
+            })
+    })
+
+    it('Should delete a movie', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                        let movieId = res.body.data.docs[i]._id
+                        request
+                            .delete('/api/v1/movies')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .then(res => {
+                                expect(res.status).toBe(201)
+                                let { success, data } = res.body
+                                expect(success).toBe(true)
+                                done()
+                            })
+                    })
+            })
+    })
+})
+
+describe('GET /api/v1/imdbmovie', () => {
+    it('Should get movie information from IMDB', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/imdbmovie')
+                    .set('Authorization', token)
+                    //query imdb movie id (ex. 8 Mile movie id is tt0298203)
+                    .query({i: 'tt0298203'})
+                    .then(res => {
+                        expect(res.status).toBe(201)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
             })
     })
 })

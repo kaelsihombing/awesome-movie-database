@@ -41,7 +41,7 @@ exports.createAdmin = async (req, res) => {
 exports.auth = async (req, res) => {
     try {
         let result = await User.auth(req)
-        success(res, result, 201)
+        success(res, result, 200)
     }
     catch (err) {
         error(res, err, 422)
