@@ -29,6 +29,7 @@
     "incumbentSpec.js",
     "reviewSpec.js",
     "review.spec.js",
+    "movie.spec.js",
     "jest.config.js"
   ]
 }
