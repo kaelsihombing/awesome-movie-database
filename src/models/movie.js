@@ -614,9 +614,9 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         return new Promise((resolve, reject) => {
             this.findOne({ title: title })
                 .then(data => {
-                    if (!data) reject ("There is no movie with that title")
-                    else{
-                    resolve(data)
+                    if (!data) reject("There is no movie with that title")
+                    else {
+                        resolve(data)
                     }
                 })
         })
@@ -632,7 +632,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 sort: sortingBy,
                 collation: { locale: 'en' }
             }
-           
+
             this.find({})
                 .then(data => {
                     let lastPage = Math.floor(data.length / 10) + 1
@@ -719,16 +719,25 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 return toCamelCaseString(value)
             }
             let last = myCamelFunction(query)
-            let limit = 10;
-            let pages = parseInt(page || 1, 10)
+            let options = {
+                limit: 10,
+                page: page,
+                select: ['_id', 'title', 'rating', 'poster', 'genre', 'year']
+            }
 
-            this.paginate({ title: { $regex: last, $options: 'i' } }, { select: ['_id', 'title', 'rating', 'poster', 'genre', 'year'], pages, limit })
+            this.find({ title: { $regex: last, $options: 'i' } })
                 .then(data => {
-                    if (data.docs === 0) return reject({ message: `${query} not found` })
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject({ err, message: `${query} not found` })
+                    let lastPage = Math.floor(data.length / 10) + 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+                    this.paginate({}, options)
+                        .then(data => {
+                            if (data.docs === 0) return reject({ message: `${query} not found` })
+                            resolve(data)
+                        })
+                        .catch(err => {
+                            reject({ err, message: `${query} not found` })
+                        })
+
                 })
         })
     }

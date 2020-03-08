@@ -51,7 +51,7 @@ class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
     }
 
     static show(role, pagination, page) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to see incumbent list")
             let options = {
                 page: page,
