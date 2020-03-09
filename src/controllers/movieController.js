@@ -93,7 +93,7 @@ exports.search = async (req, res) => {
 
 exports.genre = async (req,res) => {
     try{
-        let result = await Movie.genre(req.query.genre, req.query.page)      
+        let result = await Movie.genre(req.query.genre, req.query.page || 1)      
         success(res, result, 200)
     }
     catch (err) {

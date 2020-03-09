@@ -753,17 +753,16 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 collation: { locale: 'en' }
             }
 
-            this.find({genres: {$elemMatch: {genre: genre}}})
+            this.find({ genres: { $elemMatch: { genre: genre } } })
                 .then(data => {
-                    console.log(data);
-
+                    if (data.length == 0) reject(`There is no movie with genre: ${genre}`)
                     let lastPage = Math.floor(data.length / 10) + 1
                     if (options.page > lastPage || options.page < 0) options.page = 1
 
-                    this.paginate({genres: {$elemMatch: {genre: genre}}}, options)
+                    this.paginate({ genres: { $elemMatch: { genre: genre } } }, options)
                         .then(data => {
-                    resolve(data)
-                    })
+                            resolve(data)
+                        })
                 })
                 .catch(err => {
                     reject(err)

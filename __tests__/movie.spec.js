@@ -514,7 +514,7 @@ describe('GET /api/v1/movies/genre', () => {
             .query({ genre: genre })
             .then(res => {
                 expect(res.status).toBe(422)
-                let { success, data } = res.body
+                let { success, error } = res.body
                 expect(success).toBe(false)
                 done()
             })
