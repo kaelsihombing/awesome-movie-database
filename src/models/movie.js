@@ -719,7 +719,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 return toCamelCaseString(value)
             }
             let last = myCamelFunction(query)
-            let options = {
+            let option = {
                 limit: 10,
                 page: page,
                 select: ['_id', 'title', 'rating', 'poster', 'genre', 'year']
@@ -728,8 +728,8 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             this.find({ title: { $regex: last, $options: 'i' } })
                 .then(data => {
                     let lastPage = Math.floor(data.length / 10) + 1
-                    if (options.page > lastPage || options.page < 0) options.page = 1
-                    this.paginate({}, options)
+                    if (option.page > lastPage || option.page < 0) option.page = 1
+                    this.paginate({ title: { $regex: last, $options: 'i' } }, option)
                         .then(data => {
                             if (data.docs === 0) return reject({ message: `${query} not found` })
                             resolve(data)
@@ -738,6 +738,35 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                             reject({ err, message: `${query} not found` })
                         })
 
+                })
+        })
+    }
+
+    static genre(genre, page) {
+        return new Promise((resolve, reject) => {
+            let options = {
+                page: page,
+                limit: 10,
+                pagination: true,
+                select: ['rating', 'title', 'year', 'poster'],
+                sort: 'updatedAt',
+                collation: { locale: 'en' }
+            }
+
+            this.find({genres: {$elemMatch: {genre: genre}}})
+                .then(data => {
+                    console.log(data);
+
+                    let lastPage = Math.floor(data.length / 10) + 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+
+                    this.paginate({genres: {$elemMatch: {genre: genre}}}, options)
+                        .then(data => {
+                    resolve(data)
+                    })
+                })
+                .catch(err => {
+                    reject(err)
                 })
         })
     }

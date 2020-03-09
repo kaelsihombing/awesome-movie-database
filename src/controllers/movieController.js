@@ -90,3 +90,13 @@ exports.search = async (req, res) => {
         error(res, err.data, 422, err.message)
     }
 }
+
+exports.genre = async (req,res) => {
+    try{
+        let result = await Movie.genre(req.query.genre, req.query.page)      
+        success(res, result, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
