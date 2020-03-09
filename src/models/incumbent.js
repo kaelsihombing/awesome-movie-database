@@ -32,21 +32,27 @@ incumbentSchema.plugin(mongoosePaginate)
 class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
     static register(role, bodyParams) {
         return new Promise((resolve, reject) => {
-            if (role != 'ADMIN') return reject("You're not allowed to add new incumbent")
+            if (role != 'ADMIN') reject("You're not allowed to add new incumbent")
 
-            this.create(bodyParams)
-                .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
+            let params = {
+                name: bodyParams.name,
+            }
+            this.findOne({name: bodyParams.name})
+                .then(found => {
+                    if (found) reject("This incumbent was already added")
+                    else {
+                        this.create(params)
+                        .then(data => {
+                            resolve(data)
+                        })
+                    }
                 })
         })
     }
 
-    static show(pagination, page) {
-        return new Promise((resolve) => {
-            // if (role != 'ADMIN') return reject("You're not allowed to see incumbent list")
+    static show(role, pagination, page) {
+        return new Promise((resolve, reject) => {
+            if (role != 'ADMIN') return reject("You're not allowed to see incumbent list")
             let options = {
                 page: page,
                 limit: 10,
@@ -54,6 +60,7 @@ class Incumbent extends mongoose.model('Incumbent', incumbentSchema) {
                 sort: '-updatedAt',
                 collation: { locale: 'en' }
             }
+            
 
             this.find({})
                 .then(data => {

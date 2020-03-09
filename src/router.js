@@ -37,7 +37,8 @@ router.delete('/movies', authenticate, movie.deleteMovie)
 router.get('/movies/all', movie.all)
 router.get('/movies/title', movie.findTitle)
 router.get('/movies/popular', movie.filterByPopulate)
-router.get('/movies/genre', genre.filter)
+router.get('/movies/genre', movie.genre)
+router.get('/movies/allgenre', genre.all)
 router.get('/movies/search', movie.search)
 
 // Review endpoint
@@ -58,4 +59,5 @@ router.post('/reset/:token', [check('password').not().isEmpty().isLength({ min: 
 
 //Input movie to database from imdb
 router.get('/imdbmovie', authenticate, movie.copyMovie)
+
 module.exports = router;

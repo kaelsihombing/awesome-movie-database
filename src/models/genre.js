@@ -11,9 +11,6 @@ const genreSchema = new Schema({
     },
     movie: [{
         type: Object
-        // id: String,
-        // title: String,
-        // poster: String
     }]
 },
     {
@@ -25,21 +22,25 @@ const genreSchema = new Schema({
 // genreSchema.plugin(mongoosePaginate)
 
 class Genre extends mongoose.model('Genre', genreSchema) {
+    static allGenre(){
+        return new Promise((resolve, reject) => {
+            this.find({})
+                .select('genre')
+                .then(data => {
+                    resolve(data)
+                })
+        })
+    }
 
     static filterByGenre(genre) {
         return new Promise((resolve, reject) => {
             this.findOne({ genre: genre })
                 .then(data => {
-                    console.log(data);
                     if (!data) return reject(`${genre} genre doesn't exist!`)
                     resolve({
-                        // data,
                         genre: data.genre,
                         movies: data.movie
                     })
-                })
-                .catch(err => {
-                    reject(err)
                 })
         })
     }

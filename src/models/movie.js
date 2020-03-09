@@ -347,25 +347,25 @@ class Movie extends mongoose.model('Movie', movieSchema) {
     static update(movieId, editor, role, bodyParams) {
         return new Promise((resolve, reject) => {
             if (role != 'ADMIN') return reject("You're not allowed to edit movie information")
-            this.findById(movieId)
-                .then(data => {
-                    data.directors.map(item => {
-                        console.log(item)
-                    })
-                })
-            if (bodyParams.directors) {
-                bodyParams.directors.map(item => {
-                    console.log(item);
-                    // Incumbent.findByIdAndUpdate({id: item.id}, {name:item})       
-                })
-            }
+            // this.findById(movieId)
+            //     .then(data => {
+            //         data.directors.map(item => {
+            //             console.log(item)
+            //         })
+            //     })
+            // if (bodyParams.directors) {
+            //     bodyParams.directors.map(item => {
+            //         console.log(item);
+            //         Incumbent.findByIdAndUpdate({id: item.id}, {name:item})       
+            //     })
+            // }
             let params = {
                 title: bodyParams.title,
                 year: bodyParams.year,
                 duration: bodyParams.duration,
-                directors: bodyParams.directors,
-                writers: bodyParams.writers,
-                casts: bodyParams.casts,
+                // directors: bodyParams.directors,
+                // writers: bodyParams.writers,
+                // casts: bodyParams.casts,
                 synopsis: bodyParams.synopsis,
                 poster: bodyParams.poster,
                 trailer: bodyParams.trailer,
@@ -404,123 +404,123 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                     resolve({ id: movie._id, message: `Movie '${movie.title}' successfuly deleted` })
                 })
                 .catch(err => {
-                    reject({message: 'this movie does not exist in our database, please input a valid movie id', err: err})
+                    reject({ message: 'this movie does not exist in our database, please input a valid movie id', err: err })
                 })
         })
     }
 
     static copyMovie(movieId, creator, role) {
         return new Promise((resolve, reject) => {
-        if (role !== 'ADMIN') return ('You are not Authorized')
+            if (role !== 'ADMIN') return ('You are not Authorized')
 
-        axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&i=${movieId}`)
-            .then(data => {
+            axios.get(`http://www.omdbapi.com/?apikey=4a5e611c&i=${movieId}`)
+                .then(data => {
 
-                let movieData = data.data;
+                    let movieData = data.data;
 
-                Movie.findOne({ title: movieData.Title })
-                    .then(async foundData => {
+                    Movie.findOne({ title: movieData.Title })
+                        .then(async foundData => {
 
-                        if (foundData) return reject ('Movie already exist in the database!')
-                        //==============DIRECTOR==================
-                        let promiseDirectors = [];
-                        if (movieData.Director && movieData.Director !== 'N/A') {
-                            var directorsSplit = movieData.Director.split(',')
-                            let fixDirectors = [];
+                            if (foundData) return reject('Movie already exist in the database!')
+                            //==============DIRECTOR==================
+                            let promiseDirectors = [];
+                            if (movieData.Director && movieData.Director !== 'N/A') {
+                                var directorsSplit = movieData.Director.split(',')
+                                let fixDirectors = [];
 
-                            for (let i = 0; i <= directorsSplit.length - 1; i++) {
+                                for (let i = 0; i <= directorsSplit.length - 1; i++) {
 
-                                let newDirectors = directorsSplit[i].split(' (')
+                                    let newDirectors = directorsSplit[i].split(' (')
 
-                                newDirectors = newDirectors[0]
+                                    newDirectors = newDirectors[0]
 
-                                if (newDirectors[0] === ' ') {
-                                    newDirectors = newDirectors.substring(1)
+                                    if (newDirectors[0] === ' ') {
+                                        newDirectors = newDirectors.substring(1)
+                                    }
+
+                                    fixDirectors.push(newDirectors)
                                 }
-
-                                fixDirectors.push(newDirectors)
-                            }
-                            let noDuplicateDirectors = [...new Set(fixDirectors)]
-                            noDuplicateDirectors.map(item => {
-                                promiseDirectors.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
-
-                        //================WRITER==================
-                        let promiseWriters = [];
-                        if (movieData.Writer) {
-                            let writerSplit = movieData.Writer.split(',');
-                            let fixWriter = [];
-
-                            for (let i = 0; i <= writerSplit.length - 1; i++) {
-
-                                let newWriter = writerSplit[i].split(' (')
-
-                                newWriter = newWriter[0]
-
-                                if (newWriter[0] === ' ') {
-                                    newWriter = newWriter.substring(1)
-                                }
-
-                                fixWriter.push(newWriter)
+                                let noDuplicateDirectors = [...new Set(fixDirectors)]
+                                noDuplicateDirectors.map(item => {
+                                    promiseDirectors.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
 
-                            let noDuplicateWriter = [...new Set(fixWriter)]
-                            noDuplicateWriter.map(item => {
-                                promiseWriters.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
+                            //================WRITER==================
+                            let promiseWriters = [];
+                            if (movieData.Writer) {
+                                let writerSplit = movieData.Writer.split(',');
+                                let fixWriter = [];
 
-                        //================CAST/ACTOR==================
-                        let promiseCasts = []
-                        if (movieData.Actors) {
-                            let castSplit = movieData.Actors.split(',');
-                            let fixCast = [];
-                            for (let i = 0; i <= castSplit.length - 1; i++) {
-                                let newCast = castSplit[i].split(' (')
-                                newCast = newCast[0]
+                                for (let i = 0; i <= writerSplit.length - 1; i++) {
 
-                                if (newCast[0] === ' ') {
-                                    newCast = newCast.substring(1)
+                                    let newWriter = writerSplit[i].split(' (')
+
+                                    newWriter = newWriter[0]
+
+                                    if (newWriter[0] === ' ') {
+                                        newWriter = newWriter.substring(1)
+                                    }
+
+                                    fixWriter.push(newWriter)
                                 }
-                                fixCast.push(newCast)
+
+                                let noDuplicateWriter = [...new Set(fixWriter)]
+                                noDuplicateWriter.map(item => {
+                                    promiseWriters.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
-                            let noDuplicateCast = [...new Set(fixCast)]
-                            noDuplicateCast.map(item => {
-                                promiseCasts.push(Movie.findIncumbent(item, movieData.title))
-                            })
-                        }
 
-                        //==============GENRE====================
-                        let promiseGenres = [];
-                        if (movieData.Genre) {
-                            let genreSplit = movieData.Genre.split(',');
-                            let fixGenre = [];
-                            for (let i = 0; i <= genreSplit.length - 1; i++) {
-                                let newGenre = genreSplit[i].split(' (')
-                                newGenre = newGenre[0]
+                            //================CAST/ACTOR==================
+                            let promiseCasts = []
+                            if (movieData.Actors) {
+                                let castSplit = movieData.Actors.split(',');
+                                let fixCast = [];
+                                for (let i = 0; i <= castSplit.length - 1; i++) {
+                                    let newCast = castSplit[i].split(' (')
+                                    newCast = newCast[0]
 
-                                if (newGenre[0] === ' ') {
-                                    newGenre = newGenre.substring(1)
+                                    if (newCast[0] === ' ') {
+                                        newCast = newCast.substring(1)
+                                    }
+                                    fixCast.push(newCast)
                                 }
-                                fixGenre.push(newGenre)
+                                let noDuplicateCast = [...new Set(fixCast)]
+                                noDuplicateCast.map(item => {
+                                    promiseCasts.push(Movie.findIncumbent(item, movieData.title))
+                                })
                             }
-                            let noDuplicateGenre = [...new Set(fixGenre)]
-                            noDuplicateGenre.map(item => {
-                                item = item.toLowerCase()
-                                promiseGenres.push(Movie.findGenre(item, movieData.title))
-                            })
-                        }
 
-                        //===================================================================================
-                        let directorList = await Promise.all(promiseDirectors);
-                        let writerList = await Promise.all(promiseWriters);
-                        let castList = await Promise.all(promiseCasts);
-                        let genreList = await Promise.all(promiseGenres)
+                            //==============GENRE====================
+                            let promiseGenres = [];
+                            if (movieData.Genre) {
+                                let genreSplit = movieData.Genre.split(',');
+                                let fixGenre = [];
+                                for (let i = 0; i <= genreSplit.length - 1; i++) {
+                                    let newGenre = genreSplit[i].split(' (')
+                                    newGenre = newGenre[0]
 
-                        //===================================================================================
+                                    if (newGenre[0] === ' ') {
+                                        newGenre = newGenre.substring(1)
+                                    }
+                                    fixGenre.push(newGenre)
+                                }
+                                let noDuplicateGenre = [...new Set(fixGenre)]
+                                noDuplicateGenre.map(item => {
+                                    item = item.toLowerCase()
+                                    promiseGenres.push(Movie.findGenre(item, movieData.title))
+                                })
+                            }
 
-                        
+                            //===================================================================================
+                            let directorList = await Promise.all(promiseDirectors);
+                            let writerList = await Promise.all(promiseWriters);
+                            let castList = await Promise.all(promiseCasts);
+                            let genreList = await Promise.all(promiseGenres)
+
+                            //===================================================================================
+
+
 
                             if (role != 'ADMIN') return reject("You're not Authorized!")
 
@@ -600,11 +600,11 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                                     reject(err)
                                 })
                         })
-                    })
-                    .catch(err => {
-                        return (err)
-                    })
-            })
+                })
+                .catch(err => {
+                    return (err)
+                })
+        })
             .catch(err => {
                 return (err)
             })
@@ -614,10 +614,10 @@ class Movie extends mongoose.model('Movie', movieSchema) {
         return new Promise((resolve, reject) => {
             this.findOne({ title: title })
                 .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
+                    if (!data) reject("There is no movie with that title")
+                    else {
+                        resolve(data)
+                    }
                 })
         })
     }
@@ -632,7 +632,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 sort: sortingBy,
                 collation: { locale: 'en' }
             }
-            options.sort = sortingBy
+
             this.find({})
                 .then(data => {
                     let lastPage = Math.floor(data.length / 10) + 1
@@ -719,16 +719,53 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 return toCamelCaseString(value)
             }
             let last = myCamelFunction(query)
-            let limit = 10;
-            let pages = parseInt(page || 1, 10)
+            let option = {
+                limit: 10,
+                page: page,
+                select: ['_id', 'title', 'rating', 'poster', 'genres', 'year']
+            }
 
-            this.paginate({ title: { $regex: last, $options: 'i' } }, { select: ['_id', 'title', 'rating', 'poster', 'genre', 'year'], pages, limit })
+            this.find({ title: { $regex: last, $options: 'i' } })
                 .then(data => {
-                    if (data.docs === 0) return reject({ message: `${query} not found` })
-                    resolve(data)
+                    let lastPage = Math.floor(data.length / 10) + 1
+                    if (option.page > lastPage || option.page < 0) option.page = 1
+                    this.paginate({ title: { $regex: last, $options: 'i' } }, option)
+                        .then(data => {
+                            if (data.docs === 0) return reject({ message: `${query} not found` })
+                            resolve(data)
+                        })
+                        .catch(err => {
+                            reject({ err, message: `${query} not found` })
+                        })
+
+                })
+        })
+    }
+
+    static genre(genre, page) {
+        return new Promise((resolve, reject) => {
+            let options = {
+                page: page,
+                limit: 10,
+                pagination: true,
+                select: ['rating', 'title', 'year', 'poster', 'genres'],
+                sort: 'updatedAt',
+                collation: { locale: 'en' }
+            }
+
+            this.find({ genres: { $elemMatch: { genre: genre } } })
+                .then(data => {
+                    if (data.length == 0) reject(`There is no movie with genre: ${genre}`)
+                    let lastPage = Math.floor(data.length / 10) + 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
+
+                    this.paginate({ genres: { $elemMatch: { genre: genre } } }, options)
+                        .then(data => {
+                            resolve(data)
+                        })
                 })
                 .catch(err => {
-                    reject({ err, message: `${query} not found` })
+                    reject(err)
                 })
         })
     }

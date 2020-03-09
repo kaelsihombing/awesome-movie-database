@@ -30,6 +30,8 @@
     "reviewSpec.js",
     "review.spec.js",
     "movie.spec.js",
+    "user.spec.js",
+    "incumbent.spec.js",
     "jest.config.js"
   ]
 }

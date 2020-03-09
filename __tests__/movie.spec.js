@@ -254,7 +254,7 @@ describe('GET /api/v1/movies', () => {
     it('Should show specific movie', async done => {
         request
             .get('/api/v1/movies/all')
-            .query({pagination: false})
+            .query({ pagination: false })
             .then(res => {
                 let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                 let movieId = res.body.data.docs[i]._id
@@ -288,39 +288,99 @@ describe('GET /api/v1/movies', () => {
     })
 })
 
-// describe('PUT /api/v1/movies', () => {
-//     it('Should update existing movie information', async done => {
-//         request
-//             .post('/api/v1/auth')
-//             .set('Content-Type', 'application/json')
-//             .send(JSON.stringify(staticAdmin))
-//             .then(res => {
-//                 let token = res.body.data.token
-//                 request
-//                     .get('/api/v1/movies/all')
-//                     .query({ pagination: false })
-//                     .then(res => {
-//                         let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
-//                         let movieId = res.body.data.docs[i]._id
-//                         let update = movieFixtures.create()
-//                         delete update.year
-//                         request
-//                             .put('/api/v1/movies')
-//                             .set('Content-Type', 'application/json')
-//                             .set('Authorization', token)
-//                             .query({ movieId: movieId })
-//                             .send(JSON.stringify(update))
-//                             .then(res => {
-//                                 console.log(res.body);
-//                                 expect(res.status).toBe(201)
-//                                 let { success, data } = res.body
-//                                 expect(success).toBe(true)
-//                                 done()
-//                             })
-//                     })
-//             })
-//     })
-// })
+describe('PUT /api/v1/movies', () => {
+    it('Should update existing movie information', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                        let movieId = res.body.data.docs[i]._id
+                        let update = movieFixtures.create()
+                        delete update.year
+                        request
+                            .put('/api/v1/movies')
+                            .set('Content-Type', 'application/json')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .send(JSON.stringify(update))
+                            .then(res => {
+                                expect(res.status).toBe(201)
+                                let { success, data } = res.body
+                                expect(success).toBe(true)
+                                done()
+                            })
+                    })
+            })
+    })
+
+    it('Should not update existing movie information due to invalid movieId', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticAdmin))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let movieId = 'movieId'
+                        let update = movieFixtures.create()
+                        delete update.year
+                        request
+                            .put('/api/v1/movies')
+                            .set('Content-Type', 'application/json')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .send(JSON.stringify(update))
+                            .then(res => {
+                                expect(res.status).toBe(422)
+                                let { success, error } = res.body
+                                expect(success).toBe(false)
+                                done()
+                            })
+                    })
+            })
+    })
+
+    it('Should not update existing movie information', async done => {
+        request
+            .post('/api/v1/auth')
+            .set('Content-Type', 'application/json')
+            .send(JSON.stringify(staticUser))
+            .then(res => {
+                let token = res.body.data.token
+                request
+                    .get('/api/v1/movies/all')
+                    .query({ pagination: false })
+                    .then(res => {
+                        let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                        let movieId = res.body.data.docs[i]._id
+                        let update = movieFixtures.create()
+                        delete update.year
+                        request
+                            .put('/api/v1/movies')
+                            .set('Content-Type', 'application/json')
+                            .set('Authorization', token)
+                            .query({ movieId: movieId })
+                            .send(JSON.stringify(update))
+                            .then(res => {
+                                expect(res.status).toBe(422)
+                                let { success, error } = res.body
+                                expect(success).toBe(false)
+                                done()
+                            })
+                    })
+            })
+    })
+})
 
 describe('DELETE /api/v1/movies', () => {
     it('Should not delete a movie because of unauthorized user', async done => {
@@ -416,13 +476,140 @@ describe('GET /api/v1/imdbmovie', () => {
                     .get('/api/v1/imdbmovie')
                     .set('Authorization', token)
                     //query imdb movie id (ex. 8 Mile movie id is tt0298203)
-                    .query({i: 'tt0298203'})
+                    .query({ i: 'tt0298203' })
                     .then(res => {
                         expect(res.status).toBe(201)
                         let { success, data } = res.body
                         expect(success).toBe(true)
                         done()
                     })
+            })
+    })
+})
+
+describe('GET /api/v1/movies/genre', () => {
+    it('Should get movie by genre', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .then(res => {
+                let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                let j = Math.floor(Math.random() * (res.body.data.docs[i].genres.length - 1))
+                let genre = res.body.data.docs[i].genres[j].genre
+                request
+                    .get('/api/v1/movies/genre')
+                    .query({ genre: genre })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should not get movie by genre because genre does not exist', async done => {
+        let genre = 'genre'
+        request
+            .get('/api/v1/movies/genre')
+            .query({ genre: genre })
+            .then(res => {
+                expect(res.status).toBe(422)
+                let { success, error } = res.body
+                expect(success).toBe(false)
+                done()
+            })
+    })
+})
+
+describe('GET /api/v1/movies/title', () => {
+    it('Should show filtered movie by title', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                let title = res.body.data.docs[i].title
+                request
+                    .get('/api/v1/movies/title')
+                    .query({ title: title })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should not show filtered movie by title', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let title = 'title'
+                request
+                    .get('/api/v1/movies/title')
+                    .query({ title: title })
+                    .then(res => {
+                        expect(res.status).toBe(422)
+                        let { success, error } = res.body
+                        expect(success).toBe(false)
+                        done()
+                    })
+            })
+    })
+})
+
+describe('GET /api/v1/movies/popular', () => {
+    it('Should sort movies by rating', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                let page = Math.ceil(Math.random() * (lastPage))
+                request
+                    .get('/api/v1/movies/popular')
+                    .query({ sortingBy: 'rating' })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+
+    it('Should how page 1 of sorted movies by rating', async done => {
+        request
+            .get('/api/v1/movies/all')
+            .query({ pagination: false })
+            .then(res => {
+                let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                let page = lastPage + 1
+                request
+                    .get('/api/v1/movies/popular')
+                    .query({ sortingBy: 'rating', page: page })
+                    .then(res => {
+                        expect(res.status).toBe(200)
+                        let { success, data } = res.body
+                        expect(success).toBe(true)
+                        done()
+                    })
+            })
+    })
+})
+
+
+describe('GET /api/v1/genres', () => {
+    it('Should get all movie genres', async done => {
+        request
+            .get('/api/v1/movies/allgenre')
+            .then(res => {
+                expect(res.status).toBe(200)
+                let { success, data } = res.body
+                expect(success).toBe(true)
+                done()
             })
     })
 })
