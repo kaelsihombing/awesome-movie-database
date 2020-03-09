@@ -722,7 +722,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
             let option = {
                 limit: 10,
                 page: page,
-                select: ['_id', 'title', 'rating', 'poster', 'genre', 'year']
+                select: ['_id', 'title', 'rating', 'poster', 'genres', 'year']
             }
 
             this.find({ title: { $regex: last, $options: 'i' } })
@@ -748,7 +748,7 @@ class Movie extends mongoose.model('Movie', movieSchema) {
                 page: page,
                 limit: 10,
                 pagination: true,
-                select: ['rating', 'title', 'year', 'poster'],
+                select: ['rating', 'title', 'year', 'poster', 'genres'],
                 sort: 'updatedAt',
                 collation: { locale: 'en' }
             }
