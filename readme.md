@@ -71,8 +71,8 @@ For detailed deployment script, see gitlag-ci.yml file
 
 ## Authors
 
-* **Kevin Andrio** - *Initial work* - [Ellvisca](https://gitlab.com/ellvisca)
 * **Santo Michael Sihombing** - *Initial work* - [KaelSihombing](https://gitlab.com/kaelsihombing)
+* **Kevin Andrio** - *Initial work* - [Ellvisca](https://gitlab.com/ellvisca)
 
 ## Acknowledgements
 
